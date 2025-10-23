@@ -1,0 +1,111 @@
+name: Create Branch for Task
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  create-task-branch:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      
+      - name: Check if issue is a task (has parent)
+        id: check-task
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            
+            // Check if this issue has a parent (is a sub-issue/task)
+            // GitHub's sub-issues are tracked in the issue body or through the timeline
+            try {
+              const timeline = await github.rest.issues.listEventsForTimeline({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number
+              });
+              
+              // Look for parent issue relationship
+              const hasParent = timeline.data.some(event => 
+                event.event === 'cross-referenced' || 
+                event.event === 'connected'
+              );
+              
+              // Also check issue body for task list references
+              const issueBody = issue.body || '';
+              const isSubIssue = issueBody.includes('Parent issue:') || 
+                                 issueBody.includes('Part of') ||
+                                 hasParent;
+              
+              core.setOutput('is_task', isSubIssue.toString());
+              core.setOutput('issue_number', issue.number.toString());
+              core.setOutput('issue_title', issue.title);
+              
+              console.log(`Issue #${issue.number} is a task: ${isSubIssue}`);
+              
+              return isSubIssue;
+            } catch (error) {
+              console.log('Error checking parent:', error);
+              core.setOutput('is_task', 'false');
+              return false;
+            }
+      
+      - name: Create branch for task
+        if: steps.check-task.outputs.is_task == 'true'
+        id: create-branch
+        run: |
+          ISSUE_NUMBER="${{ steps.check-task.outputs.issue_number }}"
+          ISSUE_TITLE="${{ steps.check-task.outputs.issue_title }}"
+          
+          # Sanitize the title for branch name
+          SANITIZED_TITLE=$(echo "$ISSUE_TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
+          
+          # Create branch name
+          BRANCH_NAME="task/${ISSUE_NUMBER}-${SANITIZED_TITLE}"
+          
+          # Truncate if too long (max 255 chars for git branch names)
+          BRANCH_NAME=$(echo "$BRANCH_NAME" | cut -c1-200)
+          
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          
+          # Check if branch already exists
+          if git ls-remote --heads origin "$BRANCH_NAME" | grep -q "$BRANCH_NAME"; then
+            echo "Branch $BRANCH_NAME already exists"
+            echo "branch_created=false" >> $GITHUB_OUTPUT
+          else
+            # Create and push the branch
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            
+            git checkout -b "$BRANCH_NAME"
+            git push origin "$BRANCH_NAME"
+            
+            echo "Branch $BRANCH_NAME created successfully"
+            echo "branch_created=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Comment on issue
+        if: steps.check-task.outputs.is_task == 'true' && steps.create-branch.outputs.branch_created == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branchName = '${{ steps.create-branch.outputs.branch_name }}';
+            const branchUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/tree/${branchName}`;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🌿 Branch created: [\`${branchName}\`](${branchUrl})\n\nYou can now start working on this task!`
+            });
