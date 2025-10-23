@@ -33,8 +33,7 @@ jobs:
             try {
               console.log('=== Checking Issue #' + issue.number + ': ' + issue.title + ' ===');
               
-              // STEP 1: Check timeline events for task indicators
-              console.log('Checking timeline for task indicators...');
+              // STEP 1: Check timeline for task indicators
               const timeline = await github.rest.issues.listEventsForTimeline({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -47,15 +46,72 @@ jobs:
               for (const event of timeline.data) {
                 if (event.event === 'parent_issue_added' || event.event === 'issue_type_added') {
                   isTask = true;
-                  console.log('✓ Detected as Task via ' + event.event + ' event');
+                  console.log('✓ Detected as Task via ' + event.event);
+                }
+                
+                // Check for cross-references that might be the parent
+                if (event.event === 'cross-referenced' && event.source?.issue) {
+                  console.log('  Cross-reference from issue #' + event.source.issue.number);
                 }
               }
               
-              // STEP 2: If it's a task, find the parent by checking which issue has this as a sub-issue
+              // STEP 2: If it's a task, look through timeline for connected events
               if (isTask) {
-                console.log('Searching for parent issue...');
+                console.log('Looking for parent in timeline cross-references...');
                 
-                // Get all open issues (User Stories are likely open)
+                for (const event of timeline.data) {
+                  if (event.event === 'connected' && event.source?.issue) {
+                    // This might be the parent
+                    const sourceIssue = event.source.issue;
+                    console.log('Found connected issue #' + sourceIssue.number + ': ' + sourceIssue.title);
+                    
+                    // Fetch this issue to check if it has sub-issues
+                    try {
+                      const { data: potentialParent } = await github.rest.issues.get({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: sourceIssue.number
+                      });
+                      
+                      // If it has a title that looks like a User Story, it's likely the parent
+                      if (potentialParent.title) {
+                        parentIssueNumber = sourceIssue.number;
+                        parentIssueTitle = sourceIssue.title;
+                        console.log('✓ Found parent via connected event: #' + parentIssueNumber + ' - ' + parentIssueTitle);
+                        break;
+                      }
+                    } catch (err) {
+                      console.log('Could not fetch connected issue:', err.message);
+                    }
+                  }
+                }
+              }
+              
+              // STEP 3: If still no parent, look for the most recent cross-reference from a User Story type issue
+              if (isTask && !parentIssueNumber) {
+                console.log('Checking cross-references for User Story parent...');
+                
+                for (const event of timeline.data) {
+                  if (event.event === 'cross-referenced' && event.source?.issue) {
+                    const sourceIssue = event.source.issue;
+                    
+                    // This cross-reference might be from the parent adding this as a sub-issue
+                    // Assume the first cross-reference after issue creation is from the parent
+                    if (!parentIssueNumber) {
+                      parentIssueNumber = sourceIssue.number;
+                      parentIssueTitle = sourceIssue.title;
+                      console.log('✓ Using cross-reference as parent: #' + parentIssueNumber + ' - ' + parentIssueTitle);
+                      break;
+                    }
+                  }
+                }
+              }
+              
+              // STEP 4: Last resort - manually check specific known parent issues
+              if (isTask && !parentIssueNumber) {
+                console.log('Manually checking known User Story issues...');
+                
+                // Get all open issues and filter for ones that might be parents
                 const { data: allIssues } = await github.rest.issues.listForRepo({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -63,57 +119,21 @@ jobs:
                   per_page: 100
                 });
                 
-                console.log('Found ' + allIssues.length + ' open issues to check');
+                // Look for issues that were created before this one and might be User Stories
+                const potentialParents = allIssues.filter(i => 
+                  i.number < issue.number && // Created before this issue
+                  i.number !== issue.number && // Not this issue
+                  (i.title.includes('CODE') || i.title.includes('DATABASE') || i.title.includes('USER')) // Likely parent names
+                );
                 
-                // Check each issue to see if it tracks this one as a sub-issue
-                for (const potentialParent of allIssues) {
-                  // Skip if it's the same issue
-                  if (potentialParent.number === issue.number) continue;
-                  
-                  console.log('Checking issue #' + potentialParent.number + ': ' + potentialParent.title);
-                  
-                  // Check the timeline of this potential parent
-                  try {
-                    const parentTimeline = await github.rest.issues.listEventsForTimeline({
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      issue_number: potentialParent.number,
-                      per_page: 100
-                    });
-                    
-                    // Look for sub_issue_added or cross_referenced events mentioning our issue
-                    for (const parentEvent of parentTimeline.data) {
-                      if (parentEvent.event === 'sub_issue_added' || parentEvent.event === 'added_to_sub_issue') {
-                        // Check if it references our issue
-                        if (parentEvent.issue && parentEvent.issue.number === issue.number) {
-                          parentIssueNumber = potentialParent.number;
-                          parentIssueTitle = potentialParent.title;
-                          console.log('✓✓✓ Found parent: #' + parentIssueNumber + ' - ' + parentIssueTitle);
-                          break;
-                        }
-                      }
-                      
-                      // Also check cross-references
-                      if (parentEvent.event === 'cross-referenced') {
-                        if (parentEvent.source?.issue?.number === issue.number) {
-                          // This parent issue references our task issue
-                          parentIssueNumber = potentialParent.number;
-                          parentIssueTitle = potentialParent.title;
-                          console.log('✓ Found parent via cross-reference: #' + parentIssueNumber + ' - ' + parentIssueTitle);
-                          break;
-                        }
-                      }
-                    }
-                    
-                    if (parentIssueNumber) break; // Found it, stop searching
-                    
-                  } catch (timelineError) {
-                    console.log('Could not check timeline for #' + potentialParent.number + ':', timelineError.message);
-                  }
-                }
+                console.log('Found ' + potentialParents.length + ' potential parent issues');
                 
-                if (!parentIssueNumber) {
-                  console.log('⚠ Could not find parent issue in open issues');
+                if (potentialParents.length > 0) {
+                  // Use the most recently created potential parent
+                  const parent = potentialParents[potentialParents.length - 1];
+                  parentIssueNumber = parent.number;
+                  parentIssueTitle = parent.title;
+                  console.log('✓ Using heuristic parent: #' + parentIssueNumber + ' - ' + parentIssueTitle);
                 }
               }
               
@@ -135,7 +155,6 @@ jobs:
               return isTask;
             } catch (error) {
               console.log('ERROR:', error);
-              console.log('Stack:', error.stack);
               core.setOutput('is_task', 'false');
               return false;
             }
@@ -189,7 +208,6 @@ jobs:
         if: steps.check-task.outputs.is_task == 'true' && steps.create-branch.outputs.branch_created == 'true'
         continue-on-error: true
         run: |
-          # Use GitHub CLI to link the branch to the issue
           gh issue develop ${{ steps.check-task.outputs.issue_number }} --branch ${{ steps.create-branch.outputs.branch_name }} --repo ${{ github.repository }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
