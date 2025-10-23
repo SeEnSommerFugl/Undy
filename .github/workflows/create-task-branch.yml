@@ -30,16 +30,9 @@ jobs:
             let isTask = false;
             
             try {
-              // Method 1: Check if issue has a "type" field set to "Task"
-              const { data: issueData } = await github.rest.issues.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number
-              });
-              
               const issueBody = issue.body || '';
               
-              // Method 2: Check timeline for parent issue connection
+              // Method 1: Check timeline for parent issue connection
               const timeline = await github.rest.issues.listEventsForTimeline({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -51,31 +44,45 @@ jobs:
                 (event.event === 'cross-referenced' && event.source?.issue)
               );
               
-              // Method 3: Check for manual indicators in body
+              // Method 2: Check for manual indicators in body
               const hasTaskIndicator = issueBody.includes('Parent issue:') || 
                                        issueBody.includes('Part of #') ||
                                        issueBody.match(/Subtask of #\d+/i) ||
                                        issueBody.match(/Task for #\d+/i);
               
-              // Method 4: Check labels for "task" label
+              // Method 3: Check labels for "task" label
               const hasTaskLabel = issue.labels?.some(label => 
                 label.name.toLowerCase() === 'task'
               );
               
-              // Method 5: Use GraphQL to check issue type from Projects v2 (MOST RELIABLE)
+              // Method 4: Use GraphQL to check issue type from Projects v2
               const graphqlQuery = `
                 query($owner: String!, $repo: String!, $number: Int!) {
                   repository(owner: $owner, name: $repo) {
                     issue(number: $number) {
                       id
+                      number
+                      title
                       projectItems(first: 10) {
                         nodes {
+                          id
+                          project {
+                            title
+                          }
                           fieldValues(first: 20) {
                             nodes {
                               ... on ProjectV2ItemFieldSingleSelectValue {
                                 name
                                 field {
                                   ... on ProjectV2SingleSelectField {
+                                    name
+                                  }
+                                }
+                              }
+                              ... on ProjectV2ItemFieldTextValue {
+                                text
+                                field {
+                                  ... on ProjectV2FieldCommon {
                                     name
                                   }
                                 }
@@ -96,28 +103,44 @@ jobs:
                   number: issue.number
                 });
                 
-                // Check if any project field has "Task" as the type
+                console.log('=== DIAGNOSTIC INFO ===');
+                console.log('Issue #' + issue.number + ': ' + issue.title);
+                
                 const projectItems = graphqlResult.repository.issue.projectItems.nodes;
+                console.log('Number of projects this issue is in:', projectItems.length);
+                
+                // Log all field values to see what we're getting
                 for (const item of projectItems) {
+                  console.log('Project:', item.project?.title || 'Unknown');
+                  console.log('Field values found:');
                   const fieldValues = item.fieldValues.nodes;
+                  
                   for (const fieldValue of fieldValues) {
-                    if (fieldValue.field?.name === 'Type' && fieldValue.name === 'Task') {
-                      isTask = true;
-                      console.log(`Issue #${issue.number} is a Task (detected via Projects v2 Type field)`);
-                      break;
+                    if (fieldValue.field?.name) {
+                      console.log(`  - Field: "${fieldValue.field.name}", Value: "${fieldValue.name || fieldValue.text || 'N/A'}"`);
+                      
+                      // Check for Task type (case-insensitive)
+                      if (fieldValue.field.name.toLowerCase() === 'type' && 
+                          fieldValue.name && 
+                          fieldValue.name.toLowerCase() === 'task') {
+                        isTask = true;
+                        console.log('✓ TASK DETECTED via Projects v2 Type field!');
+                      }
                     }
                   }
-                  if (isTask) break;
                 }
+                
+                console.log('=== END DIAGNOSTIC INFO ===');
+                
               } catch (graphqlError) {
-                console.log('GraphQL query failed, falling back to other methods:', graphqlError.message);
+                console.log('GraphQL query failed:', graphqlError.message);
               }
               
               // Fallback: If any of the other methods detected it as a task
               if (!isTask) {
                 isTask = hasParentConnection || hasTaskIndicator || hasTaskLabel;
                 if (isTask) {
-                  console.log(`Issue #${issue.number} detected as task via: parent=${hasParentConnection}, indicator=${hasTaskIndicator}, label=${hasTaskLabel}`);
+                  console.log(`Issue detected as task via: parent=${hasParentConnection}, indicator=${hasTaskIndicator}, label=${hasTaskLabel}`);
                 }
               }
               
@@ -125,7 +148,7 @@ jobs:
               core.setOutput('issue_number', issue.number.toString());
               core.setOutput('issue_title', issue.title);
               
-              console.log(`Final result: Issue #${issue.number} is a task: ${isTask}`);
+              console.log(`FINAL RESULT: Issue #${issue.number} is a task: ${isTask}`);
               
               return isTask;
             } catch (error) {
