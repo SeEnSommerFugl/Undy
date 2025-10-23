@@ -33,103 +33,133 @@ jobs:
             try {
               console.log('=== Checking Issue #' + issue.number + ': ' + issue.title + ' ===');
               
-              // STEP 1: Use GraphQL to get parent issue via trackedInIssues
-              const graphqlQuery = `
-                query($owner: String!, $repo: String!, $number: Int!) {
-                  repository(owner: $owner, name: $repo) {
-                    issue(number: $number) {
-                      id
-                      number
-                      title
-                      trackedInIssues(first: 5) {
-                        nodes {
-                          number
-                          title
+              // STEP 1: Check timeline events for parent_issue_added
+              console.log('Checking timeline for parent issue...');
+              const timeline = await github.rest.issues.listEventsForTimeline({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                per_page: 100
+              });
+              
+              console.log('Timeline events found:', timeline.data.length);
+              
+              // Look for parent_issue_added event
+              for (const event of timeline.data) {
+                console.log('  Event:', event.event, event.issue ? '(issue #' + event.issue.number + ')' : '');
+                
+                // Check if this is a parent_issue_added event
+                if (event.event === 'parent_issue_added') {
+                  isTask = true;
+                  // The parent issue info might be in the event data
+                  if (event.issue) {
+                    parentIssueNumber = event.issue.number;
+                    parentIssueTitle = event.issue.title;
+                    console.log('✓ Found parent from parent_issue_added event: #' + parentIssueNumber + ' - ' + parentIssueTitle);
+                  }
+                }
+                
+                // Also check for issue_type_added (indicates it's a task)
+                if (event.event === 'issue_type_added') {
+                  isTask = true;
+                  console.log('✓ Detected as Task via issue_type_added event');
+                }
+                
+                // Check cross-references
+                if (event.event === 'cross-referenced' && event.source?.issue) {
+                  const sourceIssue = event.source.issue;
+                  // Only consider it a parent if this issue appears to be a sub-issue
+                  if (isTask && !parentIssueNumber) {
+                    parentIssueNumber = sourceIssue.number;
+                    parentIssueTitle = sourceIssue.title;
+                    console.log('Found potential parent from cross-reference: #' + parentIssueNumber + ' - ' + parentIssueTitle);
+                  }
+                }
+              }
+              
+              // STEP 2: If we found it's a task but no parent details yet, use GraphQL
+              if (isTask && !parentIssueNumber) {
+                console.log('Trying GraphQL to find parent issue...');
+                
+                const graphqlQuery = `
+                  query($owner: String!, $repo: String!, $number: Int!) {
+                    repository(owner: $owner, name: $repo) {
+                      issue(number: $number) {
+                        id
+                        trackedInIssues(first: 1) {
+                          nodes {
+                            number
+                            title
+                          }
                         }
                       }
                     }
                   }
-                }
-              `;
-              
-              console.log('Running GraphQL query to find parent issue...');
-              
-              try {
-                const result = await github.graphql(graphqlQuery, {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  number: issue.number
-                });
+                `;
                 
-                const trackedInIssues = result.repository.issue.trackedInIssues.nodes;
-                console.log('Tracked in issues (parents) found:', trackedInIssues.length);
-                
-                if (trackedInIssues.length > 0) {
-                  // This issue is tracked in another issue (has a parent)
-                  isTask = true;
-                  parentIssueNumber = trackedInIssues[0].number;
-                  parentIssueTitle = trackedInIssues[0].title;
-                  console.log('✓ Found parent issue #' + parentIssueNumber + ': ' + parentIssueTitle);
-                }
-              } catch (graphqlError) {
-                console.log('GraphQL query error:', graphqlError.message);
-                console.log('Falling back to timeline method...');
-              }
-              
-              // STEP 2: Fallback - Check timeline for parent issue events if GraphQL didn't work
-              if (!isTask) {
-                console.log('Checking timeline events...');
-                const timeline = await github.rest.issues.listEventsForTimeline({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number
-                });
-                
-                console.log('Timeline events found:', timeline.data.length);
-                
-                for (const event of timeline.data) {
-                  console.log('  Event:', event.event);
+                try {
+                  const result = await github.graphql(graphqlQuery, {
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    number: issue.number
+                  });
                   
-                  if (event.event === 'parent_issue_added' || event.event === 'issue_type_added') {
-                    isTask = true;
-                  }
+                  const trackedBy = result.repository.issue.trackedInIssues.nodes;
+                  console.log('Issues tracking this one (parents):', trackedBy.length);
                   
-                  if (event.event === 'cross-referenced' && event.source?.issue) {
-                    // Found a cross-referenced parent issue
-                    isTask = true;
-                    parentIssueNumber = event.source.issue.number;
-                    parentIssueTitle = event.source.issue.title;
-                    console.log('Found parent via cross-reference #' + parentIssueNumber + ': ' + parentIssueTitle);
-                    break;
+                  if (trackedBy.length > 0) {
+                    parentIssueNumber = trackedBy[0].number;
+                    parentIssueTitle = trackedBy[0].title;
+                    console.log('✓ Found parent via GraphQL: #' + parentIssueNumber + ' - ' + parentIssueTitle);
                   }
+                } catch (graphqlError) {
+                  console.log('GraphQL query failed:', graphqlError.message);
                 }
               }
               
-              // STEP 3: If still no parent title but we know it's a task, try to fetch from issue body
-              if (isTask && !parentIssueTitle) {
-                console.log('Trying to find parent from issue body...');
-                const issueBody = issue.body || '';
-                const parentMatch = issueBody.match(/(?:Parent issue:|Part of|Subtask of)\s*#(\d+)/i);
-                if (parentMatch) {
-                  try {
-                    parentIssueNumber = parseInt(parentMatch[1]);
-                    console.log('Found parent reference in body: #' + parentIssueNumber);
-                    const { data: parentIssue } = await github.rest.issues.get({
+              // STEP 3: Last resort - search for parent issue by looking at all open issues
+              if (isTask && !parentIssueNumber) {
+                console.log('Searching for parent issue among open issues...');
+                
+                try {
+                  // Get all open issues
+                  const { data: allIssues } = await github.rest.issues.listForRepo({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    state: 'open',
+                    per_page: 100
+                  });
+                  
+                  // Look for issues that might be tracking this one
+                  for (const potentialParent of allIssues) {
+                    // Get timeline for each issue to see if it references this issue
+                    const parentTimeline = await github.rest.issues.listEventsForTimeline({
                       owner: context.repo.owner,
                       repo: context.repo.repo,
-                      issue_number: parentIssueNumber
+                      issue_number: potentialParent.number,
+                      per_page: 50
                     });
-                    parentIssueTitle = parentIssue.title;
-                    console.log('Fetched parent title: ' + parentIssueTitle);
-                  } catch (err) {
-                    console.log('Could not fetch parent issue:', err.message);
+                    
+                    // Check if this issue has a sub_issue_added event for our issue
+                    for (const parentEvent of parentTimeline.data) {
+                      if (parentEvent.event === 'sub_issue_added' && parentEvent.issue?.number === issue.number) {
+                        parentIssueNumber = potentialParent.number;
+                        parentIssueTitle = potentialParent.title;
+                        console.log('✓ Found parent by searching issues: #' + parentIssueNumber + ' - ' + parentIssueTitle);
+                        break;
+                      }
+                    }
+                    
+                    if (parentIssueNumber) break;
                   }
+                } catch (searchError) {
+                  console.log('Could not search for parent:', searchError.message);
                 }
               }
               
               if (isTask) {
                 console.log('✓ Issue #' + issue.number + ' IS A TASK');
-                console.log('  Parent #' + (parentIssueNumber || 'unknown') + ': ' + (parentIssueTitle || 'NOT FOUND'));
+                console.log('  Parent: #' + (parentIssueNumber || 'unknown') + ' - ' + (parentIssueTitle || 'NOT FOUND'));
               } else {
                 console.log('✗ Issue #' + issue.number + ' is NOT a task');
               }
