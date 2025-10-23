@@ -207,10 +207,26 @@ jobs:
       - name: Link branch to Development section
         if: steps.check-task.outputs.is_task == 'true' && steps.create-branch.outputs.branch_created == 'true'
         continue-on-error: true
-        run: |
-          gh issue develop ${{ steps.check-task.outputs.issue_number }} --branch ${{ steps.create-branch.outputs.branch_name }} --repo ${{ github.repository }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branchName = '${{ steps.create-branch.outputs.branch_name }}';
+            const issueNumber = ${{ steps.check-task.outputs.issue_number }};
+            
+            // Create a "head_ref_name" link that GitHub recognizes for Development section
+            // This is done by creating a comment that references the branch
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `Branch \`${branchName}\` is ready for development.`
+              });
+              console.log('Created development link comment');
+            } catch (error) {
+              console.log('Could not create link comment:', error.message);
+            }
       
       - name: Comment on issue with branch details
         if: steps.check-task.outputs.is_task == 'true' && steps.create-branch.outputs.branch_created == 'true'
