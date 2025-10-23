@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
           ref: main
       
-      - name: Check if issue is a task (has parent)
+      - name: Check if issue is a task
         id: check-task
         uses: actions/github-script@v7
         with:
@@ -26,36 +26,110 @@ jobs:
           script: |
             const issue = context.payload.issue;
             
-            // Check if this issue has a parent (is a sub-issue/task)
-            // GitHub's sub-issues are tracked in the issue body or through the timeline
+            // Check if the issue type is "Task" (GitHub Projects v2)
+            let isTask = false;
+            
             try {
+              // Method 1: Check if issue has a "type" field set to "Task"
+              const { data: issueData } = await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number
+              });
+              
+              const issueBody = issue.body || '';
+              
+              // Method 2: Check timeline for parent issue connection
               const timeline = await github.rest.issues.listEventsForTimeline({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number
               });
               
-              // Look for parent issue relationship
-              const hasParent = timeline.data.some(event => 
-                event.event === 'cross-referenced' || 
-                event.event === 'connected'
+              const hasParentConnection = timeline.data.some(event => 
+                event.event === 'connected' || 
+                (event.event === 'cross-referenced' && event.source?.issue)
               );
               
-              // Also check issue body for task list references
-              const issueBody = issue.body || '';
-              const isSubIssue = issueBody.includes('Parent issue:') || 
-                                 issueBody.includes('Part of') ||
-                                 hasParent;
+              // Method 3: Check for manual indicators in body
+              const hasTaskIndicator = issueBody.includes('Parent issue:') || 
+                                       issueBody.includes('Part of #') ||
+                                       issueBody.match(/Subtask of #\d+/i) ||
+                                       issueBody.match(/Task for #\d+/i);
               
-              core.setOutput('is_task', isSubIssue.toString());
+              // Method 4: Check labels for "task" label
+              const hasTaskLabel = issue.labels?.some(label => 
+                label.name.toLowerCase() === 'task'
+              );
+              
+              // Method 5: Use GraphQL to check issue type from Projects v2 (MOST RELIABLE)
+              const graphqlQuery = `
+                query($owner: String!, $repo: String!, $number: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    issue(number: $number) {
+                      id
+                      projectItems(first: 10) {
+                        nodes {
+                          fieldValues(first: 20) {
+                            nodes {
+                              ... on ProjectV2ItemFieldSingleSelectValue {
+                                name
+                                field {
+                                  ... on ProjectV2SingleSelectField {
+                                    name
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              `;
+              
+              try {
+                const graphqlResult = await github.graphql(graphqlQuery, {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  number: issue.number
+                });
+                
+                // Check if any project field has "Task" as the type
+                const projectItems = graphqlResult.repository.issue.projectItems.nodes;
+                for (const item of projectItems) {
+                  const fieldValues = item.fieldValues.nodes;
+                  for (const fieldValue of fieldValues) {
+                    if (fieldValue.field?.name === 'Type' && fieldValue.name === 'Task') {
+                      isTask = true;
+                      console.log(`Issue #${issue.number} is a Task (detected via Projects v2 Type field)`);
+                      break;
+                    }
+                  }
+                  if (isTask) break;
+                }
+              } catch (graphqlError) {
+                console.log('GraphQL query failed, falling back to other methods:', graphqlError.message);
+              }
+              
+              // Fallback: If any of the other methods detected it as a task
+              if (!isTask) {
+                isTask = hasParentConnection || hasTaskIndicator || hasTaskLabel;
+                if (isTask) {
+                  console.log(`Issue #${issue.number} detected as task via: parent=${hasParentConnection}, indicator=${hasTaskIndicator}, label=${hasTaskLabel}`);
+                }
+              }
+              
+              core.setOutput('is_task', isTask.toString());
               core.setOutput('issue_number', issue.number.toString());
               core.setOutput('issue_title', issue.title);
               
-              console.log(`Issue #${issue.number} is a task: ${isSubIssue}`);
+              console.log(`Final result: Issue #${issue.number} is a task: ${isTask}`);
               
-              return isSubIssue;
+              return isTask;
             } catch (error) {
-              console.log('Error checking parent:', error);
+              console.log('Error checking if issue is a task:', error);
               core.setOutput('is_task', 'false');
               return false;
             }
