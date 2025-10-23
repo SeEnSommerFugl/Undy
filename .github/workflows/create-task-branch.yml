@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
           ref: main
       
-      - name: Check if issue is a task
+      - name: Check if issue is a task and get parent
         id: check-task
         uses: actions/github-script@v7
         with:
@@ -28,86 +28,107 @@ jobs:
             
             let isTask = false;
             let parentIssueTitle = '';
+            let parentIssueNumber = null;
             
             try {
-              console.log('=== Checking if Issue #' + issue.number + ' is a Task ===');
+              console.log('=== Checking Issue #' + issue.number + ': ' + issue.title + ' ===');
               
-              // Method 1: Check timeline for parent issue connection or issue type
-              const timeline = await github.rest.issues.listEventsForTimeline({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue.number
-              });
-              
-              console.log('Timeline events found:', timeline.data.length);
-              
-              // Check for GitHub native sub-issue events
-              const hasParentIssue = timeline.data.some(event => {
-                console.log('  Event:', event.event);
-                return event.event === 'parent_issue_added' || 
-                       event.event === 'connected' || 
-                       event.event === 'issue_type_added';
-              });
-              
-              // Check for issue type "Task" event
-              const hasTaskTypeEvent = timeline.data.some(event => 
-                event.event === 'issue_type_added'
-              );
-              
-              console.log('Has parent issue event:', hasParentIssue);
-              console.log('Has task type event:', hasTaskTypeEvent);
-              
-              // Method 2: Check issue body for manual indicators
-              const issueBody = issue.body || '';
-              const hasTaskIndicator = issueBody.includes('Parent issue:') || 
-                                       issueBody.includes('Part of #') ||
-                                       issueBody.match(/Subtask of #\d+/i);
-              
-              console.log('Has task indicator in body:', hasTaskIndicator);
-              
-              // Method 3: Check labels for "task" label
-              const hasTaskLabel = issue.labels?.some(label => 
-                label.name.toLowerCase() === 'task'
-              );
-              
-              console.log('Has task label:', hasTaskLabel);
-              
-              // Determine if it's a task
-              isTask = hasParentIssue || hasTaskTypeEvent || hasTaskIndicator || hasTaskLabel;
-              
-              // Get parent issue title if this is a task
-              if (isTask) {
-                // Try to find parent issue from timeline cross-references
-                for (const event of timeline.data) {
-                  if (event.source && event.source.issue) {
-                    const parentIssue = event.source.issue;
-                    parentIssueTitle = parentIssue.title;
-                    console.log('Found parent issue:', parentIssue.number, parentIssueTitle);
-                    break;
-                  }
-                }
-                
-                // If no parent found in timeline, try to parse from body
-                if (!parentIssueTitle) {
-                  const parentMatch = issueBody.match(/(?:Parent issue:|Part of|Subtask of)\s*#(\d+)/i);
-                  if (parentMatch) {
-                    try {
-                      const parentNumber = parseInt(parentMatch[1]);
-                      const { data: parentIssue } = await github.rest.issues.get({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        issue_number: parentNumber
-                      });
-                      parentIssueTitle = parentIssue.title;
-                      console.log('Found parent issue from body:', parentNumber, parentIssueTitle);
-                    } catch (err) {
-                      console.log('Could not fetch parent issue:', err.message);
+              // Get full issue details with GraphQL to access sub-issue data
+              const graphqlQuery = `
+                query($owner: String!, $repo: String!, $number: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    issue(number: $number) {
+                      id
+                      number
+                      title
+                      trackedIssues(first: 1) {
+                        nodes {
+                          number
+                          title
+                        }
+                      }
+                      trackedInIssues(first: 5) {
+                        nodes {
+                          number
+                          title
+                        }
+                      }
                     }
                   }
                 }
+              `;
+              
+              try {
+                const result = await github.graphql(graphqlQuery, {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  number: issue.number
+                });
                 
-                console.log('✓ Issue #' + issue.number + ' IS A TASK!');
-                console.log('  Parent issue title:', parentIssueTitle || '(not found)');
+                const trackedInIssues = result.repository.issue.trackedInIssues.nodes;
+                console.log('Tracked in issues (parents):', trackedInIssues.length);
+                
+                if (trackedInIssues.length > 0) {
+                  // This issue is tracked in another issue (has a parent)
+                  isTask = true;
+                  parentIssueNumber = trackedInIssues[0].number;
+                  parentIssueTitle = trackedInIssues[0].title;
+                  console.log('✓ Found parent issue #' + parentIssueNumber + ': ' + parentIssueTitle);
+                }
+              } catch (graphqlError) {
+                console.log('GraphQL query failed:', graphqlError.message);
+              }
+              
+              // Fallback: Check timeline for parent issue events
+              if (!isTask) {
+                const timeline = await github.rest.issues.listEventsForTimeline({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number
+                });
+                
+                console.log('Timeline events found:', timeline.data.length);
+                
+                const hasParentIssue = timeline.data.some(event => {
+                  if (event.event === 'parent_issue_added' || event.event === 'issue_type_added') {
+                    return true;
+                  }
+                  if (event.event === 'cross-referenced' && event.source?.issue) {
+                    // Found a cross-referenced parent issue
+                    parentIssueNumber = event.source.issue.number;
+                    parentIssueTitle = event.source.issue.title;
+                    console.log('Found parent via cross-reference #' + parentIssueNumber + ': ' + parentIssueTitle);
+                    return true;
+                  }
+                  return false;
+                });
+                
+                isTask = hasParentIssue;
+              }
+              
+              // If still no parent title but we know it's a task, try to fetch from issue body
+              if (isTask && !parentIssueTitle) {
+                const issueBody = issue.body || '';
+                const parentMatch = issueBody.match(/(?:Parent issue:|Part of|Subtask of)\s*#(\d+)/i);
+                if (parentMatch) {
+                  try {
+                    parentIssueNumber = parseInt(parentMatch[1]);
+                    const { data: parentIssue } = await github.rest.issues.get({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: parentIssueNumber
+                    });
+                    parentIssueTitle = parentIssue.title;
+                    console.log('Found parent from body #' + parentIssueNumber + ': ' + parentIssueTitle);
+                  } catch (err) {
+                    console.log('Could not fetch parent issue:', err.message);
+                  }
+                }
+              }
+              
+              if (isTask) {
+                console.log('✓ Issue #' + issue.number + ' IS A TASK');
+                console.log('  Parent: #' + (parentIssueNumber || 'unknown') + ' - ' + (parentIssueTitle || 'not found'));
               } else {
                 console.log('✗ Issue #' + issue.number + ' is NOT a task');
               }
@@ -116,12 +137,13 @@ jobs:
               core.setOutput('issue_number', issue.number.toString());
               core.setOutput('issue_title', issue.title);
               core.setOutput('parent_issue_title', parentIssueTitle || '');
+              core.setOutput('parent_issue_number', (parentIssueNumber || '').toString());
               
-              console.log('=== FINAL RESULT: Issue #' + issue.number + ' is a task: ' + isTask + ' ===');
+              console.log('=== FINAL: is_task=' + isTask + ', parent_title="' + parentIssueTitle + '" ===');
               
               return isTask;
             } catch (error) {
-              console.log('Error checking if issue is a task:', error);
+              console.log('Error:', error);
               core.setOutput('is_task', 'false');
               return false;
             }
@@ -134,6 +156,9 @@ jobs:
           ISSUE_TITLE="${{ steps.check-task.outputs.issue_title }}"
           PARENT_TITLE="${{ steps.check-task.outputs.parent_issue_title }}"
           
+          echo "Creating branch for issue #$ISSUE_NUMBER: $ISSUE_TITLE"
+          echo "Parent issue title: $PARENT_TITLE"
+          
           # Sanitize the task title for branch name
           SANITIZED_TITLE=$(echo "$ISSUE_TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
           
@@ -142,9 +167,11 @@ jobs:
             SANITIZED_PARENT=$(echo "$PARENT_TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
             # Create branch name with parent prefix
             BRANCH_NAME="${SANITIZED_PARENT}/${ISSUE_NUMBER}-${SANITIZED_TITLE}"
+            echo "Using parent-based branch name: $BRANCH_NAME"
           else
             # Fallback to task prefix if no parent found
             BRANCH_NAME="task/${ISSUE_NUMBER}-${SANITIZED_TITLE}"
+            echo "No parent found, using fallback: $BRANCH_NAME"
           fi
           
           # Truncate if too long (max 255 chars for git branch names)
@@ -168,27 +195,50 @@ jobs:
             echo "branch_created=true" >> $GITHUB_OUTPUT
           fi
       
-      - name: Link branch to issue
+      - name: Link branch to issue via Development
         if: steps.check-task.outputs.is_task == 'true' && steps.create-branch.outputs.branch_created == 'true'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const branchName = '${{ steps.create-branch.outputs.branch_name }}';
+            const issueNumber = ${{ steps.check-task.outputs.issue_number }};
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
             
-            // Create a development link by creating a ref comment
-            // This links the branch to the issue in the Development section
-            const refComment = `Created branch: ${branchName}`;
-            
-            // GitHub automatically links branches mentioned in issue comments to the Development section
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: refComment
-            });
-            
-            console.log('Branch linked to issue via comment');
+            // Method 1: Create a branch reference that links to the issue
+            // This creates the Development section link
+            try {
+              // GitHub's REST API doesn't have a direct "link branch to issue" endpoint
+              // But creating a commit reference in a comment creates the link
+              const sha = await github.rest.repos.getBranch({
+                owner: owner,
+                repo: repo,
+                branch: branchName
+              });
+              
+              const commitSha = sha.data.commit.sha;
+              
+              // Create a reference comment that GitHub will recognize
+              await github.rest.issues.createComment({
+                owner: owner,
+                repo: repo,
+                issue_number: issueNumber,
+                body: `Branch \`${branchName}\` created from commit ${commitSha.substring(0, 7)}`
+              });
+              
+              console.log('Created development link via commit reference');
+            } catch (error) {
+              console.log('Could not create commit reference:', error.message);
+              
+              // Fallback: Just mention the branch
+              await github.rest.issues.createComment({
+                owner: owner,
+                repo: repo,
+                issue_number: issueNumber,
+                body: `Branch \`${branchName}\` created`
+              });
+            }
       
       - name: Comment on issue with branch details
         if: steps.check-task.outputs.is_task == 'true' && steps.create-branch.outputs.branch_created == 'true'
@@ -198,10 +248,17 @@ jobs:
           script: |
             const branchName = '${{ steps.create-branch.outputs.branch_name }}';
             const branchUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/tree/${branchName}`;
+            const parentTitle = '${{ steps.check-task.outputs.parent_issue_title }}';
+            
+            let message = `🌿 Branch created: [\`${branchName}\`](${branchUrl})`;
+            if (parentTitle) {
+              message += `\n📋 Parent: ${parentTitle}`;
+            }
+            message += `\n\nYou can now start working on this task!`;
             
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `🌿 Branch created: [\`${branchName}\`](${branchUrl})\n\nYou can now start working on this task!`
+              body: message
             });
