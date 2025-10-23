@@ -56,6 +56,7 @@ jobs:
               );
               
               // Method 4: Use GraphQL to check issue type from Projects v2
+              // This query checks BOTH repo and org level projects
               const graphqlQuery = `
                 query($owner: String!, $repo: String!, $number: Int!) {
                   repository(owner: $owner, name: $repo) {
@@ -63,13 +64,14 @@ jobs:
                       id
                       number
                       title
-                      projectItems(first: 10) {
+                      projectItems(first: 20) {
                         nodes {
                           id
                           project {
                             title
+                            number
                           }
-                          fieldValues(first: 20) {
+                          fieldValues(first: 30) {
                             nodes {
                               ... on ProjectV2ItemFieldSingleSelectValue {
                                 name
@@ -111,13 +113,18 @@ jobs:
                 
                 // Log all field values to see what we're getting
                 for (const item of projectItems) {
-                  console.log('Project:', item.project?.title || 'Unknown');
+                  console.log('Project:', item.project?.title || 'Unknown', '(#' + (item.project?.number || 'N/A') + ')');
                   console.log('Field values found:');
                   const fieldValues = item.fieldValues.nodes;
                   
+                  if (fieldValues.length === 0) {
+                    console.log('  (No field values found)');
+                  }
+                  
                   for (const fieldValue of fieldValues) {
                     if (fieldValue.field?.name) {
-                      console.log(`  - Field: "${fieldValue.field.name}", Value: "${fieldValue.name || fieldValue.text || 'N/A'}"`);
+                      const value = fieldValue.name || fieldValue.text || 'N/A';
+                      console.log(`  - Field: "${fieldValue.field.name}", Value: "${value}"`);
                       
                       // Check for Task type (case-insensitive)
                       if (fieldValue.field.name.toLowerCase() === 'type' && 
@@ -134,13 +141,14 @@ jobs:
                 
               } catch (graphqlError) {
                 console.log('GraphQL query failed:', graphqlError.message);
+                console.log('Full error:', graphqlError);
               }
               
               // Fallback: If any of the other methods detected it as a task
               if (!isTask) {
                 isTask = hasParentConnection || hasTaskIndicator || hasTaskLabel;
                 if (isTask) {
-                  console.log(`Issue detected as task via: parent=${hasParentConnection}, indicator=${hasTaskIndicator}, label=${hasTaskLabel}`);
+                  console.log(`Issue detected as task via fallback methods: parent=${hasParentConnection}, indicator=${hasTaskIndicator}, label=${hasTaskLabel}`);
                 }
               }
               
