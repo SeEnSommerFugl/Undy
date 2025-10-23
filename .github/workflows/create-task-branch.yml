@@ -27,6 +27,7 @@ jobs:
             const issue = context.payload.issue;
             
             let isTask = false;
+            let parentIssueTitle = '';
             
             try {
               console.log('=== Checking if Issue #' + issue.number + ' is a Task ===');
@@ -74,14 +75,39 @@ jobs:
               // Determine if it's a task
               isTask = hasParentIssue || hasTaskTypeEvent || hasTaskIndicator || hasTaskLabel;
               
+              // Get parent issue title if this is a task
               if (isTask) {
+                // Try to find parent issue from timeline cross-references
+                for (const event of timeline.data) {
+                  if (event.source && event.source.issue) {
+                    const parentIssue = event.source.issue;
+                    parentIssueTitle = parentIssue.title;
+                    console.log('Found parent issue:', parentIssue.number, parentIssueTitle);
+                    break;
+                  }
+                }
+                
+                // If no parent found in timeline, try to parse from body
+                if (!parentIssueTitle) {
+                  const parentMatch = issueBody.match(/(?:Parent issue:|Part of|Subtask of)\s*#(\d+)/i);
+                  if (parentMatch) {
+                    try {
+                      const parentNumber = parseInt(parentMatch[1]);
+                      const { data: parentIssue } = await github.rest.issues.get({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: parentNumber
+                      });
+                      parentIssueTitle = parentIssue.title;
+                      console.log('Found parent issue from body:', parentNumber, parentIssueTitle);
+                    } catch (err) {
+                      console.log('Could not fetch parent issue:', err.message);
+                    }
+                  }
+                }
+                
                 console.log('✓ Issue #' + issue.number + ' IS A TASK!');
-                console.log('  Detected via:', {
-                  parent_issue: hasParentIssue,
-                  type_event: hasTaskTypeEvent,
-                  body_indicator: hasTaskIndicator,
-                  label: hasTaskLabel
-                });
+                console.log('  Parent issue title:', parentIssueTitle || '(not found)');
               } else {
                 console.log('✗ Issue #' + issue.number + ' is NOT a task');
               }
@@ -89,6 +115,7 @@ jobs:
               core.setOutput('is_task', isTask.toString());
               core.setOutput('issue_number', issue.number.toString());
               core.setOutput('issue_title', issue.title);
+              core.setOutput('parent_issue_title', parentIssueTitle || '');
               
               console.log('=== FINAL RESULT: Issue #' + issue.number + ' is a task: ' + isTask + ' ===');
               
@@ -105,12 +132,20 @@ jobs:
         run: |
           ISSUE_NUMBER="${{ steps.check-task.outputs.issue_number }}"
           ISSUE_TITLE="${{ steps.check-task.outputs.issue_title }}"
+          PARENT_TITLE="${{ steps.check-task.outputs.parent_issue_title }}"
           
-          # Sanitize the title for branch name
+          # Sanitize the task title for branch name
           SANITIZED_TITLE=$(echo "$ISSUE_TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
           
-          # Create branch name
-          BRANCH_NAME="task/${ISSUE_NUMBER}-${SANITIZED_TITLE}"
+          # Sanitize the parent title for branch prefix
+          if [ -n "$PARENT_TITLE" ]; then
+            SANITIZED_PARENT=$(echo "$PARENT_TITLE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//')
+            # Create branch name with parent prefix
+            BRANCH_NAME="${SANITIZED_PARENT}/${ISSUE_NUMBER}-${SANITIZED_TITLE}"
+          else
+            # Fallback to task prefix if no parent found
+            BRANCH_NAME="task/${ISSUE_NUMBER}-${SANITIZED_TITLE}"
+          fi
           
           # Truncate if too long (max 255 chars for git branch names)
           BRANCH_NAME=$(echo "$BRANCH_NAME" | cut -c1-200)
@@ -133,7 +168,29 @@ jobs:
             echo "branch_created=true" >> $GITHUB_OUTPUT
           fi
       
-      - name: Comment on issue
+      - name: Link branch to issue
+        if: steps.check-task.outputs.is_task == 'true' && steps.create-branch.outputs.branch_created == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const branchName = '${{ steps.create-branch.outputs.branch_name }}';
+            
+            // Create a development link by creating a ref comment
+            // This links the branch to the issue in the Development section
+            const refComment = `Created branch: ${branchName}`;
+            
+            // GitHub automatically links branches mentioned in issue comments to the Development section
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: refComment
+            });
+            
+            console.log('Branch linked to issue via comment');
+      
+      - name: Comment on issue with branch details
         if: steps.check-task.outputs.is_task == 'true' && steps.create-branch.outputs.branch_created == 'true'
         uses: actions/github-script@v7
         with:
