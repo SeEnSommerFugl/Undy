@@ -2,8 +2,32 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Undy"
+             xmlns:vm="clr-namespace:Undy.ViewModels"
+             xmlns:views="clr-namespace:Undy.Views"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type vm:SalesOrderViewModel}">
+                <views:SalesOrderView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PurchaseOrderViewModel}">
+                <views:PurchaseOrderView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PickListViewModel}">
+                <views:PickListView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PaymentViewModel}">
+                <views:PaymentView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:GoodsReceiptViewModel}">
+                <views:GoodsReceiptView/>
+            </DataTemplate>
+
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
