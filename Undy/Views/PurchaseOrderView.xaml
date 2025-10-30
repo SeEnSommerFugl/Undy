@@ -5,8 +5,79 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Undy.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             d:DesignWidth="1652" d:DesignHeight="1048">
+    <Grid ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="170"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="12"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Style="{StaticResource Card}">
+            <Grid>
+                <DockPanel>
+                    <Button Content="Søg"
+                            Command="{Binding SearchCommand}"
+                            Style="{StaticResource ButtonBase}"
+                            Height="60"
+                            Width="100"
+                            Margin="12,0,12,0"
+                            DockPanel.Dock="Left"/>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Varenummer" 
+                                   Style="{StaticResource TextBlockRight}"
+                                   FontSize="20"
+                                   Margin="0,0,6,0"/>
+                        <TextBox Style="{StaticResource InputRight}" 
+                                 Width="200"
+                                 Height="20"/>
+                        <TextBlock Text="Leverandør" 
+                                   Style="{StaticResource TextBlockRight}"
+                                   FontSize="20"
+                                   Margin="0,0,6,0"/>
+                        <TextBox Style="{StaticResource InputRight}" 
+                                 Width="200" 
+                                 Height="20"/>
+                        <TextBlock Text="Vare navn" 
+                                   Style="{StaticResource TextBlockRight}"
+                                   FontSize="20"
+                                   Margin="0,0,6,0"/>
+                        <TextBox Style="{StaticResource InputRight}" 
+                                 Width="200" 
+                                 Height="20"/>
+                    </StackPanel>
+
+                </DockPanel>
+
+            </Grid>
+        </Border>
+        <Border Grid.Row="2" Style="{StaticResource Card}">
+            <DataGrid ItemsSource="{Binding PurchaseOrderView}"
+                              Style="{StaticResource DataGrid.Table}"
+                              MaxHeight="1000"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              SelectionChanged="DataGrid_SelectionChanged" HorizontalAlignment="Stretch">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Dato" Width="160"
+                                        Binding="{Binding PurchaseOrderDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
+                    <DataGridTextColumn Header="Varenummer" 
+                                        Binding="{Binding ItemNumber}" 
+                                        Width="160"/>
+                    <DataGridTextColumn Header="Vare navn" 
+                                        Binding="{Binding ItemName}" 
+                                        Width="160"/>
+                    <DataGridTextColumn Header="Antal" 
+                                        Binding="{Binding Quantity}" 
+                                        Width="160"/>
+                    <DataGridTextColumn Header="Leverandør" 
+                                        Binding="{Binding Supplier}" 
+                                        Width="160"/>
+                    <DataGridTextColumn Header="Leveringsdato" Width="160"
+                                        Binding="{Binding ExpectedDeliveryDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
     </Grid>
 </UserControl>

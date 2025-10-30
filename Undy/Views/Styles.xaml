@@ -396,15 +396,15 @@
     <!-- Hver post opfører sig som en rund “knap” -->
     <Style x:Key="NavListBoxItem" TargetType="ListBoxItem">
         <!-- flise-størrelse/margins som dine knapper -->
-        <Setter Property="Height" Value="50"/>
-        <Setter Property="Margin" Value="0,0,0,28"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Margin" Value="0,0,0,10"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
                     <Border x:Name="Card"
-                            CornerRadius="20"
+                            CornerRadius="15"
                             Background="{StaticResource Brush.Accent}"
                             BorderBrush="{StaticResource Brush.Accent}"
                             BorderThickness="1"

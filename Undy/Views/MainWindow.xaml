@@ -6,10 +6,12 @@
         xmlns:local="clr-namespace:Undy.Views"
         xmlns:views="clr-namespace:Undy.Views"
         mc:Ignorable="d"
-        Title="MainWindow"
         d:DesignWidth="1920" d:DesignHeight="1080"
         MaxWidth="1920" MaxHeight="1080"
-        UseLayoutRounding="True" SnapsToDevicePixels="True">
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -21,27 +23,37 @@
     </Window.Resources>
 
     <!-- Main Layout Grid -->
-    <Grid>
-        <Grid.RowDefinitions>
-            <!-- Menu og Titel Row -->
-            <RowDefinition Height="220"/>
-            <!-- Content Row -->
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid Margin="16" ShowGridLines="True">
+
         <Grid.ColumnDefinitions>
-            <!-- Menu Column -->
-            <ColumnDefinition Width="220"/>
-            <!-- Content Column -->
+            <!-- Venstre rail -->
+            <ColumnDefinition Width="180"/>
+            <!-- Venstre mellemrum -->
+            <ColumnDefinition Width="16"/>
+            <!-- Indhold -->
             <ColumnDefinition Width="*"/>
+            <!-- Højre mellemrum (spejl) -->
+            <ColumnDefinition Width="16"/>
+            <!-- Højre gutter (spejl af venstre rail) -->
+            <ColumnDefinition Width="180"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Grid.Row="1">
+        <StackPanel Grid.Column="0">
+            <TextBlock Text="Undy"
+                       TextWrapping="Wrap"
+                       FontSize="50"
+                       FontWeight="Bold"
+                       TextAlignment="Center"/>
+
             <ListBox ItemsSource="{Binding Nav.Items}"
                      SelectedItem="{Binding Nav.Selected}"
                      Style="{StaticResource NavListBox}"
-                     Margin="10"/>
-
+                     Margin="0,75,0,0"/>
         </StackPanel>
-        
+
+        <!-- Indholdet binder direkte til Navigation -->
+        <ContentControl Grid.Column="2"
+                Content="{Binding Nav.CurrentView}"/>
+
     </Grid>
 </Window>
