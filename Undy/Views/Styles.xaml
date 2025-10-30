@@ -387,7 +387,7 @@
     <DataTemplate x:Key="NavItemTemplate">
         <TextBlock Text="{Binding Title}"
                    Foreground="White"
-                   FontSize="28"
+                   FontSize="20"
                    FontWeight="SemiBold"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
@@ -396,7 +396,7 @@
     <!-- Hver post opfører sig som en rund “knap” -->
     <Style x:Key="NavListBoxItem" TargetType="ListBoxItem">
         <!-- flise-størrelse/margins som dine knapper -->
-        <Setter Property="Height" Value="220"/>
+        <Setter Property="Height" Value="50"/>
         <Setter Property="Margin" Value="0,0,0,28"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="Padding" Value="0"/>
