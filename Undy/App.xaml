@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Undy"
              xmlns:vm="clr-namespace:Undy.ViewModels"
-             xmlns:views="clr-namespace:Undy.Views"
-             StartupUri="MainWindow.xaml">
+             xmlns:views="clr-namespace:Undy.Views">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

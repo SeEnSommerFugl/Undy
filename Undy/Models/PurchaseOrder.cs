@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Undy.Models
+﻿namespace Undy.Models
 {
-    internal class PurchaseOrder
+    public class PurchaseOrder
     {
         public Guid PurchaseOrderID { get; set; }
         public int ProductNumber { get; set; }

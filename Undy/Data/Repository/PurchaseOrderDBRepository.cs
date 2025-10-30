@@ -1,13 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Undy.Models;
 
 namespace Undy.Data.Repository
 {
-    internal class PurchaseOrderDBRepository
+    public class PurchaseOrderDBRepository : IBaseRepository<PurchaseOrder>
     {
+        public void Add(PurchaseOrder entity)
+        {
+            throw new NotImplementedException();
+        }
 
+        public void Delete(PurchaseOrder entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<PurchaseOrder> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public PurchaseOrder GetById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(PurchaseOrder entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
