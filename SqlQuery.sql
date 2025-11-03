@@ -1,7 +1,8 @@
-﻿CREATE TABLE ProductCatalogue(
+CREATE TABLE ProductCatalogue(
 	ProductCatalogueID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-	ProductNumber INT NOT NULL,
-	ProductName NVARCHAR(255) NOT NULL
+	InStock INT NOT NULL,
+	MinimumInStock INT NOT NULL,
+	StockStatus BIT NOT NULL,
 );
 
 CREATE TABLE [Product](
@@ -9,9 +10,8 @@ CREATE TABLE [Product](
 	ProductNumber INT NOT NULL,
 	ProductName NVARCHAR(255) NOT NULL,
 	Price DECIMAL(10,2) NOT NULL,
-	InStock INT NOT NULL,
-	[Status] NVARCHAR(255) NOT NULL,
-	MinimumStockLimit INT NOT NULL,
+	Size NVARCHAR(255) NOT NULL,
+	Colour NVARCHAR(255) NOT NULL,
 	ProductCatalogueID UNIQUEIDENTIFIER NOT NULL,
 	CONSTRAINT FK_ProductCatalogue_Product
 		FOREIGN KEY(ProductCatalogueID)
@@ -20,15 +20,10 @@ CREATE TABLE [Product](
 
 CREATE TABLE PurchaseOrder(
 	PurchaseOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-	ProductNumber INT NOT NULL,
-	ExpectedDeliveryDate DATE NOT NULL,
 	PurchaseOrderDate DATE NOT NULL,
+	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
 	OrderStatus NVARCHAR(255) NOT NULL,
-	ProductID UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT FK_Product_PurchaseOrder
-		FOREIGN KEY(ProductID)
-		REFERENCES [Product](ProductID)
 );
 
 CREATE TABLE ProductPurchaseOrder(
