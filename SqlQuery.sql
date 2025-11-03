@@ -2,7 +2,7 @@ CREATE TABLE ProductCatalogue(
 	ProductCatalogueID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	InStock INT NOT NULL,
 	MinimumInStock INT NOT NULL,
-	StockStatus BIT NOT NULL,
+	StockStatus NVARCHAR(255) NOT NULL,
 );
 
 CREATE TABLE [Product](
