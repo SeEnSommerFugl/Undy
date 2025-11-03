@@ -2,29 +2,29 @@
 
 namespace Undy.Data.Repository
 {
-    public class ProductCatalogueDBRepository : IBaseRepository<ProductCatalogue>
+    public class StockDBRepository : IBaseRepository<Stock>
     {
-        public void Add(ProductCatalogue entity)
+        public void Add(Stock entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(ProductCatalogue entity)
+        public void Delete(Stock entity)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ProductCatalogue> GetAll()
+        public IEnumerable<Stock> GetAll()
         {
             throw new NotImplementedException();
         }
 
-        public ProductCatalogue GetById(int id)
+        public Stock GetById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(ProductCatalogue entity)
+        public void Update(Stock entity)
         {
             throw new NotImplementedException();
         }

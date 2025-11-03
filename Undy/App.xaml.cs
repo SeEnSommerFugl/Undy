@@ -17,15 +17,15 @@ namespace Undy
 
             // ----- Shared Instances ----- //
             IBaseRepository<Product> productRepo = new ProductDBRepository();
-            IBaseRepository<ProductCatalogue> productCatalogueRepo = new ProductCatalogueDBRepository();
+            IBaseRepository<Stock> stockRepo = new StockDBRepository();
             IBaseRepository<PurchaseOrder> purchaseOrderRepo = new PurchaseOrderDBRepository();
             IBaseRepository<SalesOrder> salesOrderRepo = new SalesOrderDBRepository();
 
             //----- ViewModels ----- //
-            var purchaseOrderVM = new PurchaseOrderViewModel(purchaseOrderRepo, productCatalogueRepo);
+            var purchaseOrderVM = new PurchaseOrderViewModel(purchaseOrderRepo, stockRepo);
             var goodsReceiptVM = new GoodsReceiptViewModel(purchaseOrderRepo, productRepo);
             var pickListVM = new PickListViewModel(salesOrderRepo, productRepo);
-            var salesOrderVM = new SalesOrderViewModel(salesOrderRepo, productCatalogueRepo, productRepo);
+            var salesOrderVM = new SalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
 
             var mainVM = new MainViewModel(
