@@ -1,30 +1,42 @@
-﻿using Undy.Models;
+﻿using System.Data;
+using Microsoft.Data.SqlClient;
+using Undy.Models;
 
 namespace Undy.Data.Repository
 {
-    public class ProductDBRepository : IBaseRepository<Product>
+    public class ProductDBRepository : BaseDBRepository<Product, Guid>
     {
-        public void Add(Product entity)
+        protected override string SqlSelectAll => throw new NotImplementedException();
+
+        protected override string SqlSelectById => throw new NotImplementedException();
+
+        protected override string SqlInsert => throw new NotImplementedException();
+
+        protected override string SqlUpdate => throw new NotImplementedException();
+
+        protected override string SqlDeleteById => throw new NotImplementedException();
+
+        protected override void BindId(SqlCommand cmd, Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Product entity)
+        protected override void BindInsert(SqlCommand cmd, Product entity)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Product> GetAll()
+        protected override void BindUpdate(SqlCommand cmd, Product entity)
         {
             throw new NotImplementedException();
         }
 
-        public Product GetById(int id)
+        protected override Guid GetKey(Product entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Product entity)
+        protected override Product Map(IDataRecord r)
         {
             throw new NotImplementedException();
         }

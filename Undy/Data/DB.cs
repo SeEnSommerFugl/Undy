@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-namespace Undy.Data.DB
+namespace Undy.Data
 {
     internal class DB
     {

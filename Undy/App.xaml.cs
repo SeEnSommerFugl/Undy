@@ -16,10 +16,10 @@ namespace Undy
             base.OnStartup(e);
 
             // ----- Shared Instances ----- //
-            IBaseRepository<Product> productRepo = new ProductDBRepository();
-            IBaseRepository<Stock> stockRepo = new StockDBRepository();
-            IBaseRepository<PurchaseOrder> purchaseOrderRepo = new PurchaseOrderDBRepository();
-            IBaseRepository<SalesOrder> salesOrderRepo = new SalesOrderDBRepository();
+            IBaseRepository<Product, Guid> productRepo = new ProductDBRepository();
+            IBaseRepository<Stock, Guid> stockRepo = new StockDBRepository();
+            IBaseRepository<PurchaseOrder, Guid> purchaseOrderRepo = new PurchaseOrderDBRepository();
+            IBaseRepository<SalesOrder, Guid> salesOrderRepo = new SalesOrderDBRepository();
 
             //----- ViewModels ----- //
             var purchaseOrderVM = new PurchaseOrderViewModel(purchaseOrderRepo, stockRepo);
