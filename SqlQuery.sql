@@ -1,8 +1,7 @@
-CREATE TABLE ProductCatalogue(
-	ProductCatalogueID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-	InStock INT NOT NULL,
-	MinimumInStock INT NOT NULL,
-	StockStatus NVARCHAR(255) NOT NULL,
+CREATE TABLE Stock(
+	StockID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	NumberInStock INT NOT NULL,
+	StockStatus NvarChar(255) NOT NULL,
 );
 
 CREATE TABLE [Product](
@@ -12,10 +11,10 @@ CREATE TABLE [Product](
 	Price DECIMAL(10,2) NOT NULL,
 	Size NVARCHAR(255) NOT NULL,
 	Colour NVARCHAR(255) NOT NULL,
-	ProductCatalogueID UNIQUEIDENTIFIER NOT NULL,
-	CONSTRAINT FK_ProductCatalogue_Product
-		FOREIGN KEY(ProductCatalogueID)
-		REFERENCES ProductCatalogue(ProductCatalogueID)
+	StockID UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT FK_Stock_Product
+		FOREIGN KEY(StockID)
+		REFERENCES Stock(StockID)
 );
 
 CREATE TABLE PurchaseOrder(
@@ -23,7 +22,7 @@ CREATE TABLE PurchaseOrder(
 	PurchaseOrderDate DATE NOT NULL,
 	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
-	OrderStatus NVARCHAR(255) NOT NULL,
+	OrderStatus NVARCHAR(255) NOT NULL
 );
 
 CREATE TABLE ProductPurchaseOrder(
@@ -40,18 +39,52 @@ CREATE TABLE ProductPurchaseOrder(
 		REFERENCES [Product](ProductID)
 );
 
---CREATE VIEW vwProductCatalogue AS
---SELECT
---FROM
+CREATE TABLE SalesOrder (
+	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	OrderNumber INT NOT NULL,
+	OrderStatus NvarChar(255) NOT NULL,
+	PaymentStatus NvarChar(255) NOT NULL,
+	SalesDate DATE NOT NULL,
+	TotalPrice DECIMAL(10,2) NOT NULL
+);
 
--- View til at vise den aktuelle lagerbeholdning
+CREATE TABLE ProductSalesOrder (
+	SalesOrderID UNIQUEIDENTIFIER NOT NULL,
+	ProductID UNIQUEIDENTIFIER NOT NULL,
+	Quantity INT NOT NULL,
+	UnitPrice DECIMAL NOT NULL,
+	CONSTRAINT PK_ProductSalesOrder PRIMARY KEY(SalesOrderID, ProductID),
+	CONSTRAINT FK_SalesOrder_ProductSalesOrder
+		FOREIGN KEY(SalesOrderID)
+		REFERENCES SalesOrder(SalesOrderID),
+	CONSTRAINT FK_Product_ProductSalesOrder
+		FOREIGN KEY(ProductID)
+		REFERENCES [Product](ProductID)
+);
+
+-- View til at vise den aktuelle lagerbeholdning for produktkatalog
 CREATE VIEW vwInStock AS
-SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, pc.InStock, pc.StockStatus
-FROM ProductCatalogue pc
-JOIN [Product] p ON pc.ProductCatalogueID = p.ProductCatalogueID
+SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, s.NumberInStock, s.StockStatus
+FROM Stock s
+JOIN [Product] p ON s.StockID = p.StockID
 ORDER BY p.ProductName;
 
--- Stored Procedure til varemodtagelse og opdatering af lagerbeholdning
+-- View til at vise indkøbsordre
+CREATE VIEW vwPurchaseOrders AS
+SELECT po.PurchaseOrderID, po.PurchaseOrderDate, po.ExpectedDeliveryDate, po.DeliveryDate, po.OrderStatus, p.ProductName, p.Size, p.Colour, ppo.Quantity
+FROM PurchaseOrder po
+JOIN ProductPurchaseOrder ppo ON po.PurchaseOrderID = ppo.PurchaseOrderID
+JOIN [Product] p ON ppo.ProductID = p.ProductID
+ORDER BY po.DeliveryDate;
+
+CREATE VIEW vwSalesOrders AS
+SELECT so.SalesOrderID, so.OrderNumber, so.OrderStatus, so.PaymentStatus, so.SalesDate, so.TotalPrice, p.ProductName, pso.Quantity
+FROM SalesOrder so
+JOIN ProductSalesOrder pso ON so.SalesOrderID = pso.SalesOrderID
+JOIN [Product] p ON pso.ProductID = p.ProductID
+ORDER BY so.SalesDate;
+
+-- Stored Procedure til varemodtagelse af inkøbsordre og opdatering af lagerbeholdning
 CREATE PROCEDURE uspRegisterPurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER AS
 BEGIN
 	-- Errorhandling hvis ordre ikke findes
@@ -68,10 +101,10 @@ BEGIN
 	END
 
 	-- Opdaterer lagerbeholdning for hver vare i ordren
-	UPDATE pc
-	SET pc.InStock = pc.InStock + ppo.Quantity
-	FROM ProductCatalogue pc
-	JOIN [Product] p ON pc.ProductCatalogueID = p.ProductCatalogueID
+	UPDATE s
+	SET s.NumberInStock = s.NumberInStock + ppo.Quantity
+	FROM Stock s
+	JOIN [Product] p ON s.StockID = p.StockID
 	JOIN ProductPurchaseOrder ppo ON p.ProductID = ppo.ProductID
 	WHERE ppo.PurchaseOrderID = @PurchaseOrderID
 
@@ -84,6 +117,7 @@ BEGIN
 END;
 
 -- TODO Tilføj en QuantityReceived kolonne til ProductPurchaseOrder
+-- Stored Procedure til delvis modtagelse af indkøbsordre
 CREATE PROCEDURE uspRegisterPartialPurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER, @ProductID UNIQUEIDENTIFIER, @Quantity INT AS
 BEGIN
 	-- Errorhandling hvis indkøbsordre ikke findes
@@ -126,10 +160,10 @@ BEGIN
 	END
 
 	-- Opdaterer lagerbeholdning baseret på modtaget mængde
-	UPDATE pc
-	SET pc.InStock = pc.InStock + @Quantity
-	FROM ProductCatalogue pc
-	JOIN Product p ON pc.ProductCatalogueID = p.ProductCatalogueID
+	UPDATE s
+	SET s.NumberInStock = s.NumberInStock + @Quantity
+	FROM Stock s
+	JOIN Product p ON s.StockID = p.StockID
 	WHERE p.ProductID = @ProductID;
 
 	-- Opdaterer mængden modtaget i indkøbsordre

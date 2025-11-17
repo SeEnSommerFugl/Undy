@@ -18,7 +18,15 @@ namespace Undy.Data.Repository
 
         protected BaseDBRepository()
         {
-            _items = new ObservableCollection<T>(QueryAll());
+            _items = new ObservableCollection<T>();
+        }
+
+        public async Task InitializeAsync()
+        {
+            var fresh = await QueryAllAsync();
+            _items.Clear();
+            foreach (var e in fresh)
+                _items.Add(e);
         }
 
         // --------- Template members you implement in each concrete repo ---------
@@ -38,56 +46,52 @@ namespace Undy.Data.Repository
 
         // Key helpers
         protected abstract TKey GetKey(T entity);
-        //protected virtual void AssignGeneratedIdIfAny(T entity, object? id)
-        //{
 
-        //}
-
-        // --------------------- Public API ---------------------
-
-        public IEnumerable<T> GetAll() => QueryAll();
-
-        public T? GetById(TKey id)
+        public async Task<T?> GetByIdAsync(TKey id)
         {
-            using var con = DB.OpenConnection();
+            using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlSelectById, con);
+
             BindId(cmd, id);
-            using var rd = cmd.ExecuteReader();
-            return rd.Read() ? Map(rd) : null;
+            
+            using var rd = await cmd.ExecuteReaderAsync();
+            return await rd.ReadAsync() ? Map(rd) : null;
         }
 
-        public void Add(T entity)
+        public async Task AddAsync(T entity)
         {
             if (GetKey(entity) is Guid g && g == Guid.Empty)
                 throw new InvalidOperationException("Entity key must be set before insert.");
 
-            using var con = DB.OpenConnection();
+            using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlInsert, con);
+
             BindInsert(cmd, entity);
 
-            if (cmd.ExecuteNonQuery() != 1)
+            var affected = await cmd.ExecuteNonQueryAsync();
+            if (affected != 1)
                 throw new InvalidOperationException("Insert failed.");
 
             _items.Add(entity);
         }
 
-        public void Update(T entity)
+        public async Task UpdateAsync(T entity)
         {
-            using var con = DB.OpenConnection();
+            using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlUpdate, con);
-            BindUpdate(cmd, entity);
-            cmd.ExecuteNonQuery();
 
-            // simplest: resync Items so WPF stays consistent
-            ReloadItems();
+            BindUpdate(cmd, entity);
+
+            await cmd.ExecuteNonQueryAsync();
+            await ReloadItemsAsync();
         }
-        public void UpdateRange(IEnumerable<T> entities)
+        public async Task UpdateRangeAsync(IEnumerable<T> entities)
         {
             var entitiesList = entities.ToList();
             if (!entitiesList.Any()) return;
 
-            using var con = DB.OpenConnection();
-            using var transaction = con.BeginTransaction();
+            using var con = await DB.OpenConnection();
+            using var transaction = (SqlTransaction)await con.BeginTransactionAsync();
 
             try
             {
@@ -95,49 +99,55 @@ namespace Undy.Data.Repository
                 {
                     using var cmd = new SqlCommand(SqlUpdate, con, transaction);
                     BindUpdate(cmd, entity);
-                    cmd.ExecuteNonQuery();
+                    await cmd.ExecuteNonQueryAsync();
                 }
 
-                transaction.Commit();
+                await transaction.CommitAsync();
 
                 // Only reload once after all updates are complete
-                ReloadItems();
+                await ReloadItemsAsync();
             }
             catch
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 throw;
             }
         }
 
-        public void Delete(TKey id)
+        public async Task DeleteAsync(TKey id)
         {
-            using var con = DB.OpenConnection();
+            using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlDeleteById, con);
-            BindId(cmd, id);
-            cmd.ExecuteNonQuery();
 
-            var existing = _items.FirstOrDefault(x =>
-                        Equals(GetKey(x), id));
-            if (existing != null) _items.Remove(existing);
+            BindId(cmd, id);
+
+            await cmd.ExecuteNonQueryAsync();
+
+            var existing = _items.FirstOrDefault(x => Equals(GetKey(x), id));
+            if (existing != null) 
+                _items.Remove(existing);
         }
 
         // --------------------- Helpers ---------------------
 
-        protected void ReloadItems()
+        protected async Task ReloadItemsAsync()
         {
-            var fresh = QueryAll();
+            var fresh = await QueryAllAsync();
             _items.Clear();
-            foreach (var e in fresh) _items.Add(e);
+            foreach (var e in fresh) 
+                _items.Add(e);
         }
 
-        private List<T> QueryAll()
+        private async Task<List<T>> QueryAllAsync()
         {
             var list = new List<T>();
-            using var con = DB.OpenConnection();
+
+            using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlSelectAll, con);
-            using var rd = cmd.ExecuteReader();
-            while (rd.Read()) list.Add(Map(rd));
+            using var rd = await cmd.ExecuteReaderAsync();
+
+            while (await rd.ReadAsync()) list.Add(Map(rd));
+
             return list;
         }
     }
