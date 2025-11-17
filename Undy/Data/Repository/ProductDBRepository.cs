@@ -6,15 +6,15 @@ namespace Undy.Data.Repository
 {
     public class ProductDBRepository : BaseDBRepository<Product, Guid>
     {
-        protected override string SqlSelectAll => throw new NotImplementedException();
+        protected override string SqlSelectAll => string.Empty;
 
-        protected override string SqlSelectById => throw new NotImplementedException();
+        protected override string SqlSelectById => string.Empty;
 
-        protected override string SqlInsert => throw new NotImplementedException();
+        protected override string SqlInsert => string.Empty;
 
-        protected override string SqlUpdate => throw new NotImplementedException();
+        protected override string SqlUpdate => string.Empty;
 
-        protected override string SqlDeleteById => throw new NotImplementedException();
+        protected override string SqlDeleteById => string.Empty;
 
         protected override void BindId(SqlCommand cmd, Guid id)
         {
