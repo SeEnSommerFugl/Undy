@@ -8,7 +8,7 @@
              d:DesignWidth="1652" d:DesignHeight="1048">
     <Grid>
         <Button Content="Tilføj" 
-        Style="{StaticResource ButtonPrimary}"
+        Style="{DynamicResource ButtonPrimary}"
         Command="{Binding RegisterSaleCommand}"
         Margin="10,10,10,0"/>
     </Grid>

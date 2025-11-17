@@ -25,8 +25,8 @@
                 <ControlTemplate TargetType="ListBoxItem">
                     <Border x:Name="Card"
                         CornerRadius="15"
-                        Background="{StaticResource Brush.Accent}"
-                        BorderBrush="{StaticResource Brush.Accent}"
+                        Background="{DynamicResource Brush.Accent}"
+                        BorderBrush="{DynamicResource Brush.Accent}"
                         BorderThickness="1"
                         SnapsToDevicePixels="True">
                         <ContentPresenter HorizontalAlignment="Center"
@@ -35,13 +35,13 @@
                     <ControlTemplate.Triggers>
                         <!-- Hover som dine knapper -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Card" Property="Background"  Value="{StaticResource Brush.AccentHover}"/>
-                            <Setter TargetName="Card" Property="BorderBrush" Value="{StaticResource Brush.AccentHover}"/>
+                            <Setter TargetName="Card" Property="Background"  Value="{DynamicResource Brush.AccentHover}"/>
+                            <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource Brush.AccentHover}"/>
                         </Trigger>
                         <!-- Valgt = grøn -->
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Card" Property="Background"  Value="{StaticResource Amount.Positive.Bg}"/>
-                            <Setter TargetName="Card" Property="BorderBrush" Value="{StaticResource Amount.Positive.Bg}"/>
+                            <Setter TargetName="Card" Property="Background"  Value="{DynamicResource Amount.Positive.Bg}"/>
+                            <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource Amount.Positive.Bg}"/>
                         </Trigger>
                         <!-- Disabled-look -->
                         <Trigger Property="IsEnabled" Value="False">
@@ -55,32 +55,14 @@
 
     <!-- Selve ListBox’en (rammeløs, ingen scrollbar i venstre rail) -->
     <Style x:Key="NavListBox" TargetType="ListBox">
-        <Setter Property="ItemTemplate" Value="{StaticResource NavItemTemplate}"/>
-        <Setter Property="ItemContainerStyle" Value="{StaticResource NavListBoxItem}"/>
+        <Setter Property="ItemTemplate" Value="{DynamicResource NavItemTemplate}"/>
+        <Setter Property="ItemContainerStyle" Value="{DynamicResource NavListBoxItem}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Background" Value="{x:Null}"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
     </Style>
 
-    <!-- Viser grid når IsEditing = false -->
-    <Style x:Key="ShowGridWhenNotEditing" BasedOn="{StaticResource Card}" TargetType="Border">
-        <Setter Property="Visibility" Value="Visible"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsEditing}" Value="True">
-                <Setter Property="Visibility" Value="Collapsed"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
 
-    <!-- Viser grid når IsEditing = true -->
-    <Style x:Key="ShowGridWhenEditing" TargetType="Border" BasedOn="{StaticResource Card}">
-        <Setter Property="Visibility" Value="Collapsed"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsEditing}" Value="True">
-                <Setter Property="Visibility" Value="Visible"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
 
 </ResourceDictionary>

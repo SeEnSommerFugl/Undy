@@ -9,7 +9,7 @@
     <Grid>
         <Button Content="Bræft køb"
         Command="{Binding CheckoutCommand}"
-        Style="{StaticResource ButtonPrimary}"
+        Style="{DynamicResource ButtonPrimary}"
         Height="40"/>
     </Grid>
 </UserControl>

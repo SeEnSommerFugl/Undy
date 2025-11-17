@@ -40,12 +40,12 @@ namespace Undy
             var mainWindow = new MainWindow(mainVM);
             mainWindow.Show();
 
-            await Task.WhenAll(
-            productRepo.InitializeAsync(),
-            stockRepo.InitializeAsync(),
-            purchaseOrderRepo.InitializeAsync(),
-            salesOrderRepo.InitializeAsync()
-            );
+            //await Task.WhenAll(
+            //productRepo.InitializeAsync(),
+            //stockRepo.InitializeAsync(),
+            //purchaseOrderRepo.InitializeAsync(),
+            //salesOrderRepo.InitializeAsync()
+            //);
 
         }
     }

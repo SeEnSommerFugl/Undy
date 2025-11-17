@@ -2,14 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Styles/StylesButtons.xaml"/>
+        <ResourceDictionary Source="/Styles/StylesPalette.xaml"/>
         <ResourceDictionary Source="/Styles/StylesCards.xaml"/>
+        <ResourceDictionary Source="/Styles/StylesNavigation.xaml"/>
+        <ResourceDictionary Source="/Styles/StylesButtons.xaml"/>
         <ResourceDictionary Source="/Styles/StylesChips.xaml"/>
         <ResourceDictionary Source="/Styles/StylesDatagrid.xaml"/>
         <ResourceDictionary Source="/Styles/StylesInput.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesNavigation.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesPalette.xaml"/>
         <ResourceDictionary Source="/Styles/StylesTypography.xaml"/>
+        <ResourceDictionary Source="/Styles/VisibilityToggle.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    
+
 </ResourceDictionary>
