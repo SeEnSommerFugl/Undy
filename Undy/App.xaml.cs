@@ -11,7 +11,7 @@ namespace Undy
     /// </summary>
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
@@ -39,6 +39,13 @@ namespace Undy
             // ----- Main Window ----- //
             var mainWindow = new MainWindow(mainVM);
             mainWindow.Show();
+
+            await Task.WhenAll(
+            productRepo.InitializeAsync(),
+            stockRepo.InitializeAsync(),
+            purchaseOrderRepo.InitializeAsync(),
+            salesOrderRepo.InitializeAsync()
+            );
 
         }
     }
