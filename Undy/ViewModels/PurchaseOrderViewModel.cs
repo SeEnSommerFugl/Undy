@@ -5,10 +5,10 @@ namespace Undy.ViewModels
 {
     public class PurchaseOrderViewModel : BaseViewModel
     {
-        private IBaseRepository<PurchaseOrder> _purchaseOrderRepo;
-        private IBaseRepository<Stock> _productCatalogueRepo;
+        private IBaseRepository<PurchaseOrder, Guid> _purchaseOrderRepo;
+        private IBaseRepository<Stock, Guid> _productCatalogueRepo;
 
-        public PurchaseOrderViewModel(IBaseRepository<PurchaseOrder> purchaseOrderRepo, IBaseRepository<Stock> productCatalogueRepo)
+        public PurchaseOrderViewModel(IBaseRepository<PurchaseOrder, Guid> purchaseOrderRepo, IBaseRepository<Stock, Guid> productCatalogueRepo)
         {
             _purchaseOrderRepo = purchaseOrderRepo;
             _productCatalogueRepo = productCatalogueRepo;

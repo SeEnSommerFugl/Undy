@@ -5,9 +5,9 @@ namespace Undy.ViewModels
 {
     public class PaymentViewModel : BaseViewModel
     {
-        private IBaseRepository<SalesOrder> _salesOrderRepo;
+        private IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
 
-        public PaymentViewModel(IBaseRepository<SalesOrder> salesOrderRepo)
+        public PaymentViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo)
         {
             _salesOrderRepo = salesOrderRepo;
         }

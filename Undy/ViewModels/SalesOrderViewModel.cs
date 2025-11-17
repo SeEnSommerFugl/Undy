@@ -5,11 +5,11 @@ namespace Undy.ViewModels
 {
     public class SalesOrderViewModel : BaseViewModel
     {
-        private IBaseRepository<SalesOrder> _salesOrderRepo;
-        private IBaseRepository<Stock> _productCatalogueRepo;
-        private IBaseRepository<Product> _productRepo;
+        private IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
+        private IBaseRepository<Stock, Guid> _productCatalogueRepo;
+        private IBaseRepository<Product, Guid> _productRepo;
 
-        public SalesOrderViewModel(IBaseRepository<SalesOrder> salesOrderRepo, IBaseRepository<Stock> productCatalogueRepo, IBaseRepository<Product> productRepo)
+        public SalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> productCatalogueRepo, IBaseRepository<Product, Guid> productRepo)
         {
             _salesOrderRepo = salesOrderRepo;
             _productCatalogueRepo = productCatalogueRepo;
