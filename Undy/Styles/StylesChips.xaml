@@ -3,7 +3,7 @@
 
     <!-- =================== CHIPS (for detail panels) =================== -->
     <Style x:Key="ChipText" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{StaticResource Amount.Neutral.Fg}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Amount.Neutral.Fg}"/>
         <Setter Property="FontSize" Value="40"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
@@ -12,8 +12,8 @@
         <Setter Property="CornerRadius" Value="20"/>
         <Setter Property="Padding" Value="8,4"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="Background" Value="{StaticResource Amount.Positive.Bg}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Amount.Positive.Bg}"/>
+        <Setter Property="Background" Value="{DynamicResource Amount.Positive.Bg}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Amount.Positive.Bg}"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
 
@@ -21,8 +21,8 @@
         <Setter Property="CornerRadius" Value="20"/>
         <Setter Property="Padding" Value="8,4"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="Background" Value="{StaticResource Amount.Negative.Bg}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Amount.Negative.Bg}"/>
+        <Setter Property="Background" Value="{DynamicResource Amount.Negative.Bg}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Amount.Negative.Bg}"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
 

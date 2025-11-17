@@ -12,8 +12,8 @@
             </Style>
         </Style.Resources>
 
-        <Setter Property="Background" Value="{StaticResource Brush.Panel}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+        <Setter Property="Background" Value="{DynamicResource Brush.Panel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
         <Setter Property="GridLinesVisibility" Value="None"/>
@@ -86,8 +86,8 @@
     <!-- Smarte DataGrid headers: mørk baggrund, semibold, afrundede kanter -->
     <Style x:Key="DataGridHeader.Smart" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="#223044"/>
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="10,6"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
@@ -117,8 +117,8 @@
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="ColumnHeaderHeight" Value="36"/>
         <Setter Property="FontSize" Value="16"/>
-        <Setter Property="ColumnHeaderStyle" Value="{StaticResource DataGridHeader.Smart}"/>
-        <!-- Valgfrit: scroll hvis listen bliver lang -->
+        <Setter Property="ColumnHeaderStyle" Value="{DynamicResource DataGridHeader.Smart}"/>
+        <!-- Valgfrit: scroll hvisListen bliver lang -->
         <Setter Property="MaxHeight" Value="520"/>
         <Setter Property="HorizontalAlignment" Value="Center"></Setter>
     </Style>
@@ -126,7 +126,7 @@
     <!-- Kun tekstfarve på beløb: grøn/rød som i EconomyView -->
     <Style x:Key="MoneyTextColor" TargetType="TextBlock" BasedOn="{StaticResource TextBlockRight}">
         <!-- Default (neutral) -->
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Style.Triggers>
             <!-- Samme farver som dit EconomyView-eksempel -->
@@ -165,12 +165,12 @@
     <Style x:Key="DataGridCellMoney" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellPill}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsPositive}" Value="True">
-                <Setter Property="Background" Value="{StaticResource Amount.Positive.Bg}"/>
-                <Setter Property="Foreground" Value="{StaticResource Amount.Positive.Fg}"/>
+                <Setter Property="Background" Value="{DynamicResource Amount.Positive.Bg}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Amount.Positive.Fg}"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding IsPositive}" Value="False">
-                <Setter Property="Background" Value="{StaticResource Amount.Negative.Bg}"/>
-                <Setter Property="Foreground" Value="{StaticResource Amount.Negative.Fg}"/>
+                <Setter Property="Background" Value="{DynamicResource Amount.Negative.Bg}"/>
+                <Setter Property="Foreground" Value="{DynamicResource Amount.Negative.Fg}"/>
             </DataTrigger>
         </Style.Triggers>
     </Style>

@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Viser grid når IsEditing = false -->
+    <Style x:Key="ShowGridWhenNotEditing" BasedOn="{StaticResource Card}" TargetType="Border">
+        <Setter Property="Visibility" Value="Visible"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Viser grid når IsEditing = true -->
+    <Style x:Key="ShowGridWhenEditing" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="Visibility" Value="Collapsed"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>
