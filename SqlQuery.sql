@@ -84,7 +84,7 @@ JOIN ProductSalesOrder pso ON so.SalesOrderID = pso.SalesOrderID
 JOIN [Product] p ON pso.ProductID = p.ProductID
 ORDER BY so.SalesDate;
 
--- Stored Procedure til varemodtagelse og opdatering af lagerbeholdning
+-- Stored Procedure til varemodtagelse af inkøbsordre og opdatering af lagerbeholdning
 CREATE PROCEDURE uspRegisterPurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER AS
 BEGIN
 	-- Errorhandling hvis ordre ikke findes
@@ -117,6 +117,7 @@ BEGIN
 END;
 
 -- TODO Tilføj en QuantityReceived kolonne til ProductPurchaseOrder
+-- Stored Procedure til delvis modtagelse af indkøbsordre
 CREATE PROCEDURE uspRegisterPartialPurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER, @ProductID UNIQUEIDENTIFIER, @Quantity INT AS
 BEGIN
 	-- Errorhandling hvis indkøbsordre ikke findes
