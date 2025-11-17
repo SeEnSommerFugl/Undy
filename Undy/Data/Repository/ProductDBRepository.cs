@@ -6,6 +6,7 @@ namespace Undy.Data.Repository
 {
     public class ProductDBRepository : BaseDBRepository<Product, Guid>
     {
+<<<<<<< HEAD
         protected override string SqlSelectAll => @"
             SELECT Product_ID, ProductNumber, ProductName, Price, Size, Colour, ProductCatalogue_ID
             FROM Product";
@@ -32,6 +33,7 @@ namespace Undy.Data.Repository
         protected override string SqlDeleteById => @"
             DELETE FROM Product
             WHERE Product_ID = @Product_ID";
+
 
         protected override void BindId(SqlCommand cmd, Guid id)
         {
