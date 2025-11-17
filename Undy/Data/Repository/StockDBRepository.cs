@@ -1,33 +1,44 @@
-﻿using Undy.Models;
+﻿using System.Data;
+using Microsoft.Data.SqlClient;
+using Undy.Models;
 
 namespace Undy.Data.Repository
 {
-    public class StockDBRepository : IBaseRepository<Stock>
+    public class StockDBRepository : BaseDBRepository<Stock, Guid>
     {
-        public void Add(Stock entity)
+        protected override string SqlSelectAll => throw new NotImplementedException();
+
+        protected override string SqlSelectById => throw new NotImplementedException();
+
+        protected override string SqlInsert => throw new NotImplementedException();
+
+        protected override string SqlUpdate => throw new NotImplementedException();
+
+        protected override string SqlDeleteById => throw new NotImplementedException();
+
+        protected override void BindId(SqlCommand cmd, Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Stock entity)
+        protected override void BindInsert(SqlCommand cmd, Stock entity)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Stock> GetAll()
+        protected override void BindUpdate(SqlCommand cmd, Stock entity)
         {
             throw new NotImplementedException();
         }
 
-        public Stock GetById(int id)
+        protected override Guid GetKey(Stock entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Stock entity)
+        protected override Stock Map(IDataRecord r)
         {
             throw new NotImplementedException();
         }
-
     }
 }

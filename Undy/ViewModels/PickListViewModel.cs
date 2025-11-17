@@ -5,10 +5,10 @@ namespace Undy.ViewModels
 {
     public class PickListViewModel : BaseViewModel
     {
-        private IBaseRepository<SalesOrder> _salesOrderRepo;
-        private IBaseRepository<Product> _productRepo;
+        private IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
+        private IBaseRepository<Product, Guid> _productRepo;
 
-        public PickListViewModel(IBaseRepository<SalesOrder> salesOrderRepo, IBaseRepository<Product> productRepo)
+        public PickListViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo)
         {
             _salesOrderRepo = salesOrderRepo;
             _productRepo = productRepo;

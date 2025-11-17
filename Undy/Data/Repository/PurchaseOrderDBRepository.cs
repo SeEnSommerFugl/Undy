@@ -1,30 +1,42 @@
-﻿using Undy.Models;
+﻿using System.Data;
+using Microsoft.Data.SqlClient;
+using Undy.Models;
 
 namespace Undy.Data.Repository
 {
-    public class PurchaseOrderDBRepository : IBaseRepository<PurchaseOrder>
+    public class PurchaseOrderDBRepository : BaseDBRepository<PurchaseOrder, Guid>
     {
-        public void Add(PurchaseOrder entity)
+        protected override string SqlSelectAll => throw new NotImplementedException();
+
+        protected override string SqlSelectById => throw new NotImplementedException();
+
+        protected override string SqlInsert => throw new NotImplementedException();
+
+        protected override string SqlUpdate => throw new NotImplementedException();
+
+        protected override string SqlDeleteById => throw new NotImplementedException();
+
+        protected override void BindId(SqlCommand cmd, Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(PurchaseOrder entity)
+        protected override void BindInsert(SqlCommand cmd, PurchaseOrder entity)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<PurchaseOrder> GetAll()
+        protected override void BindUpdate(SqlCommand cmd, PurchaseOrder entity)
         {
             throw new NotImplementedException();
         }
 
-        public PurchaseOrder GetById(int id)
+        protected override Guid GetKey(PurchaseOrder entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(PurchaseOrder entity)
+        protected override PurchaseOrder Map(IDataRecord r)
         {
             throw new NotImplementedException();
         }
