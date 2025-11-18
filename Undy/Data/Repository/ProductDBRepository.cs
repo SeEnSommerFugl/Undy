@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using Undy.Models;
 
 namespace Undy.Data.Repository
@@ -30,6 +31,7 @@ namespace Undy.Data.Repository
                 Colour = @Colour,
                 ProductCatalogue_ID = @ProductCatalogue_ID
             WHERE Product_ID = @Product_ID;";
+
 
         protected override string SqlDeleteById => @"
             DELETE FROM Product
