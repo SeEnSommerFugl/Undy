@@ -15,9 +15,11 @@ namespace Undy.Data.Repository
             FROM Product
             WHERE Product_ID = @Product_ID";
 
+
+        // INSERT INTO StoredProcedure
         protected override string SqlInsert => @"
             INSERT INTO Product (Product_ID, ProductNumber, ProductName, Price, Size, Colour, ProductCatalogue_ID)
-            VALUES (@Product_ID, @ProductNumber, @ProductName, @Price, @Size, @Colour, @ProductCatalogue_ID);";
+            VALUES (@Product_ID, @ProductNumber, @ProductName, @Price, @Size, @Colour, @ProductCatalogue_ID);"; 
 
         protected override string SqlUpdate => @"
             UPDATE Product
