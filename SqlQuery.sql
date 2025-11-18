@@ -72,7 +72,7 @@ CREATE TABLE ReturnOrder(
 );
 
 -- View til at vise den aktuelle lagerbeholdning for produktkatalog
-CREATE VIEW vwStock AS
+CREATE VIEW vwInStock AS
 SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, s.NumberInStock, s.StockStatus
 FROM Stock s
 JOIN [Product] p ON s.StockID = p.StockID

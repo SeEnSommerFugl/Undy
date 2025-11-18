@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using Undy.Models;
 
 namespace Undy.Data.Repository
@@ -15,9 +16,11 @@ namespace Undy.Data.Repository
             FROM Product
             WHERE Product_ID = @Product_ID";
 
+
+        // INSERT INTO StoredProcedure
         protected override string SqlInsert => @"
             INSERT INTO Product (Product_ID, ProductNumber, ProductName, Price, Size, Colour, ProductCatalogue_ID)
-            VALUES (@Product_ID, @ProductNumber, @ProductName, @Price, @Size, @Colour, @ProductCatalogue_ID);";
+            VALUES (@Product_ID, @ProductNumber, @ProductName, @Price, @Size, @Colour, @ProductCatalogue_ID);"; 
 
         protected override string SqlUpdate => @"
             UPDATE Product
@@ -29,10 +32,23 @@ namespace Undy.Data.Repository
                 ProductCatalogue_ID = @ProductCatalogue_ID
             WHERE Product_ID = @Product_ID;";
 
+
         protected override string SqlDeleteById => @"
             DELETE FROM Product
             WHERE Product_ID = @Product_ID";
 
+        protected override Product Map(IDataRecord r) => new Product
+        {
+            ProductID = r.GetGuid(r.GetOrdinal("Product_ID")),
+            ProductNumber = r.GetInt32(r.GetOrdinal("ProductNumber")),
+            ProductName = r.GetString(r.GetOrdinal("ProductName")),
+            Price = r.GetDecimal(r.GetOrdinal("Price")),
+            Size = r.GetString(r.GetOrdinal("Size")),
+            Colour = r.GetString(r.GetOrdinal("Colour")),
+            ProductCatalogueID = r.IsDBNull(r.GetOrdinal("ProductCatalogue_ID"))
+               ? (Guid?)null
+               : r.GetGuid(r.GetOrdinal("ProductCatalogue_ID"))
+        };
 
         protected override void BindId(SqlCommand cmd, Guid id)
         {
@@ -42,12 +58,12 @@ namespace Undy.Data.Repository
         protected override void BindInsert(SqlCommand cmd, Product e)
         {
             cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
-            cmd.Parameters.Add("@ProductNumber", SqlDbType.UniqueIdentifier).Value = e.ProductNumber;
-            cmd.Parameters.Add("@ProductName", SqlDbType.UniqueIdentifier).Value = e.ProductName;
-            cmd.Parameters.Add("@Price", SqlDbType.UniqueIdentifier).Value = e.Price;
-            cmd.Parameters.Add("@Size", SqlDbType.UniqueIdentifier).Value = e.Size;
-            cmd.Parameters.Add("@Colour", SqlDbType.UniqueIdentifier).Value = e.Colour;
-            cmd.Parameters.Add("ProductCatalogue_ID", SqlDbType.UniqueIdentifier)
+            cmd.Parameters.Add("@ProductNumber", SqlDbType.Int).Value = e.ProductNumber;
+            cmd.Parameters.Add("@ProductName", SqlDbType.NVarChar, 255).Value = e.ProductName;
+            cmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = e.Price;
+            cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 20).Value = e.Size;
+            cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 20).Value = e.Colour;
+            cmd.Parameters.Add("@ProductCatalogue_ID", SqlDbType.UniqueIdentifier)
                 .Value = (object?)e.ProductCatalogueID ?? DBNull.Value;
         }
 
@@ -57,20 +73,14 @@ namespace Undy.Data.Repository
             cmd.Parameters.Add("@ProductNumber", SqlDbType.Int).Value = e.ProductNumber;
             cmd.Parameters.Add("@ProductName", SqlDbType.NVarChar, 255).Value = e.ProductName;
             cmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = e.Price;
-            cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 255).Value = e.Size;
-            cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 255).Value = e.Colour;
-            cmd.Parameters.Add("ProductCatalogue_ID", SqlDbType.UniqueIdentifier)
+            cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 20).Value = e.Size;
+            cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 20).Value = e.Colour;
+            cmd.Parameters.Add("@ProductCatalogue_ID", SqlDbType.UniqueIdentifier)
                 .Value = (object?)e.ProductCatalogueID ?? DBNull.Value;
         }
 
-        protected override Guid GetKey(Product e)
-        {
-            throw new NotImplementedException();
-        }
+        protected override Guid GetKey(Product e) => e.ProductID;
+        
 
-        protected override Product Map(IDataRecord r)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
