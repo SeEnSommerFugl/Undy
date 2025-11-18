@@ -208,3 +208,7 @@ BEGIN
 		WHERE PurchaseOrderID = @PurchaseOrderID;
 	END
 END;
+
+-- Stored Procedure SalgsOrdre
+
+-- Stored Procedure ReturOrdre
