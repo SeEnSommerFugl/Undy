@@ -62,6 +62,15 @@ CREATE TABLE ProductSalesOrder (
 		REFERENCES [Product](ProductID)
 );
 
+CREATE TABLE ReturnOrder(
+	ReturnOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	ReturnOrderDate DATE NOT NULL,
+	SalesOrderID UNIQUEIDENTIFIER NOT NULL,
+	CONSTRAINT FK_SalesOrder_ReturnOrder
+		FOREIGN KEY(SalesOrderID)
+		REFERENCES SalesOrder(SalesOrderID)
+);
+
 -- View til at vise den aktuelle lagerbeholdning for produktkatalog
 CREATE VIEW vwInStock AS
 SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, s.NumberInStock, s.StockStatus
@@ -77,12 +86,19 @@ JOIN ProductPurchaseOrder ppo ON po.PurchaseOrderID = ppo.PurchaseOrderID
 JOIN [Product] p ON ppo.ProductID = p.ProductID
 ORDER BY po.DeliveryDate;
 
+-- View til at vise salgsordre
 CREATE VIEW vwSalesOrders AS
 SELECT so.SalesOrderID, so.OrderNumber, so.OrderStatus, so.PaymentStatus, so.SalesDate, so.TotalPrice, p.ProductName, pso.Quantity
 FROM SalesOrder so
 JOIN ProductSalesOrder pso ON so.SalesOrderID = pso.SalesOrderID
 JOIN [Product] p ON pso.ProductID = p.ProductID
 ORDER BY so.SalesDate;
+
+CREATE VIEW vwReturnOrders AS
+SELECT ro.ReturnOrderID, ro.ReturnOrderDate, so.OrderNumber, so.TotalPrice
+FROM ReturnOrder ro
+JOIN SalesOrder so ON ro.SalesOrderID = so.SalesOrderID
+ORDER BY ro.ReturnOrderDate
 
 -- Stored Procedure til varemodtagelse af inkøbsordre og opdatering af lagerbeholdning
 CREATE PROCEDURE uspRegisterPurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER AS
