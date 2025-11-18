@@ -7,18 +7,20 @@ namespace Undy.Data.Repository
 {
     public class PurchaseOrderDBRepository : BaseDBRepository<PurchaseOrder, Guid>
     {
-        protected override string SqlSelectAll => @"
-            SELECT PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID
-            FROM PurchaseOrder";
+        protected override string SqlSelectAll => "vw_PurchaseOrders";
+
+        //TODO: Stored procedure for getting by id
         protected override string SqlSelectById => @"
             SELECT PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID
             FROM PurchaseOrder
             WHERE PurchaseOrder_ID = @PurchaseOrder_ID";
 
+        //TODO: Stored procedures for adding (insert into)
         protected override string SqlInsert => @"
             INSERT INTO PurchaseOrder (PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID)
             VALUES (@PurchaseOrder_ID, @ExpectedDeliveryDate, @OrderDate, @DeliveryDate, @OrderStatus, @Product_ID);";
 
+        //TODO: Stored procedure for updating
         protected override string SqlUpdate => @"
             UPDATE PurchaseOrder
                 SET ExpectedDeliveryDate = @ExpectedDeliveryDate,
@@ -28,6 +30,7 @@ namespace Undy.Data.Repository
                 Product_ID = @Product_ID
             WHERE PurchaseOrder_ID = @PurchaseOrder_ID;";
 
+        //TODO: Stored procedure for deleting
         protected override string SqlDeleteById => @"
             DELETE FROM PurchaseOrder
             WHERE PurchaseOrder_ID = @PurchaseOrder_ID";
