@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Windows.Controls.Primitives;
 using Microsoft.Data.SqlClient;
 using Undy.Models;
 
@@ -6,39 +7,70 @@ namespace Undy.Data.Repository
 {
     public class PurchaseOrderDBRepository : BaseDBRepository<PurchaseOrder, Guid>
     {
-        protected override string SqlSelectAll => throw new NotImplementedException();
+        protected override string SqlSelectAll => @"
+            SELECT PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID
+            FROM PurchaseOrder";
+        protected override string SqlSelectById => @"
+            SELECT PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID
+            FROM PurchaseOrder
+            WHERE PurchaseOrder_ID = @PurchaseOrder_ID";
 
-        protected override string SqlSelectById => throw new NotImplementedException();
+        protected override string SqlInsert => @"
+            INSERT INTO PurchaseOrder (PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID)
+            VALUES (@PurchaseOrder_ID, @ExpectedDeliveryDate, @OrderDate, @DeliveryDate, @OrderStatus, @Product_ID);";
 
-        protected override string SqlInsert => throw new NotImplementedException();
+        protected override string SqlUpdate => @"
+            UPDATE PurchaseOrder
+                SET ExpectedDeliveryDate = @ExpectedDeliveryDate,
+                OrderDate = @OrderDate,
+                DeliveryDate = @DeliveryDate,
+                OrderStatus = @OrderStatus,
+                Product_ID = @Product_ID
+            WHERE PurchaseOrder_ID = @PurchaseOrder_ID;";
 
-        protected override string SqlUpdate => throw new NotImplementedException();
-
-        protected override string SqlDeleteById => throw new NotImplementedException();
+        protected override string SqlDeleteById => @"
+            DELETE FROM PurchaseOrder
+            WHERE PurchaseOrder_ID = @PurchaseOrder_ID";
 
         protected override void BindId(SqlCommand cmd, Guid id)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
-        protected override void BindInsert(SqlCommand cmd, PurchaseOrder entity)
+        protected override void BindInsert(SqlCommand cmd, PurchaseOrder e)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
+            cmd.Parameters.Add("@ExpectedDeliveryDate", SqlDbType.Date).Value = e.ExpectedDeliveryDate;
+            cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
+            cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
+            cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 50).Value = e.OrderStatus;
+            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier)
+                .Value = (object?)e.ProductID ?? DBNull.Value;
         }
 
-        protected override void BindUpdate(SqlCommand cmd, PurchaseOrder entity)
+        protected override void BindUpdate(SqlCommand cmd, PurchaseOrder e)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
+            cmd.Parameters.Add("@ExpectedDeliveryDate", SqlDbType.Date).Value = e.ExpectedDeliveryDate;
+            cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
+            cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
+            cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 50).Value = e.OrderStatus;
+            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier)
+                .Value = (object?)e.ProductID ?? DBNull.Value;
         }
 
-        protected override Guid GetKey(PurchaseOrder entity)
-        {
-            throw new NotImplementedException();
-        }
+        protected override Guid GetKey(PurchaseOrder e) => e.PurchaseOrderID;
 
-        protected override PurchaseOrder Map(IDataRecord r)
+
+        protected override PurchaseOrder Map(IDataRecord r) => new PurchaseOrder
         {
-            throw new NotImplementedException();
-        }
+            PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrder_ID")),
+            ExpectedDeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ExpectedDeliveryDate"))),
+            OrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("OrderDate"))),
+            DeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("DeliveryDate"))),
+            OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
+            ProductID = r.GetGuid(r.GetOrdinal("Product_ID"))
+
+        };
     }
 }
