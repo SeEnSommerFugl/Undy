@@ -72,14 +72,14 @@ CREATE TABLE ReturnOrder(
 );
 
 -- View til at vise den aktuelle lagerbeholdning for produktkatalog
-CREATE VIEW vwInStock AS
+CREATE VIEW vw_Stock AS
 SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, s.NumberInStock, s.StockStatus
 FROM Stock s
 JOIN [Product] p ON s.StockID = p.StockID
 ORDER BY p.ProductName;
 
 -- View til at vise indkøbsordre
-CREATE VIEW vwPurchaseOrders AS
+CREATE VIEW vw_PurchaseOrders AS
 SELECT po.PurchaseOrderID, po.PurchaseOrderDate, po.ExpectedDeliveryDate, po.DeliveryDate, po.OrderStatus, p.ProductName, p.Size, p.Colour, ppo.Quantity
 FROM PurchaseOrder po
 JOIN ProductPurchaseOrder ppo ON po.PurchaseOrderID = ppo.PurchaseOrderID
@@ -87,21 +87,21 @@ JOIN [Product] p ON ppo.ProductID = p.ProductID
 ORDER BY po.DeliveryDate;
 
 -- View til at vise salgsordre
-CREATE VIEW vwSalesOrders AS
+CREATE VIEW vw_SalesOrders AS
 SELECT so.SalesOrderID, so.OrderNumber, so.OrderStatus, so.PaymentStatus, so.SalesDate, so.TotalPrice, p.ProductName, pso.Quantity
 FROM SalesOrder so
 JOIN ProductSalesOrder pso ON so.SalesOrderID = pso.SalesOrderID
 JOIN [Product] p ON pso.ProductID = p.ProductID
 ORDER BY so.SalesDate;
 
-CREATE VIEW vwReturnOrders AS
+CREATE VIEW vw_ReturnOrders AS
 SELECT ro.ReturnOrderID, ro.ReturnOrderDate, so.OrderNumber, so.TotalPrice
 FROM ReturnOrder ro
 JOIN SalesOrder so ON ro.SalesOrderID = so.SalesOrderID
 ORDER BY ro.ReturnOrderDate
 
 -- Stored Procedure til varemodtagelse af inkøbsordre og opdatering af lagerbeholdning
-CREATE PROCEDURE uspRegisterPurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER AS
+CREATE PROCEDURE usp_Register_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER AS
 BEGIN
 	-- Errorhandling hvis ordre ikke findes
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -134,7 +134,7 @@ END;
 
 -- TODO Tilføj en QuantityReceived kolonne til ProductPurchaseOrder
 -- Stored Procedure til delvis modtagelse af indkøbsordre
-CREATE PROCEDURE uspRegisterPartialPurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER, @ProductID UNIQUEIDENTIFIER, @Quantity INT AS
+CREATE PROCEDURE usp_RegisterPartial_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER, @ProductID UNIQUEIDENTIFIER, @Quantity INT AS
 BEGIN
 	-- Errorhandling hvis indkøbsordre ikke findes
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -212,3 +212,5 @@ END;
 -- Stored Procedure SalgsOrdre
 
 -- Stored Procedure ReturOrdre
+
+-- Stored Procedure til updates
