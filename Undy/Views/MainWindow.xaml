@@ -13,14 +13,14 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize">
 
-    <Window.Resources>
+    <!--<Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Fix: Use relative path for ResourceDictionary Source -->
+                --><!-- Fix: Use relative path for ResourceDictionary Source --><!--
                 <ResourceDictionary Source="Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>
+    </Window.Resources>-->
 
     <!-- Main Layout Grid -->
     <Grid Margin="16" ShowGridLines="True">

@@ -19,7 +19,7 @@ namespace Undy.Data
         private static readonly IConfigurationRoot _config =
             new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                 .AddEnvironmentVariables()
                 .Build();
         /// <summary>
@@ -40,10 +40,10 @@ namespace Undy.Data
         /// <returns>
         /// Returns the open connection with the connection string attached, to unsure proper encapsulation and privacy.
         /// </returns>
-        internal static SqlConnection OpenConnection()
+        internal static async Task<SqlConnection> OpenConnection()
         {
             var con = new SqlConnection(ConnectionString);
-            con.Open();
+            await con.OpenAsync();
             return con;
         }
     }

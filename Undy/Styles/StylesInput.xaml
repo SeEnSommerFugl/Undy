@@ -3,9 +3,9 @@
 
     <!-- =================== INPUTS =================== -->
     <Style x:Key="TextBoxBase" TargetType="TextBox">
-        <Setter Property="Background" Value="{StaticResource Brush.Panel}"/>
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+        <Setter Property="Background" Value="{DynamicResource Brush.Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
         <Setter Property="BorderThickness"       Value="1"/>
         <Setter Property="Height"                Value="42"/>
         <Setter Property="Padding"               Value="8,4"/>
@@ -15,14 +15,17 @@
     </Style>
 
     <Style x:Key="ComboBoxBase" TargetType="ComboBox">
-        <Setter Property="Background" Value="{StaticResource Brush.Panel}"/>
-        <Setter Property="Foreground" Value="{StaticResource Brush.Panel}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+        <Setter Property="Background" Value="{DynamicResource Brush.Panel}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Panel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Height" Value="42"/>
         <Setter Property="Height" Value="42"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
+    </Style>
+    <Style x:Key="LabelMuted" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.TextMuted}"/>
     </Style>
 
     <!-- Form alignment helpers -->
