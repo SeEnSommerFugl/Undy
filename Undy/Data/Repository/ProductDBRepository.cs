@@ -6,10 +6,9 @@ namespace Undy.Data.Repository
 {
     public class ProductDBRepository : BaseDBRepository<Product, Guid>
     {
-<<<<<<< HEAD
         protected override string SqlSelectAll => @"
             SELECT Product_ID, ProductNumber, ProductName, Price, Size, Colour, ProductCatalogue_ID
-            FROM Product";
+            FROM Product"; // FROM dbo.ProductView
 
         protected override string SqlSelectById => @"
             SELECT Product_ID, ProductNumber, ProductName, Price, Size, Colour, ProductCatalogue_ID
