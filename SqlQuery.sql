@@ -213,4 +213,10 @@ END;
 
 -- Stored Procedure ReturOrdre
 
--- Stored Procedure til updates
+-- Stored Procedure til Updates
+
+-- Stored Procedure til SelectById
+
+-- Stored Procedure til Insert
+
+-- Stored Procedure til DeleteById
