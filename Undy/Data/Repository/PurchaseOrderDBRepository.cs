@@ -10,12 +10,10 @@ namespace Undy.Data.Repository
         protected override string SqlSelectAll => "vw_PurchaseOrders";
 
         //TODO: Stored procedure for getting by id
-        protected override string SqlSelectById => @"
-            SELECT PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID
-            FROM PurchaseOrder
-            WHERE PurchaseOrder_ID = @PurchaseOrder_ID";
+        protected override string SqlSelectById => "usp_SelectByID_PurchaseOrders";
 
         //TODO: Stored procedures for adding (insert into)
+        // usp_Insert_PurchaseOrders
         protected override string SqlInsert => @"
             INSERT INTO PurchaseOrder (PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID)
             VALUES (@PurchaseOrder_ID, @ExpectedDeliveryDate, @OrderDate, @DeliveryDate, @OrderStatus, @Product_ID);";
