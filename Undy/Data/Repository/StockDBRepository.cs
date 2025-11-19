@@ -6,39 +6,60 @@ namespace Undy.Data.Repository
 {
     public class StockDBRepository : BaseDBRepository<Stock, Guid>
     {
-        protected override string SqlSelectAll => throw new NotImplementedException();
+        // View for selecting all
+        protected override string SqlSelectAll => "vm_Stocks";
 
-        protected override string SqlSelectById => throw new NotImplementedException();
+        // Stored procedure for getting by id
+        protected override string SqlSelectById => "usp_SelectById_Stocks";
 
-        protected override string SqlInsert => throw new NotImplementedException();
+        // Stored procedures for adding (insert into)
+        protected override string SqlInsert => "usp_Insert_Stocks";
 
-        protected override string SqlUpdate => throw new NotImplementedException();
+        // Stored procedure for updating
+        protected override string SqlUpdate => "usp_Update_Stocks";
 
-        protected override string SqlDeleteById => throw new NotImplementedException();
+        // Stored procedure for deleting
+        protected override string SqlDeleteById => "usp_DeleteById_Stocks";
 
+        // Map data record to entity
+        protected override Stock Map(IDataRecord r) => new Stock
+        {
+            StockID = r.GetGuid(r.GetOrdinal("StockID")),
+            InStock = r.GetInt32(r.GetOrdinal("InStock")),
+            Status = r.GetInt32(r.GetOrdinal("Status")),
+            MinimumStockLimit = r.GetInt32(r.GetOrdinal("MinimumStockLimit"))
+
+        };
+
+        // Parameter binding for id
         protected override void BindId(SqlCommand cmd, Guid id)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@StockID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
-        protected override void BindInsert(SqlCommand cmd, Stock entity)
+        // Parameter binding for insert
+        protected override void BindInsert(SqlCommand cmd, Stock e)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@StockID", SqlDbType.UniqueIdentifier).Value = e.StockID;
+            cmd.Parameters.Add("@InStock", SqlDbType.Int).Value = e.InStock;
+            cmd.Parameters.Add("@Status", SqlDbType.Int).Value = e.Status;
+            cmd.Parameters.Add("@MinimumStockLimit", SqlDbType.Int).Value = e.MinimumStockLimit;
         }
 
-        protected override void BindUpdate(SqlCommand cmd, Stock entity)
+        // Parameter binding for update
+        protected override void BindUpdate(SqlCommand cmd, Stock e)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@StockID", SqlDbType.UniqueIdentifier).Value = e.StockID;
+            cmd.Parameters.Add("@InStock", SqlDbType.Int).Value = e.InStock;
+            cmd.Parameters.Add("@Status", SqlDbType.Int).Value = e.Status;
+            cmd.Parameters.Add("@MinimumStockLimit", SqlDbType.Int).Value = e.MinimumStockLimit;
+
         }
 
-        protected override Guid GetKey(Stock entity)
-        {
-            throw new NotImplementedException();
-        }
+        // Get key from entity
+        protected override Guid GetKey(Stock e) => e.StockID;
 
-        protected override Stock Map(IDataRecord r)
-        {
-            throw new NotImplementedException();
-        }
+        };
+           
     }
 }

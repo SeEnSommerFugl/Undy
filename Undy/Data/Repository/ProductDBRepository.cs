@@ -1,42 +1,27 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
-using Microsoft.IdentityModel.Tokens;
 using Undy.Models;
 
 namespace Undy.Data.Repository
 {
     public class ProductDBRepository : BaseDBRepository<Product, Guid>
     {
-        protected override string SqlSelectAll => @"
-            SELECT Product_ID, ProductNumber, ProductName, Price, Size, Colour, ProductCatalogue_ID
-            FROM Product"; // FROM dbo.ProductView
+        // View for selecting all
+        protected override string SqlSelectAll => "vm_Products";
 
-        protected override string SqlSelectById => @"
-            SELECT Product_ID, ProductNumber, ProductName, Price, Size, Colour, ProductCatalogue_ID
-            FROM Product
-            WHERE Product_ID = @Product_ID";
+        // Stored procedure for getting by id
+        protected override string SqlSelectById => "usp_SelectById_Products";
 
+        // Stored procedures for adding (insert into)
+        protected override string SqlInsert => "usp_Insert_Products";
 
-        // INSERT INTO StoredProcedure
-        protected override string SqlInsert => @"
-            INSERT INTO Product (Product_ID, ProductNumber, ProductName, Price, Size, Colour, ProductCatalogue_ID)
-            VALUES (@Product_ID, @ProductNumber, @ProductName, @Price, @Size, @Colour, @ProductCatalogue_ID);"; 
+        // Stored procedure for updating
+        protected override string SqlUpdate => "usp_Update_Products";
 
-        protected override string SqlUpdate => @"
-            UPDATE Product
-                SET ProductNumber = @ProductNumber,
-                ProductName = @ProductName,
-                Price = @Price,
-                Size = @Size,
-                Colour = @Colour,
-                ProductCatalogue_ID = @ProductCatalogue_ID
-            WHERE Product_ID = @Product_ID;";
+        // Stored procedure for deleting  
+        protected override string SqlDeleteById => "usp_DeleteById_Products";
 
-
-        protected override string SqlDeleteById => @"
-            DELETE FROM Product
-            WHERE Product_ID = @Product_ID";
-
+        // Map data record to entity
         protected override Product Map(IDataRecord r) => new Product
         {
             ProductID = r.GetGuid(r.GetOrdinal("Product_ID")),
@@ -50,11 +35,13 @@ namespace Undy.Data.Repository
                : r.GetGuid(r.GetOrdinal("ProductCatalogue_ID"))
         };
 
+        // Parameter binding for id
         protected override void BindId(SqlCommand cmd, Guid id)
         {
             cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
+        // Parameter binding for insert
         protected override void BindInsert(SqlCommand cmd, Product e)
         {
             cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
@@ -66,7 +53,7 @@ namespace Undy.Data.Repository
             cmd.Parameters.Add("@ProductCatalogue_ID", SqlDbType.UniqueIdentifier)
                 .Value = (object?)e.ProductCatalogueID ?? DBNull.Value;
         }
-
+        // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, Product e)
         {
             cmd.Parameters.Add("@Product_ID", SqlDbType.Int).Value = e.ProductID;
@@ -80,7 +67,7 @@ namespace Undy.Data.Repository
         }
 
         protected override Guid GetKey(Product e) => e.ProductID;
-        
+
 
     }
 }
