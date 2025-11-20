@@ -37,6 +37,7 @@ namespace Undy.Data.Repository
         protected abstract string SqlInsert { get; }
         protected abstract string SqlUpdate { get; }
         protected abstract string SqlDeleteById { get; }
+        protected virtual string SqlPartialInsert { get; }
 
         // Mapping and bindings
         protected abstract T Map(IDataRecord r);

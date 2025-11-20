@@ -20,7 +20,10 @@ namespace Undy.Data.Repository
         protected override string SqlUpdate => "usp_Update_PurchaseOrders";
 
         // Stored procedure for deleting
-        protected override string SqlDeleteById => "usp_DeleteById_PurchaseOrdersSa";
+        protected override string SqlDeleteById => "usp_DeleteById_PurchaseOrders";
+
+        // Stored procedure for partial orders
+        protected override string SqlPartialInsert => "usp_InsertPartial_PurchaseOrders";
 
         // Map data record to entity 
         protected override PurchaseOrder Map(IDataRecord r) => new PurchaseOrder
