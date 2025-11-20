@@ -7,37 +7,44 @@ namespace Undy.Data.Repository
 {
     public class PurchaseOrderDBRepository : BaseDBRepository<PurchaseOrder, Guid>
     {
-        protected override string SqlSelectAll => "vw_PurchaseOrders";
+        // View for selecting all
+        protected override string SqlSelectAll => "vw_PurchaseOrder";
 
-        //TODO: Stored procedure for getting by id
-        protected override string SqlSelectById => "usp_SelectByID_PurchaseOrders";
+        // Stored procedure for getting by id
+        protected override string SqlSelectById => "usp_SelectById_PurchaseOrder";
 
-        //TODO: Stored procedures for adding (insert into)
-        // usp_Insert_PurchaseOrders
-        protected override string SqlInsert => @"
-            INSERT INTO PurchaseOrder (PurchaseOrder_ID, ExpectedDeliveryDate, OrderDate, DeliveryDate, OrderStatus, Product_ID)
-            VALUES (@PurchaseOrder_ID, @ExpectedDeliveryDate, @OrderDate, @DeliveryDate, @OrderStatus, @Product_ID);";
+        // Stored procedures for adding (insert into)
+        protected override string SqlInsert => "usp_Insert_PurchaseOrder";
 
-        //TODO: Stored procedure for updating
-        protected override string SqlUpdate => @"
-            UPDATE PurchaseOrder
-                SET ExpectedDeliveryDate = @ExpectedDeliveryDate,
-                OrderDate = @OrderDate,
-                DeliveryDate = @DeliveryDate,
-                OrderStatus = @OrderStatus,
-                Product_ID = @Product_ID
-            WHERE PurchaseOrder_ID = @PurchaseOrder_ID;";
+        // Stored procedure for updating
+        protected override string SqlUpdate => "usp_Update_PurchaseOrder";
 
-        //TODO: Stored procedure for deleting
-        protected override string SqlDeleteById => @"
-            DELETE FROM PurchaseOrder
-            WHERE PurchaseOrder_ID = @PurchaseOrder_ID";
+        // Stored procedure for deleting
+        protected override string SqlDeleteById => "usp_DeleteById_PurchaseOrder";
 
+        // Stored procedure for partial orders
+        protected override string SqlPartialInsert => "usp_InsertPartial_PurchaseOrder";
+
+        // Map data record to entity 
+        protected override PurchaseOrder Map(IDataRecord r) => new PurchaseOrder
+        {
+            PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrder_ID")),
+            ExpectedDeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ExpectedDeliveryDate"))),
+            OrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("OrderDate"))),
+            DeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("DeliveryDate"))),
+            OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
+            ProductID = r.GetGuid(r.GetOrdinal("Product_ID"))
+
+            //missing db.null check for ProductID?
+        };
+
+        // Parameter binding for id
         protected override void BindId(SqlCommand cmd, Guid id)
         {
             cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
+        // Parameter binding for insert
         protected override void BindInsert(SqlCommand cmd, PurchaseOrder e)
         {
             cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
@@ -49,6 +56,7 @@ namespace Undy.Data.Repository
                 .Value = (object?)e.ProductID ?? DBNull.Value;
         }
 
+        // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, PurchaseOrder e)
         {
             cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
@@ -60,18 +68,10 @@ namespace Undy.Data.Repository
                 .Value = (object?)e.ProductID ?? DBNull.Value;
         }
 
+        // Get key from entity
         protected override Guid GetKey(PurchaseOrder e) => e.PurchaseOrderID;
 
 
-        protected override PurchaseOrder Map(IDataRecord r) => new PurchaseOrder
-        {
-            PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrder_ID")),
-            ExpectedDeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ExpectedDeliveryDate"))),
-            OrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("OrderDate"))),
-            DeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("DeliveryDate"))),
-            OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
-            ProductID = r.GetGuid(r.GetOrdinal("Product_ID"))
-
         };
     }
-}
+

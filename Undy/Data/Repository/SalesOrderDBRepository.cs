@@ -6,29 +6,58 @@ namespace Undy.Data.Repository
 {
     public class SalesOrderDBRepository : BaseDBRepository<SalesOrder, Guid>
     {
-        protected override string SqlSelectAll => throw new NotImplementedException();
+        // View for selecting all
+        protected override string SqlSelectAll => "vw_SalesOrder";
 
-        protected override string SqlSelectById => throw new NotImplementedException();
+        // Stored procedure for getting by id
+        protected override string SqlSelectById => "usp_SelectById_SalesOrder";
 
-        protected override string SqlInsert => throw new NotImplementedException();
+        // Stored procedures for adding (insert into)
+        protected override string SqlInsert => "usp_Insert_SalesOrder";
 
-        protected override string SqlUpdate => throw new NotImplementedException();
+        // Stored procedure for updating
+        protected override string SqlUpdate => "usp_Update_SalesOrder";
 
-        protected override string SqlDeleteById => throw new NotImplementedException();
+        // Stored procedure for deleting
+        protected override string SqlDeleteById => "usp_DeleteById_SalesOrder";
 
+        // Map data record to entity
+        protected override SalesOrder Map(IDataRecord r) => new SalesOrder
+        {
+            SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrder_ID")),
+            ProductNumber = r.GetInt32(r.GetOrdinal("ProductNumber")),
+            Quantity = r.GetInt32(r.GetOrdinal("Quantity")),
+            SalesOrderStatus = r.GetString(r.GetOrdinal("SalesOrderStatus")),
+            ProductID = r.GetGuid(r.GetOrdinal("Product_ID"))
+
+            //missing db.Null check for ProductsID?
+        };
+
+        // Parameter binding for id
         protected override void BindId(SqlCommand cmd, Guid id)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@SalesOrder_ID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
-        protected override void BindInsert(SqlCommand cmd, SalesOrder entity)
+        // Parameter binding for insert
+        protected override void BindInsert(SqlCommand cmd, SalesOrder e)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@SalesOrder_ID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
+            cmd.Parameters.Add("@ProductNumber", SqlDbType.Int).Value = e.ProductNumber;
+            cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
+            cmd.Parameters.Add("@SalesOrderStatus", SqlDbType.NVarChar, 255).Value = e.SalesOrderStatus;
+            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier)
+                .Value = (object?)e.ProductID ?? DBNull.Value;
         }
-
-        protected override void BindUpdate(SqlCommand cmd, SalesOrder entity)
+        // Parameter binding for update
+        protected override void BindUpdate(SqlCommand cmd, SalesOrder e)
         {
-            throw new NotImplementedException();
+            cmd.Parameters.Add("@SalesOrder_ID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
+            cmd.Parameters.Add("@ProductNumber", SqlDbType.Int).Value = e.ProductNumber;
+            cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
+            cmd.Parameters.Add("@SalesOrderStatus", SqlDbType.NVarChar, 255).Value = e.SalesOrderStatus;
+            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier)
+                .Value = (object?)e.ProductID ?? DBNull.Value;
         }
 
         protected override Guid GetKey(SalesOrder entity)
@@ -36,9 +65,6 @@ namespace Undy.Data.Repository
             throw new NotImplementedException();
         }
 
-        protected override SalesOrder Map(IDataRecord r)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
