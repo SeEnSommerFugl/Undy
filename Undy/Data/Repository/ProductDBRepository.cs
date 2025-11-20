@@ -7,19 +7,19 @@ namespace Undy.Data.Repository
     public class ProductDBRepository : BaseDBRepository<Product, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "vm_Products";
+        protected override string SqlSelectAll => "vm_Product";
 
         // Stored procedure for getting by id
-        protected override string SqlSelectById => "usp_SelectById_Products";
+        protected override string SqlSelectById => "usp_SelectById_Product";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_Products";
+        protected override string SqlInsert => "usp_Insert_Product";
 
         // Stored procedure for updating
-        protected override string SqlUpdate => "usp_Update_Products";
+        protected override string SqlUpdate => "usp_Update_Product";
 
         // Stored procedure for deleting  
-        protected override string SqlDeleteById => "usp_DeleteById_Products";
+        protected override string SqlDeleteById => "usp_DeleteById_Product";
 
         // Map data record to entity
         protected override Product Map(IDataRecord r) => new Product

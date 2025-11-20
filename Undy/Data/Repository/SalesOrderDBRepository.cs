@@ -7,19 +7,19 @@ namespace Undy.Data.Repository
     public class SalesOrderDBRepository : BaseDBRepository<SalesOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "vw_SalesOrders";
+        protected override string SqlSelectAll => "vw_SalesOrder";
 
         // Stored procedure for getting by id
-        protected override string SqlSelectById => "usp_SelectById_SalesOrders";
+        protected override string SqlSelectById => "usp_SelectById_SalesOrder";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_SalesOrders";
+        protected override string SqlInsert => "usp_Insert_SalesOrder";
 
         // Stored procedure for updating
-        protected override string SqlUpdate => "usp_Update_SalesOrders";
+        protected override string SqlUpdate => "usp_Update_SalesOrder";
 
         // Stored procedure for deleting
-        protected override string SqlDeleteById => "usp_DeleteById_SalesOrders";
+        protected override string SqlDeleteById => "usp_DeleteById_SalesOrder";
 
         // Map data record to entity
         protected override SalesOrder Map(IDataRecord r) => new SalesOrder

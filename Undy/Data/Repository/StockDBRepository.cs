@@ -7,19 +7,19 @@ namespace Undy.Data.Repository
     public class StockDBRepository : BaseDBRepository<Stock, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "vm_Stocks";
+        protected override string SqlSelectAll => "vm_Stock";
 
         // Stored procedure for getting by id
-        protected override string SqlSelectById => "usp_SelectById_Stocks";
+        protected override string SqlSelectById => "usp_SelectById_Stock";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_Stocks";
+        protected override string SqlInsert => "usp_Insert_Stock";
 
         // Stored procedure for updating
-        protected override string SqlUpdate => "usp_Update_Stocks";
+        protected override string SqlUpdate => "usp_Update_Stock";
 
         // Stored procedure for deleting
-        protected override string SqlDeleteById => "usp_DeleteById_Stocks";
+        protected override string SqlDeleteById => "usp_DeleteById_Stock";
 
         // Map data record to entity
         protected override Stock Map(IDataRecord r) => new Stock

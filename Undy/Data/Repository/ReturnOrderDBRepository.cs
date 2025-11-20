@@ -13,19 +13,19 @@ namespace Undy.Data.Repository
     public class ReturnOrderDBRepository : BaseDBRepository<ReturnOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "vw_ReturnOrders";
+        protected override string SqlSelectAll => "vw_ReturnOrder";
 
         // Stored procedure for getting by id
-        protected override string SqlSelectById => "usp_SelectById_ReturnOrders";
+        protected override string SqlSelectById => "usp_SelectById_ReturnOrder";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_ReturnOrders";
+        protected override string SqlInsert => "usp_Insert_ReturnOrder";
 
         // Stored procedure for updating
-        protected override string SqlUpdate => "usp_Update_ReturnOrders";
+        protected override string SqlUpdate => "usp_Update_ReturnOrder";
 
         // Stored procedure for deleting
-        protected override string SqlDeleteById => "usp_DeleteById_ReturnOrders";
+        protected override string SqlDeleteById => "usp_DeleteById_ReturnOrder";
 
         // Map data record to entity
         protected override ReturnOrder Map(IDataRecord r) => new ReturnOrder

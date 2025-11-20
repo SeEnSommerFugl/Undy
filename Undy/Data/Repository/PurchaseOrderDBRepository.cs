@@ -8,22 +8,22 @@ namespace Undy.Data.Repository
     public class PurchaseOrderDBRepository : BaseDBRepository<PurchaseOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "vw_PurchaseOrders";
+        protected override string SqlSelectAll => "vw_PurchaseOrder";
 
         // Stored procedure for getting by id
-        protected override string SqlSelectById => "usp_SelectById_PurchaseOrders";
+        protected override string SqlSelectById => "usp_SelectById_PurchaseOrder";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_PurchaseOrders";
+        protected override string SqlInsert => "usp_Insert_PurchaseOrder";
 
         // Stored procedure for updating
-        protected override string SqlUpdate => "usp_Update_PurchaseOrders";
+        protected override string SqlUpdate => "usp_Update_PurchaseOrder";
 
         // Stored procedure for deleting
-        protected override string SqlDeleteById => "usp_DeleteById_PurchaseOrders";
+        protected override string SqlDeleteById => "usp_DeleteById_PurchaseOrder";
 
         // Stored procedure for partial orders
-        protected override string SqlPartialInsert => "usp_InsertPartial_PurchaseOrders";
+        protected override string SqlPartialInsert => "usp_InsertPartial_PurchaseOrder";
 
         // Map data record to entity 
         protected override PurchaseOrder Map(IDataRecord r) => new PurchaseOrder
