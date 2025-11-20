@@ -101,7 +101,7 @@ JOIN SalesOrder so ON ro.SalesOrderID = so.SalesOrderID
 ORDER BY ro.ReturnOrderDate
 
 -- Stored Procedure til varemodtagelse af inkøbsordre og opdatering af lagerbeholdning
-CREATE PROCEDURE usp_Register_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER AS
+CREATE PROCEDURE usp_Insert_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER AS
 BEGIN
 	-- Errorhandling hvis ordre ikke findes
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -134,7 +134,7 @@ END;
 
 -- TODO Tilføj en QuantityReceived kolonne til ProductPurchaseOrder
 -- Stored Procedure til delvis modtagelse af indkøbsordre
-CREATE PROCEDURE usp_RegisterPartial_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER, @ProductID UNIQUEIDENTIFIER, @Quantity INT AS
+CREATE PROCEDURE usp_InsertPartial_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER, @ProductID UNIQUEIDENTIFIER, @Quantity INT AS
 BEGIN
 	-- Errorhandling hvis indkøbsordre ikke findes
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -210,22 +210,106 @@ BEGIN
 END;
 
 -- Stored Procedure SalgsOrdre
-CREATE PROCEDURE usp_Register_SalesOrder @SalesOrderID UNIQUEIDENTIFIER AS
+CREATE PROCEDURE usp_Insert_SalesOrder @SalesOrderID UNIQUEIDENTIFIER AS
 BEGIN
-	--Errorhandling hvis ordre ikke findes
+
+		--Errorhandling hvis ordre ikke findes
 	IF NOT EXISTS(SELECT 1 FROM SalesOrder WHERE SalesOrderID = (@SalesOrderID)
 	BEGIN
-	RAISERROR('Salgsordre findes ikke', 16, 1);
-	RETURN;
-END
+		RAISERROR('Salgsordre findes ikke', 16, 1);
+		RETURN;
+	END
+		--Tjek om ordre allerede er modtaget
+	IF EXISTS (SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID AND OrderStatus = 'Modtaget')
+	BEGIN
+		RAISERROR('Denne salgsordre er allerede modtaget', 16, 1);
+		RETURN;
+	END
+	--Tjek om der er varer nok på lager
+	IF EXISTS (SELECT 1 FROM ProductSalesOrder pso
+	JOIN [Product] p ON pso.ProductID = p.ProductID
+	JOIN Stock s ON p.StockID = s.StockID
+	WHERE pso.SalesOrderID = @SalesOrderID
+		AND s.NumberInStock < pso.Quantity)
 
-IF EXISTS (SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID AND OrderStatus = 'Modtaget')
-BEGIN
-	RAISERROR('Denne salgsordre er allerede modtaget', 16, 1);
-	RETURN;
-END
+	BEGIN
+		RAISERROR('Der er ikke nok varer på lager', 16, 1);
+		RETURN;
+	END;
+
+	-- Opdater lager med solgte varer
+	UPDATE s
+	SET s.NumberInStock = s.NumberInStock - pso.Quantity
+	FROM Stock s
+	JOIN [Product] p ON s.StockID = p.StockID
+	JOIN ProductSalesOrder pso ON p.ProductID = pso.ProductID
+	WHERE pso.SalesOrderID = @SalesOrderID;
+
+	--Beregn totalpris og opdater salgsordre
+	DECLARE @TotalPrice DECIMAL(10,2);
+
+	SELECT @TotalPrice = SUM(pso.Quantity * pso.UnitPrice)
+	FROM ProductSalesOrder pso
+	WHERE pso.SalesOrderID = @SalesOrderID
+
+	UPDATE SalesOrder
+	SET TotalPrice		= @TotalPrice,
+		OrderStatus		= 'Modtaget',
+		PaymentStatus	= 'Betalt'
+	WHERE SalesOrderID	= @SalesOrderID;
+END;
 
 
 -- Stored Procedure ReturOrdre
 
+CREATE PROCEDURE usp_Insert_ReturnOrder @ReturnOrderID UNIQUEIDENTIFIER AS
+BEGIN
+
+	--Tjek om returordre findes
+	IF NOT EXISTS (SELECT 1 FROM ReturnOrder WHERE ReturnOrderID = @ReturnOrderID)
+	BEGIN
+		RAISERROR('Returordre findes ikke', 16, 1);
+		RETURN;
+	END;
+
+	--Find salgsordre der passer til
+	DECLARE @SalesOrdreID UNIQUEIDENTIFIER;
+	SELECT @SalesOrdreID = SalesOrderID
+	FROM ReturnOrder
+	WHERE ReturnOrderID = @ReturnOrderID;
+
+	--Tjek om salgsordre findes
+	IF NOT EXISTS (SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrdreID)
+	BEGIN
+		RAISERROR(' Passende salgsordre findes ikke', 16, 1);
+		RETURN;
+	END;
+
+	--Tjek om salgsordre allerede er returneret
+	IF EXISTS( 
+	SELECT 1 
+	FROM SalesOrder 
+	WHERE SalesOrderID = @SalesOrdreID
+		AND OrderStatus = 'Returneret'
+	)
+	BEGIN 
+		RAISERROR('Denne ordre er allerede returneret', 16, 1);
+		RETURN;
+	END;
+
+	--Returner varer på lager fra salgsordren
+	UPDATE s
+	SET s.NumberInStock = s. NumberInStock + pso.Quantity
+	FROM Stock s
+	JOIN [Product] p ON s.StockID = p.StockID
+	JOIN  ProductSalesOrder pso ON p.ProductID = pso.ProductID
+	WHERE pso.SalesOrderID = @SalesOrdreID;
+
+	--Opdater salgsordre status
+	UPDATE SalesOrder
+	SET OrderStatus		= 'Returneret',
+		PaymentStatus	= 'Returneret'
+	WHERE SalesOrderID	= @SalesOrdreID;
+
+END;
 -- Stored Procedure til updates
