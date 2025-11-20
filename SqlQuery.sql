@@ -312,4 +312,53 @@ BEGIN
 	WHERE SalesOrderID	= @SalesOrdreID;
 
 END;
+
 -- Stored Procedure til updates
+
+CREATE PROCEDURE usp_Update_Product
+	@ProductID UNIQUEIDENTIFIER,
+	@ProductNumber INT = NULL,
+	@ProductName NVARCHAR(255) = NULL,
+	@Price DECIMAL(10,2) = NULL,
+	@Size NVARCHAR(255) = NULL,
+	@Colour NVARCHAR(255) = NULL
+AS
+BEGIN
+	--Tjek om produkt findes
+	IF NOT EXISTS (
+	SELECT 1 
+	FROM [Product] 
+	WHERE ProductID = @ProductID
+	)
+	BEGIN
+		RAISERROR('Produkt findes ikke', 16, 1);
+		RETURN
+	END;
+	--Updaterer produktet
+	UPDATE [Product]
+	SET ProductNumber	= ISNULL(@ProductNumber,	ProductNumber),
+		ProductName		= ISNULL(@ProductName,		ProductName),
+		Price			= ISNULL(@Price,			Price),
+		Size			= ISNULL(@Size,				Size),
+		Colour			= ISNULL(@Colour,			Colour)
+	WHERE ProductID = @ProductID;
+END;
+
+CREATE PROCEDURE usp_Update_Stock
+	@StockID UNIQUEIDENTIFIER,
+	@NumberInStock INT = NULL,
+	@StockStatus NVARCHAR(255) = NULL
+AS
+BEGIN
+	
+	IF NOT EXISTS (SELECT 1 FROM Stock WHERE StockID = @StockID)
+    BEGIN
+        RAISERROR('Lagerpost findes ikke', 16, 1);
+        RETURN;
+    END;
+
+    UPDATE Stock
+    SET NumberInStock = ISNULL(@NumberInStock, NumberInStock),
+        StockStatus   = ISNULL(@StockStatus,   StockStatus)
+    WHERE StockID = @StockID;
+END;
