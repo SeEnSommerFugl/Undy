@@ -1,3 +1,7 @@
+USE Undy;
+GO;
+
+-- Opret tabelstruktur for lagerstyringssystem
 CREATE TABLE Stock(
 	StockID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	NumberInStock INT NOT NULL,
@@ -72,6 +76,7 @@ CREATE TABLE ReturnOrder(
 		FOREIGN KEY(SalesOrderID)
 		REFERENCES SalesOrder(SalesOrderID)
 );
+GO;
 
 -- View til at vise den aktuelle lagerbeholdning for produktkatalog
 CREATE VIEW vw_Stock AS
@@ -79,6 +84,7 @@ SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, s.NumberInStoc
 FROM Stock s
 JOIN [Product] p ON s.StockID = p.StockID
 ORDER BY p.ProductName;
+GO;
 
 -- View til at vise indkøbsordre
 CREATE VIEW vw_PurchaseOrders AS
@@ -87,6 +93,7 @@ FROM PurchaseOrder po
 JOIN ProductPurchaseOrder ppo ON po.PurchaseOrderID = ppo.PurchaseOrderID
 JOIN [Product] p ON ppo.ProductID = p.ProductID
 ORDER BY po.DeliveryDate;
+GO;
 
 -- View til at vise salgsordre
 CREATE VIEW vw_SalesOrders AS
@@ -95,12 +102,14 @@ FROM SalesOrder so
 JOIN ProductSalesOrder pso ON so.SalesOrderID = pso.SalesOrderID
 JOIN [Product] p ON pso.ProductID = p.ProductID
 ORDER BY so.SalesDate;
+GO;
 
 CREATE VIEW vw_ReturnOrders AS
 SELECT ro.ReturnOrderID, ro.ReturnOrderDate, so.OrderNumber, so.TotalPrice
 FROM ReturnOrder ro
 JOIN SalesOrder so ON ro.SalesOrderID = so.SalesOrderID
 ORDER BY ro.ReturnOrderDate
+GO;
 
 -- Stored Procedure til varemodtagelse af inkøbsordre og opdatering af lagerbeholdning
 CREATE PROCEDURE usp_Insert_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER AS
@@ -133,6 +142,7 @@ BEGIN
 		OrderStatus = 'Modtaget'
 	WHERE PurchaseOrderID = @PurchaseOrderID
 END;
+GO;
 
 -- TODO Tilføj en QuantityReceived kolonne til ProductPurchaseOrder
 -- Stored Procedure til delvis modtagelse af indkøbsordre
@@ -210,6 +220,7 @@ BEGIN
 		WHERE PurchaseOrderID = @PurchaseOrderID;
 	END
 END;
+GO;
 
 -- Stored Procedure SalgsOrdre
 CREATE PROCEDURE usp_Insert_SalesOrder @SalesOrderID UNIQUEIDENTIFIER AS
@@ -260,7 +271,7 @@ BEGIN
 		PaymentStatus	= 'Betalt'
 	WHERE SalesOrderID	= @SalesOrderID;
 END;
-
+GO;
 
 -- Stored Procedure ReturOrdre
 
@@ -314,6 +325,7 @@ BEGIN
 	WHERE SalesOrderID	= @SalesOrdreID;
 
 END;
+GO;
 
 -- Stored Procedure til updates
 
@@ -345,6 +357,7 @@ BEGIN
 		Colour			= ISNULL(@Colour,			Colour)
 	WHERE ProductID = @ProductID;
 END;
+GO;
 
 CREATE PROCEDURE usp_Update_Stock
 	@StockID UNIQUEIDENTIFIER,
