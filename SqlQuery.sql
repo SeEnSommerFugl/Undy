@@ -76,6 +76,18 @@ CREATE TABLE ReturnOrder(
 		FOREIGN KEY(SalesOrderID)
 		REFERENCES SalesOrder(SalesOrderID)
 );
+
+CREATE TABLE Customers(
+	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	FirstName NVARCHAR(255) NOT NULL,
+	LastName NVARCHAR(255) NOT NULL,
+	Email NVARCHAR(255) NOT NULL,
+	PhoneNumber NVARCHAR(50) NOT NULL,
+	Address NVARCHAR(255) NOT NULL,
+	City NVARCHAR(100) NOT NULL,
+	PostalCode NVARCHAR(20) NOT NULL,
+	Country NVARCHAR(100) NOT NULL
+);
 GO;
 
 -- View til at vise den aktuelle lagerbeholdning for produktkatalog
