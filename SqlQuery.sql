@@ -22,7 +22,8 @@ CREATE TABLE PurchaseOrder(
 	PurchaseOrderDate DATE NOT NULL,
 	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
-	OrderStatus NVARCHAR(255) NOT NULL
+	OrderStatus NVARCHAR(255) NOT NULL,
+	QuantityReceived INT NOT NULL
 );
 
 CREATE TABLE ProductPurchaseOrder(
