@@ -216,7 +216,7 @@ CREATE PROCEDURE usp_Insert_SalesOrder @SalesOrderID UNIQUEIDENTIFIER AS
 BEGIN
 
 		--Errorhandling hvis ordre ikke findes
-	IF NOT EXISTS(SELECT 1 FROM SalesOrder WHERE SalesOrderID = (@SalesOrderID)
+	IF NOT EXISTS(SELECT 1 FROM SalesOrder WHERE SalesOrderID = (@SalesOrderID))
 	BEGIN
 		RAISERROR('Salgsordre findes ikke', 16, 1);
 		RETURN;
