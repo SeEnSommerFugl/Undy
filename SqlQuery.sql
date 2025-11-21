@@ -22,8 +22,8 @@ CREATE TABLE PurchaseOrder(
 	PurchaseOrderDate DATE NOT NULL,
 	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
-	OrderStatus NVARCHAR(255) NOT NULL,
-	QuantityReceived INT NOT NULL
+	OrderStatus NVARCHAR(255) NOT NULL
+
 );
 
 CREATE TABLE ProductPurchaseOrder(
@@ -31,6 +31,7 @@ CREATE TABLE ProductPurchaseOrder(
 	ProductID UNIQUEIDENTIFIER NOT NULL,
 	Quantity INT NOT NULL,
 	UnitPrice DECIMAL(10,2) NOT NULL,
+	QuantityReceived INT NOT NULL
 	CONSTRAINT PK_ProductPurchaseOrder PRIMARY KEY(PurchaseOrderID, ProductID),
 	CONSTRAINT FK_PurchaseOrder_ProductPurchaseOrder
 		FOREIGN KEY(PurchaseOrderID)
