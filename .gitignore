@@ -416,3 +416,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+/Undy/appsettings.json
+/Undy/Properties/launchSettings.json
+/Undy/Properties/launchSettings.json
