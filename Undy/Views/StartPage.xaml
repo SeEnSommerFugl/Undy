@@ -20,6 +20,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                
+            </Grid>
         </Grid>
 
         <!--Midt Grid til Produktion dele-->
