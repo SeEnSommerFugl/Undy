@@ -3,7 +3,7 @@
     "Undy": {
       "commandName": "Project",
       "environmentVariables": {
-        "ConnectionStrings__DefaultConnection": "Server=100.71.138.33,1433;Database=ReolMarket;User Id=Alex;Password=Sommerfugl123!;Encrypt=True;TrustServerCertificate=True;"
+        "ConnectionStrings__DefaultConnection": "Server=100.71.138.33,1433;Database=Undy;User Id=Alex;Password=Sommerfugl123!;Encrypt=True;TrustServerCertificate=True;"
       }
     }
   }
