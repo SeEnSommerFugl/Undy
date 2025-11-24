@@ -7,6 +7,50 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <DataGrid AutoGenerateColumns="False"
+          ItemsSource="{Binding Products}"
+          HeadersVisibility="Column"
+          CanUserAddRows="False"
+          CanUserDeleteRows="False"
+          GridLinesVisibility="All"
+          BorderThickness="1"
+          BorderBrush="#CCCCCC"
+          RowHeight="30"
+          ColumnHeaderHeight="30"
+          FontSize="14"
+          Margin="10">
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="Produktnummer"
+                            Binding="{Binding ProductNumber}"
+                            Width="*" />
+
+                <DataGridTextColumn Header="Produktnavn"
+                            Binding="{Binding ProductName}"
+                            Width="*" />
+
+                <DataGridTextColumn Header="Pris"
+                            Binding="{Binding Price}"
+                            Width="Auto" />
+
+                <DataGridTextColumn Header="Størrelse"
+                            Binding="{Binding Size}"
+                            Width="Auto" />
+
+                <DataGridTextColumn Header="Farve"
+                            Binding="{Binding Colour}"
+                            Width="Auto" />
+
+                <DataGridTextColumn Header="Antal på lager"
+                            Binding="{Binding InStock}"
+                            Width="Auto" />
+                
+                <DataGridTextColumn Header="Status"
+                            Binding="{Binding Status}"
+                            Width="Auto" />
+
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
