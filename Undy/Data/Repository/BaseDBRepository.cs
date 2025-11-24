@@ -52,6 +52,7 @@ namespace Undy.Data.Repository
         {
             using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlSelectById, con);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             BindId(cmd, id);
             
@@ -102,7 +103,9 @@ namespace Undy.Data.Repository
                 {
                     using var cmd = new SqlCommand(SqlUpdate, con, transaction);
                     cmd.CommandType = CommandType.StoredProcedure;
+
                     BindUpdate(cmd, entity);
+                    
                     await cmd.ExecuteNonQueryAsync();
                 }
 
@@ -122,6 +125,7 @@ namespace Undy.Data.Repository
         {
             using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlDeleteById, con);
+            cmd.CommandType = CommandType.StoredProcedure;
 
             BindId(cmd, id);
 
@@ -148,6 +152,7 @@ namespace Undy.Data.Repository
 
             using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlSelectAll, con);
+            cmd.CommandType = CommandType.StoredProcedure;
             using var rd = await cmd.ExecuteReaderAsync();
 
             while (await rd.ReadAsync()) list.Add(Map(rd));

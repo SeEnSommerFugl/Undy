@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Undy.Views.TempReturnView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MaxWidth="1920" MaxHeight="1080"
+             Background="White">
+
+    <Grid Margin="40">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Text="Retur Portal"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,10"/>
+
+        <!-- Subtitle -->
+        <TextBlock Grid.Row="1"
+                   Text="Indtast ordre nummer og email for at returnere ordre"
+                   FontSize="14"
+                   HorizontalAlignment="Center"
+                   TextAlignment="Center"
+                   Margin="0,10"/>
+
+        <!-- Fields -->
+        <StackPanel Grid.Row="2"
+                    Margin="0,20"
+                    Orientation="Vertical">
+
+            <!-- Order Number -->
+            <StackPanel Margin="0,0,0,15">
+                <TextBlock Text="Ordre Nummer*"
+                           Margin="5,0,0,5"/>
+                <TextBox Height="45"
+                         Background="#D7E0E2"
+                         BorderThickness="0"
+                         Padding="10"/>
+            </StackPanel>
+
+            <!-- Bruger input -->
+            <StackPanel Margin="0,0,0,15">
+                <TextBlock Text="Email*"
+                           Margin="5,0,0,5"/>
+                <TextBox Height="45"
+                         Background="#D7E0E2"
+                         BorderThickness="0"
+                         Padding="10"/>
+            </StackPanel>
+
+            <!-- Årsag til returnering -->
+            <StackPanel>
+                <TextBlock Text="Årsag til returnering*"
+                           Margin="5,0,0,5"/>
+                <TextBox Height="45"
+                         Background="#D7E0E2"
+                         BorderThickness="0"
+                         Padding="10"/>
+            </StackPanel>
+
+        </StackPanel>
+
+        <!-- Button -->
+        <Button Grid.Row="3"
+                Content="Bekræft"
+                Width="140"
+                Height="40"
+                HorizontalAlignment="Center"
+                Margin="0 10"
+                Padding="5"
+                BorderThickness="0"
+                Background="#E6E6E6"/>
+    </Grid>
+</UserControl>
