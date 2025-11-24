@@ -14,6 +14,9 @@ namespace Undy.ViewModels
             _salesOrderRepo = salesOrderRepo;
             _productCatalogueRepo = productCatalogueRepo;
             _productRepo = productRepo;
+
+            public ObservableCollection<SalesOrder> SalesOrders { get; set; }
         }
     }
 }
+
