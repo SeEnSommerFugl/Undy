@@ -19,7 +19,7 @@ namespace Undy.Data
         private static readonly IConfigurationRoot _config =
             new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+                //.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                 .AddEnvironmentVariables()
                 .Build();
         /// <summary>
