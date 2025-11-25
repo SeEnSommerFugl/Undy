@@ -21,7 +21,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <!-- Indhold til Lager Status her -->
-            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="0,0,10,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -39,7 +39,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="0,0,10,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -57,7 +57,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="0,0,0,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -87,7 +87,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="0,10,10,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -107,7 +107,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="0,10,10,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -116,7 +116,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="0,10,0,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -134,7 +134,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="0,10,10,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -155,7 +155,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="0,10,10,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -175,7 +175,7 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="10">
+            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="0,10,0,0">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
