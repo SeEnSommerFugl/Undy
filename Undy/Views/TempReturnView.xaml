@@ -17,11 +17,13 @@
                    FontSize="24"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"
-                   Margin="0,10"/>
+                   VerticalAlignment="Center"/>
+                   
 
         <!-- Subtitle -->
         <TextBlock Grid.Row="1"
-                   Text="Indtast ordre nummer og email for at returnere ordre"
+                   Style="{DynamicResource LabelMuted}"
+                   Text="Indtast ordre nummer og email for at returnere ordre, samt årsag for returnering"
                    FontSize="14"
                    HorizontalAlignment="Center"
                    TextAlignment="Center"
@@ -67,12 +69,7 @@
         <!-- Button -->
         <Button Grid.Row="3"
                 Content="Bekræft"
-                Width="140"
-                Height="40"
-                HorizontalAlignment="Center"
-                Margin="0 10"
-                Padding="5"
-                BorderThickness="0"
-                Background="#E6E6E6"/>
+                Command="{Binding ConfirmCommand}"
+                Style="{DynamicResource ButtonBase}" />
     </Grid>
 </UserControl>
