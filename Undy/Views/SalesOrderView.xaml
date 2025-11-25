@@ -7,9 +7,8 @@
              mc:Ignorable="d" 
              d:DesignWidth="1980" d:DesignHeight="1048">
     <Grid>
-
         <DataGrid AutoGenerateColumns="False"
-          ItemsSource="{Binding Products}"
+          ItemsSource="{Binding SalesOrder}"
           HeadersVisibility="Column"
           CanUserAddRows="False"
           CanUserDeleteRows="False"
@@ -22,36 +21,34 @@
           Margin="10">
 
             <DataGrid.Columns>
-
-            <DataGridTextColumn Header="Produktnummer"
-                    Binding="{Binding ProductNumber}"
+                <DataGridTextColumn Header="Ordrenummer"
+                    Binding="{Binding OrderNumber}"
                     Width="*" />
+                
+                <DataGridTextColumn Header="Ordrestatus"
+                        Binding="{Binding SalesOrderStatus}"
+                        Width="*" />
 
-            <DataGridTextColumn Header="Produktnavn"
-                    Binding="{Binding ProductName}"
-                    Width="*" />
+                <DataGridTextColumn Header="Betalingsstatus"
+                        Binding="{Binding PaymentStatus}"
+                        Width="*" />
 
-            <DataGridTextColumn Header="Pris"
-                    Binding="{Binding Price}"
-                    Width="Auto" />
+                <DataGridTextColumn Header="Salgsdato"
+                        Binding="{Binding SalesDate}"
+                        Width="*" />
 
-            <DataGridTextColumn Header="Størrelse"
-                    Binding="{Binding Size}"
-                    Width="Auto" />
+                <DataGridTextColumn Header="Pris"
+                        Binding="{Binding TotalPrice}"
+                        Width="*" />
 
-            <DataGridTextColumn Header="Farve"
-                    Binding="{Binding Colour}"
-                    Width="Auto" />
+                <DataGridTextColumn Header="Produktnavn"
+                        Binding="{Binding ProductName}"
+                        Width="*" />
 
-            <DataGridTextColumn Header="Antal på lager"
-                    Binding="{Binding InStock}"
-                    Width="Auto" />
-
-            <DataGridTextColumn Header="Status"
-                    Binding="{Binding Status}"
-                    Width="Auto"/>
-
-        </DataGrid.Columns>
+                <DataGridTextColumn Header="Antal"
+                    Binding="{Binding Quantity}"
+                    Width="100"/>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

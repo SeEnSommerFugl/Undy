@@ -1,4 +1,5 @@
-﻿using Undy.Data.Repository;
+﻿using System.Collections.ObjectModel;
+using Undy.Data.Repository;
 using Undy.Models;
 
 namespace Undy.ViewModels
@@ -8,6 +9,8 @@ namespace Undy.ViewModels
         private IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
         private IBaseRepository<Stock, Guid> _productCatalogueRepo;
         private IBaseRepository<Product, Guid> _productRepo;
+
+        public ObservableCollection<SalesOrder> SalesOrders { get; set; }
 
         public SalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> productCatalogueRepo, IBaseRepository<Product, Guid> productRepo)
         {
@@ -19,4 +22,3 @@ namespace Undy.ViewModels
         }
     }
 }
-

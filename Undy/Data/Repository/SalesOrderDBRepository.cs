@@ -25,10 +25,11 @@ namespace Undy.Data.Repository
         protected override SalesOrder Map(IDataRecord r) => new SalesOrder
         {
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrder_ID")),
-            ProductNumber = r.GetInt32(r.GetOrdinal("ProductNumber")),
-            Quantity = r.GetInt32(r.GetOrdinal("Quantity")),
+            OrderNumber = r.GetInt32(r.GetOrdinal("OrderNumber")),
             SalesOrderStatus = r.GetString(r.GetOrdinal("SalesOrderStatus")),
-            ProductID = r.GetGuid(r.GetOrdinal("Product_ID"))
+            PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),
+            SalesDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("SalesDate"))),
+            TotalPrice = r.GetDecimal(r.GetOrdinal("TotalPrice"))
 
             //missing db.Null check for ProductsID?
         };
@@ -43,21 +44,21 @@ namespace Undy.Data.Repository
         protected override void BindInsert(SqlCommand cmd, SalesOrder e)
         {
             cmd.Parameters.Add("@SalesOrder_ID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
-            cmd.Parameters.Add("@ProductNumber", SqlDbType.Int).Value = e.ProductNumber;
-            cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
+            cmd.Parameters.Add("@OrderNumber", SqlDbType.Int).Value = e.OrderNumber;
             cmd.Parameters.Add("@SalesOrderStatus", SqlDbType.NVarChar, 255).Value = e.SalesOrderStatus;
-            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier)
-                .Value = (object?)e.ProductID ?? DBNull.Value;
+            cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
+            cmd.Parameters.Add("@SalesDate", SqlDbType.Date).Value = e.SalesDate;
+            cmd.Parameters.Add("@TotalPrice", SqlDbType.Decimal).Value = e.TotalPrice;
         }
         // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, SalesOrder e)
         {
             cmd.Parameters.Add("@SalesOrder_ID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
-            cmd.Parameters.Add("@ProductNumber", SqlDbType.Int).Value = e.ProductNumber;
-            cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
+            cmd.Parameters.Add("@OrderNumber", SqlDbType.Int).Value = e.OrderNumber;
             cmd.Parameters.Add("@SalesOrderStatus", SqlDbType.NVarChar, 255).Value = e.SalesOrderStatus;
-            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier)
-                .Value = (object?)e.ProductID ?? DBNull.Value;
+            cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
+            cmd.Parameters.Add("@SalesDate", SqlDbType.Date).Value = e.SalesDate;
+            cmd.Parameters.Add("@TotalPrice", SqlDbType.Decimal).Value = e.TotalPrice;
         }
 
         protected override Guid GetKey(SalesOrder entity)

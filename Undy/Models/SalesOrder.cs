@@ -3,9 +3,10 @@
     public class SalesOrder
     {
         public Guid SalesOrderID { get; set; }
-        public int ProductNumber { get; set; }
-        public int Quantity { get; set; }
+        public int OrderNumber { get; set; }
         public string SalesOrderStatus { get; set; }
-        public Guid ProductID { get; set; }
+        public string PaymentStatus { get; set; }
+        public DateOnly SalesDate { get; set; }
+        public decimal TotalPrice { get; set; }
     }
 }
