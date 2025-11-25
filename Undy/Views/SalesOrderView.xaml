@@ -8,7 +8,7 @@
              d:DesignWidth="1980" d:DesignHeight="1048">
     <Grid>
         <DataGrid AutoGenerateColumns="False"
-          ItemsSource="{Binding SalesOrder}"
+          ItemsSource="{Binding SalesDisplay}"
           HeadersVisibility="Column"
           CanUserAddRows="False"
           CanUserDeleteRows="False"
@@ -26,7 +26,7 @@
                     Width="*" />
                 
                 <DataGridTextColumn Header="Ordrestatus"
-                        Binding="{Binding SalesOrderStatus}"
+                        Binding="{Binding OrderStatus}"
                         Width="*" />
 
                 <DataGridTextColumn Header="Betalingsstatus"
@@ -34,11 +34,11 @@
                         Width="*" />
 
                 <DataGridTextColumn Header="Salgsdato"
-                        Binding="{Binding SalesDate}"
+                        Binding="{Binding SalesDate, StringFormat=\{0:dd-MM-yyyy\}}"
                         Width="*" />
 
                 <DataGridTextColumn Header="Pris"
-                        Binding="{Binding TotalPrice}"
+                        Binding="{Binding TotalPrice, StringFormat=\{0:C\}}"
                         Width="*" />
 
                 <DataGridTextColumn Header="Produktnavn"

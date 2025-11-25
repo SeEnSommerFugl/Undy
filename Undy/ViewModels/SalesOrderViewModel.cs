@@ -6,19 +6,21 @@ namespace Undy.ViewModels
 {
     public class SalesOrderViewModel : BaseViewModel
     {
-        private IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
-        private IBaseRepository<Stock, Guid> _productCatalogueRepo;
-        private IBaseRepository<Product, Guid> _productRepo;
+        private readonly SalesOrderDisplayDBRepository _salesDisplayRepo;
 
-        public ObservableCollection<SalesOrder> SalesOrders { get; set; }
+        public ObservableCollection<SalesOrderDisplay> SalesDisplay { get; set; }
 
-        public SalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> productCatalogueRepo, IBaseRepository<Product, Guid> productRepo)
+        public SalesOrderViewModel(SalesOrderDisplayDBRepository salesDisplayRepo)
         {
-            _salesOrderRepo = salesOrderRepo;
-            _productCatalogueRepo = productCatalogueRepo;
-            _productRepo = productRepo;
-
+            _salesDisplayRepo = salesDisplayRepo;
+            LoadSalesOrders();
             //public ObservableCollection<SalesOrder> SalesOrders { get; set; }
+        }
+
+        private async void LoadSalesOrders() {
+            await _salesDisplayRepo.InitializeAsync();
+            SalesDisplay = _salesDisplayRepo.Items;
+            OnPropertyChanged(nameof(SalesDisplay));
         }
     }
 }

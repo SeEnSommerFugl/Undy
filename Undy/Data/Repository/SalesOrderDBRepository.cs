@@ -7,7 +7,7 @@ namespace Undy.Data.Repository
     public class SalesOrderDBRepository : BaseDBRepository<SalesOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "vw_SalesOrder";
+        protected override string SqlSelectAll => "vw_SalesOrders";
 
         // Stored procedure for getting by id
         protected override string SqlSelectById => "usp_SelectById_SalesOrder";
@@ -26,7 +26,7 @@ namespace Undy.Data.Repository
         {
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrder_ID")),
             OrderNumber = r.GetInt32(r.GetOrdinal("OrderNumber")),
-            SalesOrderStatus = r.GetString(r.GetOrdinal("SalesOrderStatus")),
+            OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
             PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),
             SalesDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("SalesDate"))),
             TotalPrice = r.GetDecimal(r.GetOrdinal("TotalPrice"))
@@ -45,7 +45,7 @@ namespace Undy.Data.Repository
         {
             cmd.Parameters.Add("@SalesOrder_ID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
             cmd.Parameters.Add("@OrderNumber", SqlDbType.Int).Value = e.OrderNumber;
-            cmd.Parameters.Add("@SalesOrderStatus", SqlDbType.NVarChar, 255).Value = e.SalesOrderStatus;
+            cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 255).Value = e.OrderStatus;
             cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
             cmd.Parameters.Add("@SalesDate", SqlDbType.Date).Value = e.SalesDate;
             cmd.Parameters.Add("@TotalPrice", SqlDbType.Decimal).Value = e.TotalPrice;
@@ -55,7 +55,7 @@ namespace Undy.Data.Repository
         {
             cmd.Parameters.Add("@SalesOrder_ID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
             cmd.Parameters.Add("@OrderNumber", SqlDbType.Int).Value = e.OrderNumber;
-            cmd.Parameters.Add("@SalesOrderStatus", SqlDbType.NVarChar, 255).Value = e.SalesOrderStatus;
+            cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 255).Value = e.OrderStatus;
             cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
             cmd.Parameters.Add("@SalesDate", SqlDbType.Date).Value = e.SalesDate;
             cmd.Parameters.Add("@TotalPrice", SqlDbType.Decimal).Value = e.TotalPrice;
