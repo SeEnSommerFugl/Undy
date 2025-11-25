@@ -24,6 +24,13 @@
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
     </Style>
 
-
+    <Style x:Key="H1Right" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="40"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
+        <Setter Property="TextAlignment" Value="Right"/>
+    </Style>
     
 </ResourceDictionary>

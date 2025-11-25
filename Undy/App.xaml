@@ -25,6 +25,9 @@
             <DataTemplate DataType="{x:Type vm:GoodsReceiptViewModel}">
                 <views:GoodsReceiptView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:StartPageViewModel}">
+                <views:StartPage/>
+            </DataTemplate>
 
 
         </ResourceDictionary>

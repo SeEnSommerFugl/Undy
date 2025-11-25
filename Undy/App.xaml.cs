@@ -27,13 +27,15 @@ namespace Undy
             var pickListVM = new PickListViewModel(salesOrderRepo, productRepo);
             var salesOrderVM = new SalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
+            var startPageVM = new StartPageViewModel();
 
             var mainVM = new MainViewModel(
                 purchaseOrderVM,
                 goodsReceiptVM,
                 pickListVM,
                 salesOrderVM,
-                paymentVM
+                paymentVM,
+                startPageVM
             );
 
             // ----- Main Window ----- //
@@ -41,6 +43,7 @@ namespace Undy
             mainWindow.Show();
 
             await Task.WhenAll(
+            //startPageRepo.InitializeAsync(),
             //productRepo.InitializeAsync(),
             //stockRepo.InitializeAsync(),
             //purchaseOrderRepo.InitializeAsync(),
