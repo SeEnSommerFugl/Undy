@@ -19,5 +19,11 @@ namespace Undy.Data.Repository {
                 Quantity = r.GetInt32(r.GetOrdinal("Quantity"))
             };
         }
-    }
+
+        // Get key from entity
+        protected override Guid GetKey(SalesOrderDisplay e) => e.SalesOrderID;
+
+
+    };
 }
+

@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
 using Undy.Data.Repository;
 using Undy.Models;
 
@@ -6,21 +8,15 @@ namespace Undy.ViewModels
 {
     public class SalesOrderViewModel : BaseViewModel
     {
-        private readonly SalesOrderDisplayDBRepository _salesDisplayRepo;
+        private IBaseRepository<SalesOrderDisplay, Guid> _salesDisplayRepo;
 
-        public ObservableCollection<SalesOrderDisplay> SalesDisplay { get; set; }
+        public ObservableCollection<SalesOrderDisplay> SalesDisplay => _salesDisplayRepo.Items;
+        public ICollectionView SaleView { get;}
 
-        public SalesOrderViewModel(SalesOrderDisplayDBRepository salesDisplayRepo)
+        public SalesOrderViewModel(IBaseRepository<SalesOrderDisplay, Guid> salesDisplayRepo)
         {
             _salesDisplayRepo = salesDisplayRepo;
-            LoadSalesOrders();
-            //public ObservableCollection<SalesOrder> SalesOrders { get; set; }
-        }
-
-        private async void LoadSalesOrders() {
-            await _salesDisplayRepo.InitializeAsync();
-            SalesDisplay = _salesDisplayRepo.Items;
-            OnPropertyChanged(nameof(SalesDisplay));
+            SaleView = CollectionViewSource.GetDefaultView(SalesDisplay);
         }
     }
 }

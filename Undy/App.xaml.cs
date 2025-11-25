@@ -20,12 +20,13 @@ namespace Undy
             IBaseRepository<Stock, Guid> stockRepo = new StockDBRepository();
             IBaseRepository<PurchaseOrder, Guid> purchaseOrderRepo = new PurchaseOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> salesOrderRepo = new SalesOrderDBRepository();
+            IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
 
             //----- ViewModels ----- //
             var purchaseOrderVM = new PurchaseOrderViewModel(purchaseOrderRepo, stockRepo);
             var goodsReceiptVM = new GoodsReceiptViewModel(purchaseOrderRepo, productRepo);
             var pickListVM = new PickListViewModel(salesOrderRepo, productRepo);
-            var salesOrderVM = new SalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
+            var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
             var startPageVM = new StartPageViewModel();
 
