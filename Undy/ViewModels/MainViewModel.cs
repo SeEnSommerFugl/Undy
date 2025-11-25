@@ -26,7 +26,7 @@ namespace Undy.ViewModels
                 ("GoodsReceipts", "Vare modtagelse", _goodsReceiptViewModel),
                 ("PickLists", "Pluklister", _pickListViewModel),
                 ("SalesOrders", "Salgs ordrer", _salesOrderViewModel),
-                ("Payments", "Betalinger", _paymentViewModel)
+                ("Payments", "Betalinger", _paymentViewModel),
                 ("TestReturnOrders", "Test returneringer", _testReturnOrderViewModel)
             );
 
