@@ -32,18 +32,27 @@ namespace Undy.Data.Repository
         // --------- Template members you implement in each concrete repo ---------
 
         // SQL templates
-        protected abstract string SqlSelectAll { get; }
-        protected abstract string SqlSelectById { get; }
-        protected abstract string SqlInsert { get; }
-        protected abstract string SqlUpdate { get; }
-        protected abstract string SqlDeleteById { get; }
+        protected virtual string SqlSelectAll { get; }
+        protected virtual string SqlSelectById { get; }
+        protected virtual string SqlInsert { get; }
+        protected virtual string SqlUpdate { get; }
+        protected virtual string SqlDeleteById { get; }
         protected virtual string SqlPartialInsert { get; }
 
         // Mapping and bindings
         protected abstract T Map(IDataRecord r);
-        protected abstract void BindId(SqlCommand cmd, TKey id);
-        protected abstract void BindInsert(SqlCommand cmd, T entity);
-        protected abstract void BindUpdate(SqlCommand cmd, T entity);
+        protected virtual void BindId(SqlCommand cmd, TKey id)
+        {
+
+        }
+        protected virtual void BindInsert(SqlCommand cmd, T entity)
+        {
+
+        }
+        protected virtual void BindUpdate(SqlCommand cmd, T entity)
+        {
+
+        }
 
         // Key helpers
         protected abstract TKey GetKey(T entity);

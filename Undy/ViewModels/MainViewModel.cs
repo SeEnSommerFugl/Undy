@@ -10,16 +10,19 @@ namespace Undy.ViewModels
         private readonly PickListViewModel _pickListViewModel;
         private readonly SalesOrderViewModel _salesOrderViewModel;
         private readonly PaymentViewModel _paymentViewModel;
+        private readonly StartPageViewModel _startPageViewModel;
 
-        public MainViewModel(PurchaseOrderViewModel purchaseOrderViewModel, GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel)
+        public MainViewModel(PurchaseOrderViewModel purchaseOrderViewModel, GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, StartPageViewModel startPageViewModel)
         {
             _purchaseOrderViewModel = purchaseOrderViewModel;
             _goodsReceiptViewModel = goodsReceiptViewModel;
             _pickListViewModel = pickListViewModel;
             _salesOrderViewModel = salesOrderViewModel;
             _paymentViewModel = paymentViewModel;
+            _startPageViewModel = startPageViewModel;
 
             Nav.AddRange(
+                ("StartPage", "Startside", _startPageViewModel),
                 ("PurchaseOrders", "Indkøb", _purchaseOrderViewModel),
                 ("GoodsReceipts", "Vare modtagelse", _goodsReceiptViewModel),
                 ("PickLists", "Pluklister", _pickListViewModel),
@@ -27,7 +30,7 @@ namespace Undy.ViewModels
                 ("Payments", "Betalinger", _paymentViewModel)
             );
 
-            Nav.Initialize(defaultId: "PurchaseOrders");
+            Nav.Initialize(defaultId: "StartPage");
         }
     }
 }

@@ -12,17 +12,71 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <!--Top Grid til Lager dele--> 
-        <Grid Grid.Row="0">
+
+        <!--Top Grid til Lager dele-->
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                
-            </Grid>
+            <!-- Indhold til Lager Status her -->
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Image Source="/Styles/Images/checkBlue.png" Width="128" Height="128"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="test1234" Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Pakket i dag" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Image Source="/Styles/Images/picking-boxBlue.png" Width="128" Height="128"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding ReadyToHandle}" Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Klar til pluk" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="/Styles/Images/shopping-cartBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding OpenOrders}" Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Åbne ordre" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
         </Grid>
 
         <!--Midt Grid til Produktion dele-->
@@ -32,6 +86,44 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="/Styles/Images/chart-histogramBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding TotalOrderHandled}" Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Pakket total" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </Border>
         </Grid>
 
         <!--Bottom Grid til det sidste-->
@@ -41,7 +133,68 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="/Styles/Images/out-of-stockBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding MissingStock}" Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Mangler" Style="{DynamicResource H1Right}"/>
+                            <TextBlock Text="beholdning" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="/Styles/Images/pause-circleBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding OrdersOnHold}" Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Ordre på hold" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="10">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="/Styles/Images/exclamationBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding OrdersWErrors}" Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Ordre i fejl" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
-        
+
     </Grid>
 </UserControl>
