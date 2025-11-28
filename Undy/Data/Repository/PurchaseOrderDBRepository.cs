@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Windows.Controls.Primitives;
 using Microsoft.Data.SqlClient;
 using Undy.Models;
 
@@ -72,6 +71,6 @@ namespace Undy.Data.Repository
         protected override Guid GetKey(PurchaseOrder e) => e.PurchaseOrderID;
 
 
-        };
-    }
+    };
+}
 

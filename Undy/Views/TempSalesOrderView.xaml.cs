@@ -3,11 +3,11 @@
 namespace Undy.Views
 {
     /// <summary>
-    /// Interaction logic for StartPage.xaml
+    /// Interaction logic for TempSalesOrderView.xaml
     /// </summary>
-    public partial class StartPage : UserControl
+    public partial class TempSalesOrderView : UserControl
     {
-        public StartPage()
+        public TempSalesOrderView()
         {
             InitializeComponent();
         }

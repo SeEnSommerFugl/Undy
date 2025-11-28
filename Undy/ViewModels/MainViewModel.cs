@@ -13,6 +13,7 @@ namespace Undy.ViewModels
         private readonly TestReturnOrderViewModel _testReturnOrderViewModel;
         private readonly TestSalesOrderViewModel _testSalesOrderViewModel;
         private readonly TestPurchaseOrderViewModel _testPurchaseOrderViewModel;
+        private readonly StartPageViewModel _startPageViewModel;
 
         public MainViewModel(PurchaseOrderViewModel purchaseOrderViewModel, GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, TestPurchaseOrderViewModel testPurchaseOrderView)
         {
@@ -24,8 +25,10 @@ namespace Undy.ViewModels
             _testReturnOrderViewModel = testReturnOrderViewModel;
             _testSalesOrderViewModel = testSalesOrderViewModel;
             _testPurchaseOrderViewModel = testPurchaseOrderViewModel;
+            _startPageViewModel = startPageViewModel;
 
             Nav.AddRange(
+                ("StartPage", "Startside", _startPageViewModel),
                 ("PurchaseOrders", "Indkøb", _purchaseOrderViewModel),
                 ("GoodsReceipts", "Vare modtagelse", _goodsReceiptViewModel),
                 ("PickLists", "Pluklister", _pickListViewModel),
@@ -36,7 +39,7 @@ namespace Undy.ViewModels
                 ("TestSalesOrders", "Test salgsordrer", _testSalesOrderViewModel)
             );
 
-            Nav.Initialize(defaultId: "PurchaseOrders");
+            Nav.Initialize(defaultId: "StartPage");
         }
     }
 }

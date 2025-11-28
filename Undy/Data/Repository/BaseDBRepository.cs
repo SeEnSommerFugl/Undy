@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
-using Undy.Data;
 
 namespace Undy.Data.Repository
 {
@@ -32,18 +26,27 @@ namespace Undy.Data.Repository
         // --------- Template members you implement in each concrete repo ---------
 
         // SQL templates
-        protected abstract string SqlSelectAll { get; }
-        protected abstract string SqlSelectById { get; }
-        protected abstract string SqlInsert { get; }
-        protected abstract string SqlUpdate { get; }
-        protected abstract string SqlDeleteById { get; }
+        protected virtual string SqlSelectAll { get; }
+        protected virtual string SqlSelectById { get; }
+        protected virtual string SqlInsert { get; }
+        protected virtual string SqlUpdate { get; }
+        protected virtual string SqlDeleteById { get; }
         protected virtual string SqlPartialInsert { get; }
 
         // Mapping and bindings
         protected abstract T Map(IDataRecord r);
-        protected abstract void BindId(SqlCommand cmd, TKey id);
-        protected abstract void BindInsert(SqlCommand cmd, T entity);
-        protected abstract void BindUpdate(SqlCommand cmd, T entity);
+        protected virtual void BindId(SqlCommand cmd, TKey id)
+        {
+
+        }
+        protected virtual void BindInsert(SqlCommand cmd, T entity)
+        {
+
+        }
+        protected virtual void BindUpdate(SqlCommand cmd, T entity)
+        {
+
+        }
 
         // Key helpers
         protected abstract TKey GetKey(T entity);
@@ -55,7 +58,7 @@ namespace Undy.Data.Repository
             cmd.CommandType = CommandType.StoredProcedure;
 
             BindId(cmd, id);
-            
+
             using var rd = await cmd.ExecuteReaderAsync();
             return await rd.ReadAsync() ? Map(rd) : null;
         }
@@ -105,7 +108,7 @@ namespace Undy.Data.Repository
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     BindUpdate(cmd, entity);
-                    
+
                     await cmd.ExecuteNonQueryAsync();
                 }
 
@@ -132,7 +135,7 @@ namespace Undy.Data.Repository
             await cmd.ExecuteNonQueryAsync();
 
             var existing = _items.FirstOrDefault(x => Equals(GetKey(x), id));
-            if (existing != null) 
+            if (existing != null)
                 _items.Remove(existing);
         }
 
@@ -142,7 +145,7 @@ namespace Undy.Data.Repository
         {
             var fresh = await QueryAllAsync();
             _items.Clear();
-            foreach (var e in fresh) 
+            foreach (var e in fresh)
                 _items.Add(e);
         }
 

@@ -7,51 +7,18 @@
              mc:Ignorable="d" 
              d:DesignWidth="1980" d:DesignHeight="1048">
     <Grid>
-
-        <DataGrid AutoGenerateColumns="False"
-          ItemsSource="{Binding Products}"
-          HeadersVisibility="Column"
-          CanUserAddRows="False"
-          CanUserDeleteRows="False"
-          GridLinesVisibility="All"
-          BorderThickness="1"
-          BorderBrush="#CCCCCC"
-          RowHeight="30"
-          ColumnHeaderHeight="30"
-          FontSize="14"
-          Margin="10">
-
-            <DataGrid.Columns>
-
-            <DataGridTextColumn Header="Produktnummer"
-                    Binding="{Binding ProductNumber}"
-                    Width="*" />
-
-            <DataGridTextColumn Header="Produktnavn"
-                    Binding="{Binding ProductName}"
-                    Width="*" />
-
-            <DataGridTextColumn Header="Pris"
-                    Binding="{Binding Price}"
-                    Width="Auto" />
-
-            <DataGridTextColumn Header="Størrelse"
-                    Binding="{Binding Size}"
-                    Width="Auto" />
-
-            <DataGridTextColumn Header="Farve"
-                    Binding="{Binding Colour}"
-                    Width="Auto" />
-
-            <DataGridTextColumn Header="Antal på lager"
-                    Binding="{Binding InStock}"
-                    Width="Auto" />
-
-            <DataGridTextColumn Header="Status"
-                    Binding="{Binding Status}"
-                    Width="Auto"/>
-
-        </DataGrid.Columns>
-        </DataGrid>
+        <Border Style="{DynamicResource Card}">
+            <DataGrid Style="{DynamicResource DataGrid.Table}" ItemsSource="{Binding SaleView}" MaxHeight="1000">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Ordrenummer" Binding="{Binding OrderNumber}" Width="*" />
+                    <DataGridTextColumn Header="Ordrestatus" Binding="{Binding OrderStatus}" Width="*" />
+                    <DataGridTextColumn Header="Betalingsstatus" Binding="{Binding PaymentStatus}" Width="*" />
+                    <DataGridTextColumn Header="Salgsdato" Binding="{Binding SalesDate, StringFormat=\{0:dd-MM-yyyy\}}" Width="*" />
+                    <DataGridTextColumn Header="Pris" Binding="{Binding TotalPrice, StringFormat=\{0:C\}}" Width="*" />
+                    <DataGridTextColumn Header="Produktnavn" Binding="{Binding ProductName}" Width="*" />
+                    <DataGridTextColumn Header="Antal" Binding="{Binding Quantity}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
     </Grid>
 </UserControl>

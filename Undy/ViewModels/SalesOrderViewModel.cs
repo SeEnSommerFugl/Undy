@@ -1,22 +1,22 @@
-﻿using Undy.Data.Repository;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
+using Undy.Data.Repository;
 using Undy.Models;
 
 namespace Undy.ViewModels
 {
     public class SalesOrderViewModel : BaseViewModel
     {
-        private IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
-        private IBaseRepository<Stock, Guid> _productCatalogueRepo;
-        private IBaseRepository<Product, Guid> _productRepo;
+        private IBaseRepository<SalesOrderDisplay, Guid> _salesDisplayRepo;
 
-        public SalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> productCatalogueRepo, IBaseRepository<Product, Guid> productRepo)
+        public ObservableCollection<SalesOrderDisplay> SalesDisplay => _salesDisplayRepo.Items;
+        public ICollectionView SaleView { get; }
+
+        public SalesOrderViewModel(IBaseRepository<SalesOrderDisplay, Guid> salesDisplayRepo)
         {
-            _salesOrderRepo = salesOrderRepo;
-            _productCatalogueRepo = productCatalogueRepo;
-            _productRepo = productRepo;
-
-            //public ObservableCollection<SalesOrder> SalesOrders { get; set; }
+            _salesDisplayRepo = salesDisplayRepo;
+            SaleView = CollectionViewSource.GetDefaultView(SalesDisplay);
         }
     }
 }
-

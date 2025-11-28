@@ -59,7 +59,7 @@ namespace Undy.Data.Repository
         // Get key from entity
         protected override Guid GetKey(Stock e) => e.StockID;
 
-        };
-           
-    }
+    };
+
+}
 

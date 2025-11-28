@@ -23,16 +23,18 @@ namespace Undy
             IBaseRepository<TestReturnOrder, Guid> testReturnRepo = new TestReturnOrderDBRepository();
             IBaseRepository<TestPurchaseOrder, Guid> testPurchaseOrderRepo = new TestPurchaseOrderDBRepository();
             IBaseRepository<TestSalesOrder, Guid> testSalesOrderRepo = new TestSalesOrderDBRepository();
+            IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
 
             //----- ViewModels ----- //
             var purchaseOrderVM = new PurchaseOrderViewModel(purchaseOrderRepo, stockRepo);
             var goodsReceiptVM = new GoodsReceiptViewModel(purchaseOrderRepo, productRepo);
             var pickListVM = new PickListViewModel(salesOrderRepo, productRepo);
-            var salesOrderVM = new SalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
+            var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
             var testPurchaseOrderVM = new TestPurchaseOrderViewModel(testPurchaseOrderRepo, productRepo);
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
+            var startPageVM = new StartPageViewModel();
 
             
             var mainVM = new MainViewModel(
@@ -45,6 +47,8 @@ namespace Undy
                 testPurchaseOrderVM,
                 testSalesOrderVM
 
+                paymentVM,
+                startPageVM
             );
 
             // ----- Main Window ----- //
@@ -52,6 +56,7 @@ namespace Undy
             mainWindow.Show();
 
             await Task.WhenAll(
+            //startPageRepo.InitializeAsync(),
             //productRepo.InitializeAsync(),
             //stockRepo.InitializeAsync(),
             //purchaseOrderRepo.InitializeAsync(),
