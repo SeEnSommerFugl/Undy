@@ -15,7 +15,12 @@ namespace Undy.ViewModels
         private readonly TestPurchaseOrderViewModel _testPurchaseOrderViewModel;
         private readonly StartPageViewModel _startPageViewModel;
 
-        public MainViewModel(PurchaseOrderViewModel purchaseOrderViewModel, GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, TestPurchaseOrderViewModel testPurchaseOrderView)
+
+        public MainViewModel(StartPageViewModel startPageViewModel, PurchaseOrderViewModel purchaseOrderViewModel, 
+            GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, 
+            SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, 
+            TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, 
+            TestPurchaseOrderViewModel testPurchaseOrderViewModel)
         {
             _purchaseOrderViewModel = purchaseOrderViewModel;
             _goodsReceiptViewModel = goodsReceiptViewModel;

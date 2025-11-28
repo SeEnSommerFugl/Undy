@@ -20,7 +20,7 @@ namespace Undy
             IBaseRepository<Stock, Guid> stockRepo = new StockDBRepository();
             IBaseRepository<PurchaseOrder, Guid> purchaseOrderRepo = new PurchaseOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> salesOrderRepo = new SalesOrderDBRepository();
-            IBaseRepository<TestReturnOrder, Guid> testReturnRepo = new TestReturnOrderDBRepository();
+            IBaseRepository<ReturnOrder, Guid> testReturnRepo = new ReturnOrderDBRepository();
             IBaseRepository<TestPurchaseOrder, Guid> testPurchaseOrderRepo = new TestPurchaseOrderDBRepository();
             IBaseRepository<TestSalesOrder, Guid> testSalesOrderRepo = new TestSalesOrderDBRepository();
             IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
@@ -36,19 +36,19 @@ namespace Undy
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
             var startPageVM = new StartPageViewModel();
 
+
             
             var mainVM = new MainViewModel(
+                startPageVM,
                 purchaseOrderVM,
                 goodsReceiptVM,
                 pickListVM,
                 salesOrderVM,
                 paymentVM,
                 testReturnOrderVM,
-                testPurchaseOrderVM,
-                testSalesOrderVM
+                testSalesOrderVM,
+                testPurchaseOrderVM
 
-                paymentVM,
-                startPageVM
             );
 
             // ----- Main Window ----- //

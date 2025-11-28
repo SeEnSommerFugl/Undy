@@ -4,10 +4,20 @@ using Undy.ViewModels.Helpers;
 
 namespace Undy.ViewModels
 {
-    internal class TempSalesOrderViewModel : BaseViewModel
+    public class TestSalesOrderViewModel : BaseViewModel
     {
-        private readonly IBaseRepository<SalesOrderDBRepository, Guid> _salesOrderRepo;
+        private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
+        private readonly IBaseRepository<Stock, Guid> _stockRepo;
+        private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly SalesOrderService _salesOrderService;
+
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo)
+        {
+            _salesOrderRepo = salesOrderRepo;
+            _stockRepo = stockRepo;
+            _productRepo = productRepo;
+            //_salesOrderService = salesOrderService;
+        }
 
         private SalesOrder _currentSalesOrder;
         public SalesOrder CurrentSalesOrder

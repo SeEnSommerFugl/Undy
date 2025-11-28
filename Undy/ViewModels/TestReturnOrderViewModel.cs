@@ -9,7 +9,7 @@ namespace Undy.ViewModels
 {
     public class TestReturnOrderViewModel : BaseViewModel
     {
-        private IBaseRepository<TestReturnOrder, Guid> _tempReturnRepo;
+        private IBaseRepository<ReturnOrder, Guid> _tempReturnRepo;
 
         private string? _orderNumber;
         public string? OrderNumber
@@ -51,7 +51,7 @@ namespace Undy.ViewModels
 
         public ICommand ConfirmCommand {  get; }
 
-        public TestReturnOrderViewModel(IBaseRepository<TestReturnOrder, Guid> tempReturnRepo)
+        public TestReturnOrderViewModel(IBaseRepository<ReturnOrder, Guid> tempReturnRepo)
         {
             _tempReturnRepo = tempReturnRepo;
             
@@ -75,7 +75,7 @@ namespace Undy.ViewModels
             }
 
             // Logik til håndtering af bekræftelsen af ​​returordren
-            var newReturnOrder = new TestReturnOrder
+            var newReturnOrder = new ReturnOrder
             {
                 ReturnOrderID = Guid.NewGuid(),
                 ReturnOrderDate = DateOnly.FromDateTime(DateTime.Now),

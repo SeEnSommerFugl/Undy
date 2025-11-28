@@ -3,7 +3,7 @@ using Undy.Models;
 
 namespace Undy.ViewModels.Helpers
 {
-    internal class SalesOrderService
+    public class SalesOrderService
     {
         private readonly SalesOrderDBRepository _salesOrderRepo;
         //private readonly ProductSalesOrderDBRepository _productSalesOrderRepo;
