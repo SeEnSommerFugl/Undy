@@ -50,6 +50,7 @@ namespace Undy.Data.Repository
 
         // Key helpers
         protected abstract TKey GetKey(T entity);
+        protected abstract void SetKey(T entity, Guid id);
 
         public async Task<T?> GetByIdAsync(TKey id)
         {
@@ -66,7 +67,7 @@ namespace Undy.Data.Repository
         public async Task AddAsync(T entity)
         {
             if (GetKey(entity) is Guid g && g == Guid.Empty)
-                throw new InvalidOperationException("Entity key must be set before insert.");
+                SetKey(entity, Guid.NewGuid());
 
             using var con = await DB.OpenConnection();
             await AddAsyncOverload(entity, con, transaction: null);
