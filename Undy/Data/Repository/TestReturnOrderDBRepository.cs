@@ -11,7 +11,7 @@ using Undy.Models;
 
 namespace Undy.Data.Repository
 {
-    public class TestReturnOrderDBRepository : BaseDBRepository<TestReturnOrder, Guid>
+    public class TestReturnOrderDBRepository : BaseDBRepository<ReturnOrder, Guid>
     {
         // View for selecting all
         protected override string SqlSelectAll => "vw_ReturnOrder";
@@ -29,7 +29,7 @@ namespace Undy.Data.Repository
         protected override string SqlDeleteById => "usp_DeleteById_ReturnOrder";
 
         // Map data record to entity
-        protected override TestReturnOrder Map(IDataRecord r) => new TestReturnOrder
+        protected override ReturnOrder Map(IDataRecord r) => new ReturnOrder
         {
             ReturnOrderID = r.GetGuid(r.GetOrdinal("ReturnOrder_ID")),
             ReturnOrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ReturnOrderDate"))),
@@ -44,7 +44,7 @@ namespace Undy.Data.Repository
         }
 
         // Parameter binding for insert
-        protected override void BindInsert(SqlCommand cmd, TestReturnOrder e)
+        protected override void BindInsert(SqlCommand cmd, ReturnOrder e)
         {
             cmd.Parameters.Add("@ReturnOrder_ID", SqlDbType.UniqueIdentifier).Value = e.ReturnOrderID;
             cmd.Parameters.Add("@ReturnDate", SqlDbType.Date).Value = e.ReturnOrderDate;
@@ -52,7 +52,7 @@ namespace Undy.Data.Repository
         }
 
         //  Parameter binding for update
-        protected override void BindUpdate(SqlCommand cmd, TestReturnOrder e)
+        protected override void BindUpdate(SqlCommand cmd, ReturnOrder e)
         {
             cmd.Parameters.Add("@ReturnOrder_ID", SqlDbType.UniqueIdentifier).Value = e.ReturnOrderID;
             cmd.Parameters.Add("@ReturnDate", SqlDbType.Date).Value = e.ReturnOrderDate;
@@ -60,6 +60,6 @@ namespace Undy.Data.Repository
         }
 
         // Get key from entity
-        protected override Guid GetKey(TestReturnOrder e) => e.ReturnOrderID;
+        protected override Guid GetKey(ReturnOrder e) => e.ReturnOrderID;
     }
 }
