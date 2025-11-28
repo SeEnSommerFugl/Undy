@@ -1,13 +1,14 @@
-﻿using Undy.Data.Repository;
+﻿using Undy.Data;
+using Undy.Data.Repository;
 using Undy.Models;
 
 namespace Undy.ViewModels.Helpers
 {
     internal class SalesOrderService
     {
+        private readonly DB _db;
         private readonly SalesOrderDBRepository _salesOrderRepo;
-        //private readonly ProductSalesOrderDBRepository _productSalesOrderRepo;
-        //private SqlConnection con = Db.OpenConnection();
+        private readonly ProductSalesOrderDBRepository _productSalesOrderDBRepository;
 
         public SalesOrderService()
         {

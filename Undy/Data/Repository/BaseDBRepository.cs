@@ -69,7 +69,15 @@ namespace Undy.Data.Repository
                 throw new InvalidOperationException("Entity key must be set before insert.");
 
             using var con = await DB.OpenConnection();
-            using var cmd = new SqlCommand(SqlInsert, con);
+            await AddAsyncOverload(entity, con, transaction: null);
+        }
+
+        internal async Task AddAsyncOverload(T entity, SqlConnection con, SqlTransaction? transaction)
+        {
+            if (GetKey(entity) is Guid g && g == Guid.Empty)
+                throw new InvalidOperationException("Entity key must be set before insert.");
+
+            using var cmd = new SqlCommand(SqlInsert, con, transaction);
             cmd.CommandType = CommandType.StoredProcedure;
 
             BindInsert(cmd, entity);
