@@ -1,33 +1,36 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Undy.Data.Repository;
+﻿using Undy.Data.Repository;
 using Undy.Models;
 
-namespace Undy.ViewModels.Helpers {
-    internal class SalesOrderService {
+namespace Undy.ViewModels.Helpers
+{
+    internal class SalesOrderService
+    {
         private readonly SalesOrderDBRepository _salesOrderRepo;
         //private readonly ProductSalesOrderDBRepository _productSalesOrderRepo;
         //private SqlConnection con = Db.OpenConnection();
 
-        public SalesOrderService() {
-            _salesOrderRepo = new SalesOrderDBRepository(con);
+        public SalesOrderService()
+        {
+            _salesOrderRepo = new SalesOrderDBRepository();
         }
 
-        public void CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrder) {
-            using(var transaction = con.BeginTransaction()) {
-                try {
-                    _salesOrderRepo.AddAsync(salesOrder);
+        public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrder)
+        {
+            using (var transaction = con.BeginTransaction())
+            {
+                try
+                {
+                    await _salesOrderRepo.AddAsync(salesOrder);
 
-                    foreach (var product in productSalesOrder) {
+                    foreach (var product in productSalesOrder)
+                    {
                         product.SalesOrderID = salesOrder.SalesOrderID;
-                        _ProductSalesOrderDBRepository.Add(product);
+                        await _ProductSalesOrderDBRepository.AddAsync(product);
                     }
                     transaction.Commit();
-                } catch (Exception) {
+                }
+                catch (Exception)
+                {
                     transaction.Rollback();
                     throw;
                 }

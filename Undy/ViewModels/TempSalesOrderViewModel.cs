@@ -1,39 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Undy.Data.Repository;
+﻿using Undy.Data.Repository;
 using Undy.Models;
 using Undy.ViewModels.Helpers;
 
-namespace Undy.ViewModels {
-    internal class TempSalesOrderViewModel {
+namespace Undy.ViewModels
+{
+    internal class TempSalesOrderViewModel : BaseViewModel
+    {
         private readonly IBaseRepository<SalesOrderDBRepository, Guid> _salesOrderRepo;
         private readonly SalesOrderService _salesOrderService;
 
         private SalesOrder _currentSalesOrder;
-        public SalesOrder CurrentSalesOrder {
+        public SalesOrder CurrentSalesOrder
+        {
             get => _currentSalesOrder;
-            set {
+            set
+            {
                 _currentSalesOrder = value;
                 OnPropertyChanged();
             }
         }
 
         private string _customerName;
-        public string CustomerName {
+        public string CustomerName
+        {
             get => _customerName;
-            set {
-                _customerName = value;
-                OnPropertyChanged();
+            set
+            {
+                if (SetProperty(ref _customerName, value)) ;
             }
         }
 
         private int _quantity;
-        public int Quantity {
+        public int Quantity
+        {
             get => _quantity;
-            set {
+            set
+            {
                 _quantity = value;
                 OnPropertyChanged();
             }

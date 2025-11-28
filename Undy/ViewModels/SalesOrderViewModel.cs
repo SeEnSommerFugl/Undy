@@ -11,7 +11,7 @@ namespace Undy.ViewModels
         private IBaseRepository<SalesOrderDisplay, Guid> _salesDisplayRepo;
 
         public ObservableCollection<SalesOrderDisplay> SalesDisplay => _salesDisplayRepo.Items;
-        public ICollectionView SaleView { get;}
+        public ICollectionView SaleView { get; }
 
         public SalesOrderViewModel(IBaseRepository<SalesOrderDisplay, Guid> salesDisplayRepo)
         {
@@ -20,4 +20,3 @@ namespace Undy.ViewModels
         }
     }
 }
-        

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Undy.Models {
-    public class SalesOrderDisplay {
+﻿namespace Undy.Models
+{
+    public class SalesOrderDisplay
+    {
         //Properties for SalesOrder
         public Guid SalesOrderID { get; set; }
         public int OrderNumber { get; set; }
