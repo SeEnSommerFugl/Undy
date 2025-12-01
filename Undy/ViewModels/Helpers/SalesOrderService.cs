@@ -14,7 +14,7 @@ namespace Undy.ViewModels.Helpers
             _salesOrderRepo = new SalesOrderDBRepository();
         }
 
-        public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrder)
+        /*public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrder)
         {
             using (var transaction = con.BeginTransaction())
             {
@@ -35,6 +35,6 @@ namespace Undy.ViewModels.Helpers
                     throw;
                 }
             }
-        }
+        }*/
     }
 }
