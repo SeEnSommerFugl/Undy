@@ -5,67 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Undy.Views"
              mc:Ignorable="d" 
-             MaxWidth="1920" MaxHeight="1080"
-             Background="White">
-
-    <Grid Margin="40">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <!-- Title -->
-        <TextBlock Text="Retur Portal"
-                   FontSize="24"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
-
-        <!-- Subtitle -->
-        <TextBlock Grid.Row="1"
-                   Style="{DynamicResource LabelMuted}"
-                   Text="Indtast kundenavn, vælg produkt og angiv antal for det valgte produkt."
-                   FontSize="14"
-                   HorizontalAlignment="Center"
-                   TextAlignment="Center"
-                   Margin="0,10"/>
-
-        <!-- Fields -->
-        <StackPanel Grid.Row="2"
-                    Margin="0,20"
-                    Orientation="Vertical">
-
-            <!-- Order Number -->
-            <TextBlock Text="Kundenavn*"
-                       Margin="5,0,0,5"/>
-            <TextBox Height="45"
-                     Background="#D7E0E2"
-                     BorderThickness="0"
-                     Padding="10"/>
-
-            <!-- Bruger input -->
-            <TextBlock Text="Produkt*"
-                       Margin="5,0,0,5"/>
-            <TextBox Height="45"
-                     Background="#D7E0E2"
-                     BorderThickness="0"
-                     Padding="10"/>
-
-            <!-- Årsag til returnering -->
-            <TextBlock Text="Antal*"
-                       Margin="5,0,0,5"/>
-            <TextBox Height="45"
-                     Background="#D7E0E2"
-                     BorderThickness="0"
-                     Padding="10"/>
-        </StackPanel>
-
-        <!-- Button -->
-        <Button Grid.Row="3"
-                Content="Bekræft"
-                Command="{Binding ConfirmCommand}"
-                Style="{DynamicResource ButtonBase}" />
+             d:DesignWidth="1980" d:DesignHeight="1048">
+    <Grid>
+        <Border Style="{DynamicResource Card}">
+            <DataGrid Style="{DynamicResource DataGrid.Table}" ItemsSource="{Binding SaleView}" MaxHeight="1000">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Ordrenummer" Binding="{Binding OrderNumber}" Width="*" />
+                    <DataGridTextColumn Header="Ordrestatus" Binding="{Binding OrderStatus}" Width="*" />
+                    <DataGridTextColumn Header="Betalingsstatus" Binding="{Binding PaymentStatus}" Width="*" />
+                    <DataGridTextColumn Header="Salgsdato" Binding="{Binding SalesDate, StringFormat=\{0:dd-MM-yyyy\}}" Width="*" />
+                    <DataGridTextColumn Header="Pris" Binding="{Binding TotalPrice, StringFormat=\{0:C\}}" Width="*" />
+                    <DataGridTextColumn Header="Produktnavn" Binding="{Binding ProductName}" Width="*" />
+                    <DataGridTextColumn Header="Antal" Binding="{Binding Quantity}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
     </Grid>
 </UserControl>

@@ -28,6 +28,15 @@
             <DataTemplate DataType="{x:Type vm:StartPageViewModel}">
                 <views:StartPage/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:TestReturnOrderViewModel}">
+                <views:TestPurchaseOrderView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:TestPurchaseOrderViewModel}">
+                <views:TestReturnOrderView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:TestSalesOrderViewModel}">
+                <views:TestSalesOrderView/>
+            </DataTemplate>
 
 
         </ResourceDictionary>
