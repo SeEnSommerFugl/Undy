@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Undy.Models
 {
-    public class TestPurchaseOrder
+    public class TestWholesaleOrder
     {
         public Guid PurchaseOrderID { get; set; }
         public DateOnly ExpectedDeliveryDate { get; set; }
