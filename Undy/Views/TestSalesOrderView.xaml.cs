@@ -5,9 +5,9 @@ namespace Undy.Views
     /// <summary>
     /// Interaction logic for TempSalesOrderView.xaml
     /// </summary>
-    public partial class TempSalesOrderView : UserControl
+    public partial class TestSalesOrderView : UserControl
     {
-        public TempSalesOrderView()
+        public TestSalesOrderView()
         {
             InitializeComponent();
         }
