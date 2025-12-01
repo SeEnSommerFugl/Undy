@@ -11,6 +11,7 @@
         <Setter Property="Padding"               Value="8,4"/>
         <Setter Property="CaretBrush" Value="White"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
     </Style>
 
@@ -46,14 +47,20 @@
     <Style x:Key="TitleLeft" TargetType="TextBlock" BasedOn="{StaticResource LabelMuted}">
         <Setter Property="TextAlignment"       Value="Right"/>
         <Setter Property="VerticalAlignment"   Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="Foreground"          Value="#CFE0FF"/>
-        <Setter Property="FontSize"            Value="30"/>
-        <Setter Property="Margin"              Value="0,0,12,0"/>
+        <Setter Property="FontSize"            Value="24"/>
+        <Setter Property="Margin"              Value="0,0,12,1"/>
     </Style>
     <Style x:Key="InputRight" TargetType="TextBox" BasedOn="{StaticResource TextBoxBase}">
+        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Width" Value="350"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="FontSize"            Value="30"/>
-        <Setter Property="Margin"              Value="0,0,0,0"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="FontSize"            Value="24"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
     </Style>
     <Style x:Key="ComboRight" TargetType="ComboBox" BasedOn="{StaticResource ComboBoxBase}">
         <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -62,7 +69,6 @@
     <Style x:Key="TextBlockRight" TargetType="TextBlock" BasedOn="{StaticResource TitleLeft}">
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="FontSize" Value="30"/>
-        <Setter Property="Margin"              Value="0,0,0,0"/>
     </Style>
 
 </ResourceDictionary>
