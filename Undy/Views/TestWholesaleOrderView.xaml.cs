@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Undy.Views
 {
     /// <summary>
-    /// Interaction logic for TestPurchaseOrderView.xaml
+    /// Interaction logic for TestWholesaleOrderView.xaml
     /// </summary>
-    public partial class TestPurchaseOrderView : UserControl
+    public partial class TestWholesaleOrderView : UserControl
     {
-        public TestPurchaseOrderView()
+        public TestWholesaleOrderView()
         {
             InitializeComponent();
         }
