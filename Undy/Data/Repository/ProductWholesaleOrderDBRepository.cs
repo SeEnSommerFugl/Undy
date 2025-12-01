@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Undy.Models;
 
 namespace Undy.Data.Repository {
-    internal class ProductWholesaleOrderDBRepository {
+    internal class ProductWholesaleOrderDBRepository : BaseDBRepository<ProductWholsesaleOrder, Guid> {
     }
 }
