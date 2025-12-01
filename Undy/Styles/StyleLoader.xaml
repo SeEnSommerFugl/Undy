@@ -2,15 +2,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/Styles/StylesPalette.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesCards.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesNavigation.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesButtons.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesChips.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesDatagrid.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesInput.xaml"/>
-        <ResourceDictionary Source="/Styles/StylesTypography.xaml"/>
-        <ResourceDictionary Source="/Styles/VisibilityToggle.xaml"/>
+        <ResourceDictionary Source="/Styles/Base/Palette.xaml"/>
+        <ResourceDictionary Source="/Styles/Base/Typography.xaml"/>
+        <ResourceDictionary Source="/Styles/Behaviours/Visibility.xaml"/>
+        <ResourceDictionary Source="/Styles/Controls/Buttons.xaml"/>
+        <ResourceDictionary Source="/Styles/Controls/Cards.xaml"/>
+        <ResourceDictionary Source="/Styles/Controls/Chips.xaml"/>
+        <ResourceDictionary Source="/Styles/Controls/Inputs.xaml"/>
+        <ResourceDictionary Source="/Styles/Controls/Navigation.xaml"/>
+        <ResourceDictionary Source="/Styles/Datagrids/Interactions.xaml"/>
+        <ResourceDictionary Source="/Styles/Datagrids/Layout.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
