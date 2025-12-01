@@ -5,7 +5,7 @@ namespace Undy.ViewModels
     public class MainViewModel : BaseViewModel
     {
         public Navigation Nav { get; } = new();
-        private readonly PurchaseOrderViewModel _purchaseOrderViewModel;
+        private readonly WholesaleOrderViewModel _purchaseOrderViewModel;
         private readonly GoodsReceiptViewModel _goodsReceiptViewModel;
         private readonly PickListViewModel _pickListViewModel;
         private readonly SalesOrderViewModel _salesOrderViewModel;
@@ -16,7 +16,7 @@ namespace Undy.ViewModels
         private readonly StartPageViewModel _startPageViewModel;
 
 
-        public MainViewModel(StartPageViewModel startPageViewModel, PurchaseOrderViewModel purchaseOrderViewModel, 
+        public MainViewModel(StartPageViewModel startPageViewModel, WholesaleOrderViewModel purchaseOrderViewModel, 
             GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, 
             SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, 
             TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, 
