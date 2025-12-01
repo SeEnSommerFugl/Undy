@@ -22,7 +22,7 @@
         <Setter Property="CanUserDeleteRows" Value="False"/>
         <Setter Property="RowHeight" Value="44"/>
         <Setter Property="IsReadOnly" Value="True"/>
-        <Setter Property="ColumnHeaderHeight" Value="42"/>
+        <Setter Property="ColumnHeaderHeight" Value="42"/> 
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="40"/>
         <Setter Property="SelectionMode" Value="Single"/>
@@ -33,27 +33,11 @@
         <Setter Property="EnableRowVirtualization" Value="True"/>
         <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
 
-        <!-- centrér alle kolonneoverskrifter globalt -->
+        <!-- Horizontally center all columnheaders globally. -->
         <Setter Property="ColumnHeaderStyle">
             <Setter.Value>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                </Style>
-            </Setter.Value>
-        </Setter>
-
-        <!-- markér hele rækken -->
-        <Setter Property="RowStyle">
-            <Setter.Value>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background"  Value="Transparent"/>
-                    <Setter Property="BorderBrush" Value="Transparent"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="#056097"/>
-                            <Setter Property="BorderBrush" Value="#056097"/>
-                        </Trigger>
-                    </Style.Triggers>
                 </Style>
             </Setter.Value>
         </Setter>
@@ -83,7 +67,7 @@
     </Style>
 
 
-    <!-- Smarte DataGrid headers: mørk baggrund, semibold, afrundede kanter -->
+    <!-- DataGrid Headers: ### Background ### Edges -->
     <Style x:Key="DataGridHeader.Smart" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="#223044"/>
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
@@ -107,11 +91,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
-    <!-- Ensartet kompakt tabel til Renters + Sale Row 2 -->
     <Style x:Key="DataGrid.Table" TargetType="DataGrid" BasedOn="{StaticResource DataGridBase}">
-        <!-- Kun kompakthed – alt andet arves fra DataGridBase -->
+        <!-- Only compact properties; Everything else is inherited from DataGridBase -->
         <Setter Property="RowHeight" Value="36"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -119,7 +100,7 @@
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="ColumnHeaderStyle" Value="{DynamicResource DataGridHeader.Smart}"/>
-        <!-- Valgfrit: scroll hvisListen bliver lang -->
+        <!-- Valgfrit: scroll hvis listen bliver lang -->
         <Setter Property="MaxHeight" Value="520"/>
         <Setter Property="HorizontalAlignment" Value="Center"></Setter>
     </Style>
@@ -163,7 +144,7 @@
     </Style>
 
     <!-- Money cell: colors by IsPositive (VM gives bool) -->
-    <Style x:Key="DataGridCellMoney" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellPill}">
+    <Style x:Key="DatagridCellDiffColored" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellPill}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsPositive}" Value="True">
                 <Setter Property="Background" Value="{DynamicResource Amount.Positive.Bg}"/>
