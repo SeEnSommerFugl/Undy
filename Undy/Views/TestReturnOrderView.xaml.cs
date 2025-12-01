@@ -5,9 +5,9 @@ namespace Undy.Views
     /// <summary>
     /// Interaction logic for TempReturnView.xaml
     /// </summary>
-    public partial class TestReturnView : UserControl
+    public partial class TestReturnOrderView : UserControl
     {
-        public TestReturnView()
+        public TestReturnOrderView()
         {
             InitializeComponent();
         }
