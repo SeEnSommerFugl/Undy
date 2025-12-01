@@ -9,7 +9,7 @@ namespace Undy.ViewModels.Helpers
     {
         private readonly SalesOrderDBRepository _salesOrderRepo;
         private readonly ProductSalesOrderDBRepository _productSalesOrderRepo;
-        private SqlConnection con = DB.OpenConnection();
+        //private SqlConnection con = DB.OpenConnection();
 
         public SalesOrderService()
         {
@@ -17,7 +17,7 @@ namespace Undy.ViewModels.Helpers
             _productSalesOrderRepo = new ProductSalesOrderDBRepository();
         }
 
-        public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrder)
+        /*public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrder)
         {
             using (var transaction = con.BeginTransaction())
             {
@@ -37,7 +37,7 @@ namespace Undy.ViewModels.Helpers
                     transaction.Rollback();
                     throw;
                 }
-            }
+            }*/
         }
     }
-}
+

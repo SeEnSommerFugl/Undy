@@ -21,7 +21,7 @@ namespace Undy
             IBaseRepository<PurchaseOrder, Guid> purchaseOrderRepo = new PurchaseOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> salesOrderRepo = new SalesOrderDBRepository();
             IBaseRepository<ReturnOrder, Guid> testReturnRepo = new ReturnOrderDBRepository();
-            IBaseRepository<TestPurchaseOrder, Guid> testPurchaseOrderRepo = new TestPurchaseOrderDBRepository();
+            IBaseRepository<TestWholesaleOrder, Guid> testWholesaleOrderRepo = new TestWholesaleOrderDBRepository();
             IBaseRepository<TestSalesOrder, Guid> testSalesOrderRepo = new TestSalesOrderDBRepository();
             IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
 
@@ -32,7 +32,7 @@ namespace Undy
             var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
-            var testPurchaseOrderVM = new TestPurchaseOrderViewModel(testPurchaseOrderRepo, productRepo);
+            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(testWholesaleOrderRepo, productRepo);
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
             var startPageVM = new StartPageViewModel();
 
@@ -47,7 +47,7 @@ namespace Undy
                 paymentVM,
                 testReturnOrderVM,
                 testSalesOrderVM,
-                testPurchaseOrderVM
+                testWholesaleOrderVM
 
             );
 

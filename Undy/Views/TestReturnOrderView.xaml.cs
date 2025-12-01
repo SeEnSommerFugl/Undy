@@ -3,7 +3,7 @@
 namespace Undy.Views
 {
     /// <summary>
-    /// Interaction logic for TempReturnView.xaml
+    /// Interaction logic for TestReturnView.xaml
     /// </summary>
     public partial class TestReturnOrderView : UserControl
     {
