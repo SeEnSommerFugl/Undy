@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Undy.Views.PurchaseOrderView"
+﻿<UserControl x:Class="Undy.Views.WholesaleOrderView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -29,21 +29,24 @@
                                    Style="{DynamicResource TextBlockRight}"
                                    FontSize="20"
                                    Margin="0,0,6,0"/>
-                        <TextBox Style="{DynamicResource InputRight}" 
+                        <TextBox Style="{DynamicResource InputRight}"
+                                 Text="{Binding ProductNumberSearch}"
                                  Width="200"
                                  Height="20"/>
                         <TextBlock Text="Leverandør" 
                                    Style="{DynamicResource TextBlockRight}"
                                    FontSize="20"
                                    Margin="0,0,6,0"/>
-                        <TextBox Style="{DynamicResource InputRight}" 
+                        <TextBox Style="{DynamicResource InputRight}"
+                                 Text="{Binding SupplierSearch}"
                                  Width="200" 
                                  Height="20"/>
                         <TextBlock Text="Vare navn" 
                                    Style="{DynamicResource TextBlockRight}"
                                    FontSize="20"
                                    Margin="0,0,6,0"/>
-                        <TextBox Style="{DynamicResource InputRight}" 
+                        <TextBox Style="{DynamicResource InputRight}"
+                                 Text="{Binding ProductNameSearch}"
                                  Width="200" 
                                  Height="20"/>
                     </StackPanel>
@@ -51,12 +54,12 @@
             </Grid>
         </Border>
         <Border Grid.Row="2" Style="{DynamicResource Card}">
-            <DataGrid ItemsSource="{Binding PurchaseOrderView}"
+            <DataGrid ItemsSource="{Binding WholesaleView}"
                               Style="{DynamicResource DataGrid.Table}"
                               MaxHeight="1000"
                               Background="Transparent"
                               BorderThickness="0"
-                              SelectionChanged="DataGrid_SelectionChanged" HorizontalAlignment="Stretch">
+                              HorizontalAlignment="Stretch">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Dato" Width="160"
                                         Binding="{Binding PurchaseOrderDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
