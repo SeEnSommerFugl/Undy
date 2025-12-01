@@ -18,21 +18,20 @@ namespace Undy
             // ----- Shared Instances ----- //
             IBaseRepository<Product, Guid> productRepo = new ProductDBRepository();
             IBaseRepository<Stock, Guid> stockRepo = new StockDBRepository();
-            IBaseRepository<PurchaseOrder, Guid> purchaseOrderRepo = new PurchaseOrderDBRepository();
+            IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo = new WholesaleOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> salesOrderRepo = new SalesOrderDBRepository();
             IBaseRepository<ReturnOrder, Guid> testReturnRepo = new ReturnOrderDBRepository();
-            IBaseRepository<TestWholesaleOrder, Guid> testWholesaleOrderRepo = new TestWholesaleOrderDBRepository();
             IBaseRepository<TestSalesOrder, Guid> testSalesOrderRepo = new TestSalesOrderDBRepository();
             IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
 
             //----- ViewModels ----- //
-            var purchaseOrderVM = new PurchaseOrderViewModel(purchaseOrderRepo, stockRepo);
-            var goodsReceiptVM = new GoodsReceiptViewModel(purchaseOrderRepo, productRepo);
+            var purchaseOrderVM = new WholesaleOrderViewModel(wholesaleOrderRepo, stockRepo);
+            var goodsReceiptVM = new GoodsReceiptViewModel(wholesaleOrderRepo, productRepo);
             var pickListVM = new PickListViewModel(salesOrderRepo, productRepo);
             var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
-            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(testWholesaleOrderRepo, productRepo);
+            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
             var startPageVM = new StartPageViewModel();
 
