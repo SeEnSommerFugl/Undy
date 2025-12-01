@@ -8,7 +8,7 @@
              d:DesignWidth="1652" d:DesignHeight="1048">
     <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
-            <RowDefinition Height="170"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="12"/>
@@ -16,41 +16,22 @@
 
         <Border Grid.Row="0" Style="{DynamicResource Card}">
             <Grid>
-                <DockPanel>
-                    <Button Content="Søg"
-                            Command="{Binding SearchCommand}"
-                            Style="{DynamicResource ButtonBase}"
-                            Height="60"
-                            Width="100"
-                            Margin="12,0,12,0"
-                            DockPanel.Dock="Left"/>
+
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Varenummer" 
-                                   Style="{DynamicResource TextBlockRight}"
-                                   FontSize="20"
-                                   Margin="0,0,6,0"/>
+                                   Style="{DynamicResource TextBlockRight}"/>
                         <TextBox Style="{DynamicResource InputRight}"
-                                 Text="{Binding ProductNumberSearch}"
-                                 Width="200"
-                                 Height="20"/>
+                                 Text="{Binding ProductNumberSearch, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Leverandør" 
-                                   Style="{DynamicResource TextBlockRight}"
-                                   FontSize="20"
-                                   Margin="0,0,6,0"/>
+                                   Style="{DynamicResource TextBlockRight}"/>
                         <TextBox Style="{DynamicResource InputRight}"
-                                 Text="{Binding SupplierSearch}"
-                                 Width="200" 
-                                 Height="20"/>
+                                 Text="{Binding SupplierSearch, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Vare navn" 
-                                   Style="{DynamicResource TextBlockRight}"
-                                   FontSize="20"
-                                   Margin="0,0,6,0"/>
+                                   Style="{DynamicResource TextBlockRight}"/>
                         <TextBox Style="{DynamicResource InputRight}"
-                                 Text="{Binding ProductNameSearch}"
-                                 Width="200" 
-                                 Height="20"/>
+                                 Text="{Binding ProductNameSearch, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
-                </DockPanel>
+
             </Grid>
         </Border>
         <Border Grid.Row="2" Style="{DynamicResource Card}">
@@ -62,7 +43,7 @@
                               HorizontalAlignment="Stretch">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Dato" Width="160"
-                                        Binding="{Binding PurchaseOrderDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
+                                        Binding="{Binding WholesaleOrderDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
                     <DataGridTextColumn Header="Varenummer" 
                                         Binding="{Binding ItemNumber}" 
                                         Width="160"/>

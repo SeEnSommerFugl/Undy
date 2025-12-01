@@ -9,6 +9,7 @@ namespace Undy.ViewModels
 {
     public class WholesaleOrderViewModel : BaseViewModel
     {
+        private readonly ICollectionView _wholesaleView;
 
         private IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
         private IBaseRepository<Stock, Guid> _productCatalogueRepo;
@@ -16,7 +17,7 @@ namespace Undy.ViewModels
         public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
         //public ObservableCollection<Stock> ProductCatalogue => _productCatalogueRepo.Items;
 
-        public ICollectionView _wholesaleView { get; }
+        public ICollectionView WholesaleView => _wholesaleView;
 
         public WholesaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo, IBaseRepository<Stock, Guid> productCatalogueRepo)
         {
@@ -25,6 +26,7 @@ namespace Undy.ViewModels
 
 
             _wholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
+            _wholesaleView.SortDescriptions.Add(new SortDescription(nameof(WholesaleOrder.OrderDate), ListSortDirection.Descending));
 
         }
 
