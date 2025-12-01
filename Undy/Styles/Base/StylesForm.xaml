@@ -1,0 +1,39 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Form alignment helpers -->
+    <Style x:Key="TitleLeft" TargetType="TextBlock" BasedOn="{StaticResource LabelMuted}">
+        <Setter Property="TextAlignment"       Value="Right"/>
+        <Setter Property="VerticalAlignment"   Value="Center"/>
+        <Setter Property="Foreground"          Value="#CFE0FF"/>
+        <Setter Property="FontSize"            Value="30"/>
+        <Setter Property="Margin"              Value="0,0,12,0"/>
+    </Style>
+
+    <Style x:Key="InputRight" TargetType="TextBox" BasedOn="{StaticResource TextBoxBase}">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="FontSize"            Value="30"/>
+        <Setter Property="Margin"              Value="0,0,0,0"/>
+    </Style>
+
+    <Style x:Key="ComboRight" TargetType="ComboBox" BasedOn="{StaticResource ComboBoxBase}">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
+    <Style x:Key="TextBlockRight" TargetType="TextBlock" BasedOn="{StaticResource TitleLeft}">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="Margin"   Value="0,0,0,0"/>
+    </Style>
+
+    <!-- Her kan du også have FormStatusError hvis du bruger den -->
+    <Style x:Key="FormStatusError"
+           TargetType="TextBlock"
+           BasedOn="{StaticResource LabelMuted}">
+        <Setter Property="Foreground"         Value="{StaticResource Brush.Danger}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="FontWeight"        Value="Bold"/>
+        <Setter Property="Margin"            Value="0,10,0,0"/>
+    </Style>
+
+</ResourceDictionary>
