@@ -29,10 +29,10 @@
                 <views:StartPage/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:TestReturnOrderViewModel}">
-                <views:TestPurchaseOrderView/>
+                <views:TestReturnOrderView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:TestPurchaseOrderViewModel}">
-                <views:TestReturnOrderView/>
+                <views:TestPurchaseOrderView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:TestSalesOrderViewModel}">
                 <views:TestSalesOrderView/>
