@@ -9,11 +9,11 @@ namespace Undy.ViewModels
 {
     public class TestWholesaleOrderViewModel : BaseViewModel
     {
-        private readonly IBaseRepository<TestWholesaleOrder, Guid> _testPurchaseOrderRepo;
+        private readonly IBaseRepository<TestWholesaleOrder, Guid> _testWholesaleOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
-        public TestWholesaleOrderViewModel(IBaseRepository<TestWholesaleOrder, Guid> testPurchaseOrderRepo, IBaseRepository<Product, Guid> productRepo)
+        public TestWholesaleOrderViewModel(IBaseRepository<TestWholesaleOrder, Guid> testWholesaleOrderRepo, IBaseRepository<Product, Guid> productRepo)
         {
-            _testPurchaseOrderRepo = testPurchaseOrderRepo;
+            _testWholesaleOrderRepo = testWholesaleOrderRepo;
             _productRepo = productRepo;
         }
     }
