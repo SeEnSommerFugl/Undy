@@ -36,8 +36,6 @@ namespace Undy
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, stockRepo, productRepo);
             var startPageVM = new StartPageViewModel();
 
-
-            
             var mainVM = new MainViewModel(
                 startPageVM,
                 purchaseOrderVM,
