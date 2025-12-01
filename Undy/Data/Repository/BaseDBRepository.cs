@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
-using Undy.Data;
 
 namespace Undy.Data.Repository
 {
@@ -64,7 +58,7 @@ namespace Undy.Data.Repository
             cmd.CommandType = CommandType.StoredProcedure;
 
             BindId(cmd, id);
-            
+
             using var rd = await cmd.ExecuteReaderAsync();
             return await rd.ReadAsync() ? Map(rd) : null;
         }
@@ -114,7 +108,7 @@ namespace Undy.Data.Repository
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     BindUpdate(cmd, entity);
-                    
+
                     await cmd.ExecuteNonQueryAsync();
                 }
 
@@ -141,7 +135,7 @@ namespace Undy.Data.Repository
             await cmd.ExecuteNonQueryAsync();
 
             var existing = _items.FirstOrDefault(x => Equals(GetKey(x), id));
-            if (existing != null) 
+            if (existing != null)
                 _items.Remove(existing);
         }
 
@@ -151,7 +145,7 @@ namespace Undy.Data.Repository
         {
             var fresh = await QueryAllAsync();
             _items.Clear();
-            foreach (var e in fresh) 
+            foreach (var e in fresh)
                 _items.Add(e);
         }
 

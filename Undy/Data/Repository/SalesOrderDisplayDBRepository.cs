@@ -1,14 +1,16 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using Undy.Models;
-using Microsoft.Data.SqlClient;
 
-namespace Undy.Data.Repository {
-    public class SalesOrderDisplayDBRepository : BaseDBRepository<SalesOrderDisplay, Guid> {
+namespace Undy.Data.Repository
+{
+    public class SalesOrderDisplayDBRepository : BaseDBRepository<SalesOrderDisplay, Guid>
+    {
         protected override string SqlSelectAll => "Select * From vw_SalesOrders";
 
-        protected override SalesOrderDisplay Map(IDataRecord r) {
-            return new SalesOrderDisplay {
+        protected override SalesOrderDisplay Map(IDataRecord r)
+        {
+            return new SalesOrderDisplay
+            {
                 SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
                 OrderNumber = r.GetInt32(r.GetOrdinal("OrderNumber")),
                 OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
