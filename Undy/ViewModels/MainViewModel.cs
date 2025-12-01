@@ -12,7 +12,7 @@ namespace Undy.ViewModels
         private readonly PaymentViewModel _paymentViewModel;
         private readonly TestReturnOrderViewModel _testReturnOrderViewModel;
         private readonly TestSalesOrderViewModel _testSalesOrderViewModel;
-        private readonly TestPurchaseOrderViewModel _testPurchaseOrderViewModel;
+        private readonly TestWholesaleOrderViewModel _testWholesaleOrderViewModel;
         private readonly StartPageViewModel _startPageViewModel;
 
 
@@ -20,7 +20,7 @@ namespace Undy.ViewModels
             GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, 
             SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, 
             TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, 
-            TestPurchaseOrderViewModel testPurchaseOrderViewModel)
+            TestWholesaleOrderViewModel testWholesaleOrderViewModel)
         {
             _purchaseOrderViewModel = purchaseOrderViewModel;
             _goodsReceiptViewModel = goodsReceiptViewModel;
@@ -29,7 +29,7 @@ namespace Undy.ViewModels
             _paymentViewModel = paymentViewModel;
             _testReturnOrderViewModel = testReturnOrderViewModel;
             _testSalesOrderViewModel = testSalesOrderViewModel;
-            _testPurchaseOrderViewModel = testPurchaseOrderViewModel;
+            _testWholesaleOrderViewModel = testWholesaleOrderViewModel;
             _startPageViewModel = startPageViewModel;
 
             Nav.AddRange(
@@ -40,7 +40,7 @@ namespace Undy.ViewModels
                 ("SalesOrders", "Salgs ordrer", _salesOrderViewModel),
                 ("Payments", "Betalinger", _paymentViewModel),
                 ("TestReturnOrders", "Test returneringer", _testReturnOrderViewModel),
-                ("TestPurchaseOrders", "Test indkøbsordrer", _testPurchaseOrderViewModel),
+                ("TestPurchaseOrders", "Test indkøbsordrer", _testWholesaleOrderViewModel),
                 ("TestSalesOrders", "Test salgsordrer", _testSalesOrderViewModel)
             );
 

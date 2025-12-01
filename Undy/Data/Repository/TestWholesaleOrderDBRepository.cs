@@ -5,7 +5,7 @@ using Undy.Models;
 
 namespace Undy.Data.Repository
 {
-    public class TestPurchaseOrderDBRepository : BaseDBRepository<TestPurchaseOrder, Guid>
+    public class TestWholesaleOrderDBRepository : BaseDBRepository<TestWholesaleOrder, Guid>
     {
         // View for selecting all
         protected override string SqlSelectAll => "vw_PurchaseOrder";
@@ -26,7 +26,7 @@ namespace Undy.Data.Repository
         protected override string SqlPartialInsert => "usp_InsertPartial_PurchaseOrder";
 
         // Map data record to entity 
-        protected override TestPurchaseOrder Map(IDataRecord r) => new TestPurchaseOrder
+        protected override TestWholesaleOrder Map(IDataRecord r) => new TestWholesaleOrder
         {
             PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrder_ID")),
             ExpectedDeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ExpectedDeliveryDate"))),
@@ -45,7 +45,7 @@ namespace Undy.Data.Repository
         }
 
         // Parameter binding for insert
-        protected override void BindInsert(SqlCommand cmd, TestPurchaseOrder e)
+        protected override void BindInsert(SqlCommand cmd, TestWholesaleOrder e)
         {
             cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
             cmd.Parameters.Add("@ExpectedDeliveryDate", SqlDbType.Date).Value = e.ExpectedDeliveryDate;
@@ -57,7 +57,7 @@ namespace Undy.Data.Repository
         }
 
         // Parameter binding for update
-        protected override void BindUpdate(SqlCommand cmd, TestPurchaseOrder e)
+        protected override void BindUpdate(SqlCommand cmd, TestWholesaleOrder e)
         {
             cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
             cmd.Parameters.Add("@ExpectedDeliveryDate", SqlDbType.Date).Value = e.ExpectedDeliveryDate;
@@ -69,7 +69,7 @@ namespace Undy.Data.Repository
         }
 
         // Get key from entity
-        protected override Guid GetKey(TestPurchaseOrder e) => e.PurchaseOrderID;
+        protected override Guid GetKey(TestWholesaleOrder e) => e.PurchaseOrderID;
 
 
     };
