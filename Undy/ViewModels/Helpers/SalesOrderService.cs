@@ -23,14 +23,14 @@ namespace Undy.ViewModels.Helpers
 
             try
             {
-                //await _salesOrderRepo.AddRangeAsync(salesOrder, con, transaction);
+                await _salesOrderRepo.AddRangeAsync(new[] { salesOrder }, con, transaction);
                 await _productSalesOrderRepo.AddRangeAsync(productSalesOrderLines, con, transaction);
 
-                transaction.Commit();
+                await transaction.CommitAsync();
             }
-            catch (Exception)
+            catch
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 throw;
             }
         }

@@ -80,34 +80,36 @@ namespace Undy.Data.Repository
             _items.Add(entity);
         }
 
-        public async Task AddRangeAsync(IEnumerable<T> entities, SqlConnection con, SqlTransaction transaction) {
+        // Add NEW method for participating in external transactions
+        public async Task AddRangeAsync(IEnumerable<T> entities, SqlConnection con, SqlTransaction transaction)
+        {
             var entitiesList = entities.ToList();
             if (!entitiesList.Any()) return;
 
-            try {
-                foreach (var entity in entitiesList) {
-                    if (GetKey(entity) is Guid g && g == Guid.Empty) {
-                        throw new InvalidOperationException("Entity key must be set before insert");
-                    }
-
-                    using var cmd = new SqlCommand(SqlInsert, con, transaction);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    BindInsert(cmd, entity);
-
-                    var affected = await cmd.ExecuteNonQueryAsync();
-                    if(affected != 1) {
-                        throw new InvalidOperationException("Insert failed");
-                    }
+            // NO commit/rollback here - caller manages transaction
+            foreach (var entity in entitiesList)
+            {
+                if (GetKey(entity) is Guid g && g == Guid.Empty)
+                {
+                    throw new InvalidOperationException("Entity key must be set before insert");
                 }
 
-                await transaction.CommitAsync();
-                foreach(var entity in entitiesList) {
-                    _items.Add(entity);
+                using var cmd = new SqlCommand(SqlInsert, con, transaction);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                BindInsert(cmd, entity);
+
+                var affected = await cmd.ExecuteNonQueryAsync();
+                if (affected != 1)
+                {
+                    throw new InvalidOperationException("Insert failed");
                 }
-            } catch { 
-                await transaction.RollbackAsync();
-                throw;
+            }
+
+            // Add to collection immediately (will be visible even if transaction fails - consider implications)
+            foreach (var entity in entitiesList)
+            {
+                _items.Add(entity);
             }
         }
 
