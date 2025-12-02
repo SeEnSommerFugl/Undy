@@ -14,11 +14,11 @@ namespace Undy.ViewModels
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly SalesOrderService _salesOrderService;
 
-        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo, SalesOrderService salesOrderService) {
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo) {
             _salesOrderRepo = salesOrderRepo;
             _stockRepo = stockRepo;
             _productRepo = productRepo;
-            _salesOrderService = salesOrderService;
+            _salesOrderService = new SalesOrderService();
 
             ConfirmCommand = new RelayCommand(async _ => await CreateSalesOrderAsync());
             AddProductCommand = new RelayCommand(_ => AddProduct());
