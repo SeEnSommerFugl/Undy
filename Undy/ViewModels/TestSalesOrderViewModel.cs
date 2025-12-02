@@ -1,4 +1,5 @@
-﻿using Undy.Data.Repository;
+﻿using System.Windows.Input;
+using Undy.Data.Repository;
 using Undy.Models;
 using Undy.ViewModels.Helpers;
 
@@ -10,14 +11,6 @@ namespace Undy.ViewModels
         private readonly IBaseRepository<Stock, Guid> _stockRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly SalesOrderService _salesOrderService;
-
-        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo)
-        {
-            _salesOrderRepo = salesOrderRepo;
-            _stockRepo = stockRepo;
-            _productRepo = productRepo;
-            //_salesOrderService = salesOrderService;
-        }
 
         private SalesOrder _currentSalesOrder;
         public SalesOrder CurrentSalesOrder
@@ -36,7 +29,15 @@ namespace Undy.ViewModels
             get => _customerName;
             set
             {
-                if (SetProperty(ref _customerName, value)) ;
+                if(SetProperty(ref _customerName, value));
+            }
+        }
+
+        private string _selectedProduct;
+        public string SelectedProduct {
+            get => _selectedProduct;
+            set {
+                if(SetProperty(ref _selectedProduct, value));
             }
         }
 
@@ -46,12 +47,23 @@ namespace Undy.ViewModels
             get => _quantity;
             set
             {
-                _quantity = value;
-                OnPropertyChanged();
+                if(SetProperty(ref _quantity, value));
             }
         }
 
+        public ICommand ConfirmCommand { get; }
 
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo) {
+            _salesOrderRepo = salesOrderRepo;
+            _stockRepo = stockRepo;
+            _productRepo = productRepo;
+            //_salesOrderService = salesOrderService;
 
+            ConfirmCommand = new RelayCommand(CreateSalesOrder);
+        }
+
+        private async void CreateSalesOrder() {
+            var prod
+        }
     }
 }

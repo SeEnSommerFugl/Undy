@@ -5,7 +5,7 @@ namespace Undy.ViewModels
     public class MainViewModel : BaseViewModel
     {
         public Navigation Nav { get; } = new();
-        private readonly WholesaleOrderViewModel _purchaseOrderViewModel;
+        private readonly WholesaleOrderViewModel _wholesaleOrderViewModel;
         private readonly GoodsReceiptViewModel _goodsReceiptViewModel;
         private readonly PickListViewModel _pickListViewModel;
         private readonly SalesOrderViewModel _salesOrderViewModel;
@@ -16,13 +16,13 @@ namespace Undy.ViewModels
         private readonly StartPageViewModel _startPageViewModel;
 
 
-        public MainViewModel(StartPageViewModel startPageViewModel, WholesaleOrderViewModel purchaseOrderViewModel, 
+        public MainViewModel(StartPageViewModel startPageViewModel, WholesaleOrderViewModel wholesaleOrderViewModel, 
             GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, 
             SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, 
             TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, 
             TestWholesaleOrderViewModel testWholesaleOrderViewModel)
         {
-            _purchaseOrderViewModel = purchaseOrderViewModel;
+            _wholesaleOrderViewModel = wholesaleOrderViewModel;
             _goodsReceiptViewModel = goodsReceiptViewModel;
             _pickListViewModel = pickListViewModel;
             _salesOrderViewModel = salesOrderViewModel;
@@ -34,13 +34,13 @@ namespace Undy.ViewModels
 
             Nav.AddRange(
                 ("StartPage", "Startside", _startPageViewModel),
-                ("PurchaseOrders", "Indkøb", _purchaseOrderViewModel),
+                ("WholesaleOrder", "Indkøb", _wholesaleOrderViewModel),
                 ("GoodsReceipts", "Vare modtagelse", _goodsReceiptViewModel),
                 ("PickLists", "Pluklister", _pickListViewModel),
                 ("SalesOrders", "Salgs ordrer", _salesOrderViewModel),
                 ("Payments", "Betalinger", _paymentViewModel),
                 ("TestReturnOrders", "Test returneringer", _testReturnOrderViewModel),
-                ("TestPurchaseOrders", "Test indkøbsordrer", _testWholesaleOrderViewModel),
+                ("TestWholesaleOrder", "Test indkøbsordrer", _testWholesaleOrderViewModel),
                 ("TestSalesOrders", "Test salgsordrer", _testSalesOrderViewModel)
             );
 

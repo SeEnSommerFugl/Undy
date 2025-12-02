@@ -65,7 +65,5 @@ namespace Undy.Data.Repository
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

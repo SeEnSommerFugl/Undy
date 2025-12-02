@@ -37,7 +37,7 @@
                     Margin="0,20"
                     Orientation="Vertical">
 
-            <!-- Order Number -->
+            <!-- Customer Name -->
             <TextBlock Text="Kundenavn*"
                        Margin="5,0,0,5"/>
 
@@ -45,33 +45,64 @@
             <TextBox Height="45"
                      Background="#D7E0E2"
                      BorderThickness="0"
-                     Padding="10"/>
+                     Padding="10"
+                     Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <!-- Bruger input -->
+            <!-- Product Choice -->
             <TextBlock Text="Produkt*"
                        Margin="5,0,0,5"/>
 
+            <!--
             <TextBox Height="45"
                      Background="#D7E0E2"
                      BorderThickness="0"
-                     Padding="10"/>
+                     Padding="10"
+                     Text="{Binding SelectedProductName, UpdateSourceTrigger=PropertyChanged}"/>
+            -->
 
-            <!-- Årsag til returnering -->
+            <ComboBox Height="45"
+                      ItemsSource="{Binding Products}"
+                      SelectedItem="{Binding SelectedProduct}"
+                      DisplayMemberPath="ProductName"/>
+
+            <!-- Quantity -->
             <TextBlock Text="Antal*"
                        Margin="5,0,0,5"/>
 
             <TextBox Height="45"
                      Background="#D7E0E2"
                      BorderThickness="0"
-                     Padding="10"/>
+                     Padding="10"
+                     Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"/>
 
+            <!-- Add Product Command Button -->
+            <Button Margin="0,10,0,0"
+                    Content="Tilføj Produkt"
+                    Command="{Binding AddProductCommand}"/>
+
+            <!-- ListView Of SalesOrderLines -->
+            <ListView ItemsSource="{Binding SalesOrderLines}" Height="200">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Product.ProductName}" Width="150"/>
+                            <TextBlock Text="{Binding Quantity}" Width="50"/>
+                            <TextBlock Text="{Binding UnitPrice}" Width="80"/>
+                            <Button Content="X"
+                                    Command="{Binding DataContext.RemoveSalesOrderLineCommand,
+                                              RelativeSource={RelativeSource AncestorType=ListView}}"
+                                    CommandParameter="Binding"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+            <!-- Confirm Sale Button -->
+            <Button Grid.Row="3"
+                    Margin="0,20,0,0"
+                    Content="Bekræft"
+                    Command="{Binding ConfirmCommand}"
+                    Style="{DynamicResource ButtonBase}" />
         </StackPanel>
-
-        <!-- Button -->
-        <Button Grid.Row="3"
-                Content="Bekræft"
-                Command="{Binding ConfirmCommand}"
-                Style="{DynamicResource ButtonBase}" />
-
     </Grid>
 </UserControl>
