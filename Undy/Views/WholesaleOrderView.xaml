@@ -15,24 +15,91 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Style="{DynamicResource Card}">
-            <Grid>
+            <Grid Margin="0,30"
+      HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <!-- Labels -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- Spacer -->
+                    <ColumnDefinition Width="20"/>
+                    <!-- Inputs -->
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="Varenummer" 
-                                   Style="{DynamicResource TextBlockRight}"/>
-                        <TextBox Style="{DynamicResource InputRight}"
-                                 Text="{Binding ProductNumberSearch, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Text="Leverandør" 
-                                   Style="{DynamicResource TextBlockRight}"/>
-                        <TextBox Style="{DynamicResource InputRight}"
-                                 Text="{Binding SupplierSearch, UpdateSourceTrigger=PropertyChanged}"/>
-                        <TextBlock Text="Vare navn" 
-                                   Style="{DynamicResource TextBlockRight}"/>
-                        <TextBox Style="{DynamicResource InputRight}"
-                                 Text="{Binding ProductNameSearch, UpdateSourceTrigger=PropertyChanged}"/>
-                    </StackPanel>
+                <Grid.RowDefinitions>
+                    <!-- Vælg vare -->
+                    <RowDefinition Height="50"/>
+                    <!-- Antal -->
+                    <RowDefinition Height="50"/>
+                    <!-- Tilføj vare -->
+                    <RowDefinition Height="50"/>
+                    <!-- Leveringsdato label -->
+                    <RowDefinition Height="50"/>
+                    <!-- Leveringsdato input -->
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
 
+                <!-- Vælg vare -->
+                <TextBlock Grid.Row="0" Grid.Column="0"
+               Text="Vælg vare"
+               Style="{DynamicResource TitleLeft}"/>
+
+                <ComboBox Grid.Row="0" Grid.Column="2"
+              Height="45"
+              ItemsSource="{Binding Products}"
+              SelectedItem="{Binding SelectedProduct}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <!-- Varenavn -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Varenummer -->
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                               Text="{Binding ItemName}"
+                               Margin="5,0"/>
+
+                                <TextBlock Grid.Column="1"
+                               Text="{Binding ItemNumber}"
+                               Margin="5,0"
+                               HorizontalAlignment="Right"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <!-- Antal -->
+                <TextBlock Grid.Row="1" Grid.Column="0"
+               Text="Antal"
+               Style="{DynamicResource TitleLeft}"/>
+
+                <TextBox Grid.Row="1" Grid.Column="2"
+             Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+             Style="{DynamicResource InputRight}"/>
+
+                <!-- Leveringsdato label -->
+                <TextBlock Grid.Row="2" Grid.Column="0"
+               Text="Leveringsdato på lager"
+               Style="{DynamicResource TitleLeft}"/>
+
+                <!-- Leveringsdato input -->
+                <TextBox Grid.Row="2" Grid.Column="2"
+             Text="{Binding DeliveryDate, UpdateSourceTrigger=PropertyChanged}"
+             Style="{DynamicResource InputRight}"/>
+
+                <!-- Tilføj vare -->
+                <Button Grid.Row="4" Grid.ColumnSpan="3"
+            Content="Tilføj vare"
+            Style="{DynamicResource ButtonBase}"
+            Command="{Binding AddItemCommand}"
+            HorizontalAlignment="Center"/>
+                
             </Grid>
+
+
         </Border>
         <Border Grid.Row="2" Style="{DynamicResource Card}">
             <DataGrid ItemsSource="{Binding WholesaleView}"
@@ -42,7 +109,7 @@
                               BorderThickness="0"
                               HorizontalAlignment="Stretch">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Dato" Width="160"
+                    <DataGridTextColumn Header="Ankomst på lager" Width="160"
                                         Binding="{Binding WholesaleOrderDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
                     <DataGridTextColumn Header="Varenummer" 
                                         Binding="{Binding ItemNumber}" 
@@ -53,11 +120,6 @@
                     <DataGridTextColumn Header="Antal" 
                                         Binding="{Binding Quantity}" 
                                         Width="160"/>
-                    <DataGridTextColumn Header="Leverandør" 
-                                        Binding="{Binding Supplier}" 
-                                        Width="160"/>
-                    <DataGridTextColumn Header="Leveringsdato" Width="160"
-                                        Binding="{Binding ExpectedDeliveryDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

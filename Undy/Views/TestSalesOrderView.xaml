@@ -8,101 +8,123 @@
              MaxWidth="1920" MaxHeight="1080"
              Background="White">
 
-    <Grid Margin="40">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Border Style="{DynamicResource Card}" Margin="40">
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <!-- Title -->
+                <RowDefinition Height="Auto"/>  
+                <!-- Subtitle -->
+                <RowDefinition Height="Auto"/>  
+                <!-- Fields -->
+                <RowDefinition Height="Auto"/>  
+                <!-- Add + List/DataGrid -->
+                <RowDefinition Height="Auto"/>  
+                <!-- Confirm button -->
+                <RowDefinition Height="Auto"/>  
+            </Grid.RowDefinitions>
 
-        <!-- Title -->
-        <TextBlock Text="Opret Salgsordre"
-                   FontSize="24"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       Text="Opret Salgsordre"
+                       Style="{DynamicResource H2}"/>
 
-        <!-- Subtitle -->
-        <TextBlock Grid.Row="1"
-                   Style="{DynamicResource LabelMuted}"
-                   Text="Indtast kundenavn, vælg produkt og angiv antal for det valgte produkt."
-                   FontSize="14"
-                   HorizontalAlignment="Center"
-                   TextAlignment="Center"
-                   Margin="0,10"/>
+            <!-- Subtitle -->
+            <TextBlock Grid.Row="1"
+                       Text="Indtast kundenavn, vælg produkt og angiv antal for det valgte produkt."
+                       Style="{DynamicResource H3}"
+                       HorizontalAlignment="Center"
+                       Foreground="Red"/>
 
-        <!-- Fields -->
-        <StackPanel Grid.Row="2"
-                    Margin="0,20"
-                    Orientation="Vertical">
+            <!-- Fields (Title Left, inputs højre) -->
+            <Grid Grid.Row="2"
+                  Margin="0,30"
+                  HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <!-- Labels -->
+                    <ColumnDefinition Width="Auto"/>   
+                    <!-- Spacer -->
+                    <ColumnDefinition Width="20"/>    
+                    <!-- Input -->
+                    <ColumnDefinition Width="Auto"/>   
+                </Grid.ColumnDefinitions>
 
-            <!-- Customer Name -->
-            <TextBlock Text="Kundenavn*"
-                       Margin="5,0,0,5"/>
+                <Grid.RowDefinitions>
+                    <!-- Customer -->
+                    <RowDefinition Height="50"/>
+                    <!-- Product -->
+                    <RowDefinition Height="50"/>
+                    <!-- Amount -->
+                    <RowDefinition Height="50"/>
+                    <!-- Add Product -->
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
 
+                <!-- Customer Name -->
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="KundeID"
+                           Style="{DynamicResource TitleLeft}"/>
 
-            <TextBox Height="45"
-                     Background="#D7E0E2"
-                     BorderThickness="0"
-                     Padding="10"
-                     Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="0" Grid.Column="2"
+                         Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{DynamicResource InputRight}"/>
 
-            <!-- Product Choice -->
-            <TextBlock Text="Produkt*"
-                       Margin="5,0,0,5"/>
+                <!-- Product Choice -->
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Text="Produkt"
+                           Style="{DynamicResource TitleLeft}"/>
 
-            <!--
-            <TextBox Height="45"
-                     Background="#D7E0E2"
-                     BorderThickness="0"
-                     Padding="10"
-                     Text="{Binding SelectedProductName, UpdateSourceTrigger=PropertyChanged}"/>
-            -->
+                <ComboBox Grid.Row="1" Grid.Column="2"
+                          Height="45"
+                          ItemsSource="{Binding Products}"
+                          SelectedItem="{Binding SelectedProduct}"
+                          DisplayMemberPath="ProductName"/>
 
-            <ComboBox Height="45"
-                      ItemsSource="{Binding Products}"
-                      SelectedItem="{Binding SelectedProduct}"
-                      DisplayMemberPath="ProductName"/>
+                <!-- Quantity -->
+                <TextBlock Grid.Row="2" Grid.Column="0"
+                           Text="Antal"
+                           Style="{DynamicResource TitleLeft}"/>
 
-            <!-- Quantity -->
-            <TextBlock Text="Antal*"
-                       Margin="5,0,0,5"/>
+                <TextBox Grid.Row="2" Grid.Column="2"
+                         Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{DynamicResource InputRight}"/>
 
-            <TextBox Height="45"
-                     Background="#D7E0E2"
-                     BorderThickness="0"
-                     Padding="10"
-                     Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <!-- Add Product Command Button -->
-            <Button Margin="0,10,0,0"
+                <Button Grid.Row="3" Grid.ColumnSpan="3"
                     Content="Tilføj Produkt"
-                    Command="{Binding AddProductCommand}"/>
+                        Style="{DynamicResource ButtonBase}"
+                        Command="{Binding AddProductCommand}"
+                        HorizontalAlignment="Center"/>
+            </Grid>
 
-            <!-- ListView Of SalesOrderLines -->
-            <ListView ItemsSource="{Binding SalesOrderLines}" Height="200">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Product.ProductName}" Width="150"/>
-                            <TextBlock Text="{Binding Quantity}" Width="50"/>
-                            <TextBlock Text="{Binding UnitPrice}" Width="80"/>
-                            <Button Content="X"
-                                    Command="{Binding DataContext.RemoveSalesOrderLineCommand,
-                                              RelativeSource={RelativeSource AncestorType=ListView}}"
-                                    CommandParameter="Binding"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            
+            <!-- Add Product + ListView/DataGrid -->
+            <StackPanel Grid.Row="3"
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Center">
+
+                <!-- ListView Of SalesOrderLines -->
+                <ListView ItemsSource="{Binding SalesOrderLines}" Height="300" Width="700">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Product.ProductName}" Width="150"/>
+                                <TextBlock Text="{Binding Quantity}" Width="50"/>
+                                <TextBlock Text="{Binding UnitPrice}" Width="80"/>
+                                <Button Content="X"
+                                        Command="{Binding DataContext.RemoveSalesOrderLineCommand,
+                                                  RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        CommandParameter="Binding"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+
             <!-- Confirm Sale Button -->
-            <Button Grid.Row="3"
-                    Margin="0,20,0,0"
-                    Content="Bekræft"
+            <Button Grid.Row="5"
+                    Content="Bekræft ordre"
                     Command="{Binding ConfirmCommand}"
-                    Style="{DynamicResource ButtonBase}" />
-        </StackPanel>
-    </Grid>
+                    Style="{DynamicResource ButtonBase}"
+                    HorizontalAlignment="Center"
+                    Margin="0,10,0,0"/>
+        </Grid>
+    </Border>
 </UserControl>
