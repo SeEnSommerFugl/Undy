@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
+using System.Windows.Shapes;
 using Undy.Data.Repository;
 using Undy.Models;
 using Undy.ViewModels.Helpers;
@@ -11,6 +13,17 @@ namespace Undy.ViewModels
         private readonly IBaseRepository<Stock, Guid> _stockRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly SalesOrderService _salesOrderService;
+
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo, SalesOrderService salesOrderService) {
+            _salesOrderRepo = salesOrderRepo;
+            _stockRepo = stockRepo;
+            _productRepo = productRepo;
+            _salesOrderService = salesOrderService;
+
+            ConfirmCommand = new RelayCommand(async _ => await CreateSalesOrderAsync());
+            AddProductCommand = new RelayCommand(_ => AddProduct());
+            RemoveSalesOrderLineCommand = new RelayCommand(salesOrderLine => RemoveSalesOrderLine((SalesOrderLineViewModel)salesOrderLine));
+        }
 
         private SalesOrder _currentSalesOrder;
         public SalesOrder CurrentSalesOrder
@@ -33,8 +46,8 @@ namespace Undy.ViewModels
             }
         }
 
-        private string _selectedProduct;
-        public string SelectedProduct {
+        private Product _selectedProduct;
+        public Product SelectedProduct {
             get => _selectedProduct;
             set {
                 if(SetProperty(ref _selectedProduct, value));
@@ -51,21 +64,45 @@ namespace Undy.ViewModels
             }
         }
 
+        public ObservableCollection<Product> Products { get; set; }
+        public ObservableCollection<SalesOrderLineViewModel> SalesOrderLines { get; } = new();
+
         public ICommand ConfirmCommand { get; }
+        public ICommand RemoveSalesOrderLineCommand { get; }
+        public ICommand AddProductCommand { get; }
 
-        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo) {
-            _salesOrderRepo = salesOrderRepo;
-            _stockRepo = stockRepo;
-            _productRepo = productRepo;
-            //_salesOrderService = salesOrderService;
+        private void AddProduct() {
+            if (SelectedProduct == null || Quantity <= 0) {
+                return;
+            }
 
-            //ConfirmCommand = new RelayCommand(CreateSalesOrder);
+            SalesOrderLines.Add(new SalesOrderLineViewModel(SelectedProduct, Quantity));
         }
 
-        /*
-        private async void CreateSalesOrder() {
-            var prod
+        private void RemoveSalesOrderLine(SalesOrderLineViewModel salesOrderLine) {
+            SalesOrderLines.Remove(salesOrderLine);
         }
-        */
+
+        private async Task CreateSalesOrderAsync() {
+            if (SalesOrderLines.Count == 0 || string.IsNullOrWhiteSpace(CustomerName)) {
+                return;
+            }
+
+            var salesOrder = new SalesOrder {
+                OrderStatus = "Pending",
+                PaymentStatus = "Unpaid",
+                SalesDate = DateOnly.FromDateTime(DateTime.Now),
+                TotalPrice = SalesOrderLines.Sum(sl => sl.SubTotal)
+            };
+
+            var salesOrderLineProducts = SalesOrderLines.Select(sl => new ProductSalesOrder {
+                SalesOrderID = salesOrder.SalesOrderID,
+                ProductID = sl.Product.ProductID,
+                UnitPrice = sl.UnitPrice,
+                Quantity = sl.Quantity,
+            }).ToList();
+
+            //await _salesOrderService.CreateSalesOrderWithProducts(salesOrder,  salesOrderLineProducts);
+        }
     }
 }

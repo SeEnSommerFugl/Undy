@@ -9,7 +9,6 @@ namespace Undy.ViewModels.Helpers
     {
         private readonly SalesOrderDBRepository _salesOrderRepo;
         private readonly ProductSalesOrderDBRepository _productSalesOrderRepo;
-        //private SqlConnection con = DB.OpenConnection();
 
         public SalesOrderService()
         {
@@ -17,30 +16,23 @@ namespace Undy.ViewModels.Helpers
             _productSalesOrderRepo = new ProductSalesOrderDBRepository();
         }
 
-        
-        /*
         public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrderLines)
         {
-            using (var transaction = con.BeginTransaction())
-            {
-                try
-                {
-                    await _salesOrderRepo.AddAsync(salesOrder);
+            using var con = await DB.OpenConnection();
+            using var transaction = con.BeginTransaction();
 
-                    foreach (var product in productSalesOrderLines)
-                    {
-                        product.SalesOrderID = salesOrder.SalesOrderID;
-                        await _productSalesOrderRepo.AddAsync(product);
-                    }
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
+            try
+            {
+                //await _salesOrderRepo.AddRangeAsync(salesOrder, con, transaction);
+                await _productSalesOrderRepo.AddRangeAsync(productSalesOrderLines, con, transaction);
+
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
             }
         }
-        */
     }
 }
