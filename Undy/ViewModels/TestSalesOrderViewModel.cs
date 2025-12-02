@@ -59,11 +59,13 @@ namespace Undy.ViewModels
             _productRepo = productRepo;
             //_salesOrderService = salesOrderService;
 
-            ConfirmCommand = new RelayCommand(CreateSalesOrder);
+            //ConfirmCommand = new RelayCommand(CreateSalesOrder);
         }
 
+        /*
         private async void CreateSalesOrder() {
             var prod
         }
+        */
     }
 }

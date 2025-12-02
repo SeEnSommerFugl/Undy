@@ -27,7 +27,7 @@ namespace Undy.ViewModels.Helpers
                 {
                     await _salesOrderRepo.AddAsync(salesOrder);
 
-                    foreach (var product in productSalesOrder)
+                    foreach (var product in productSalesOrderLines)
                     {
                         product.SalesOrderID = salesOrder.SalesOrderID;
                         await _productSalesOrderRepo.AddAsync(product);
