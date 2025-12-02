@@ -21,7 +21,7 @@ namespace Undy
             IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo = new WholesaleOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> salesOrderRepo = new SalesOrderDBRepository();
             IBaseRepository<ReturnOrder, Guid> testReturnRepo = new ReturnOrderDBRepository();
-            IBaseRepository<TestSalesOrder, Guid> testSalesOrderRepo = new TestSalesOrderDBRepository();
+            IBaseRepository<SalesOrder, Guid> testSalesOrderRepo = new SalesOrderDBRepository();
             IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
 
             //----- ViewModels ----- //

@@ -19,7 +19,7 @@ namespace Undy.ViewModels.Helpers
 
         
         /*
-        public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrder)
+        public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrderLines)
         {
             using (var transaction = con.BeginTransaction())
             {
