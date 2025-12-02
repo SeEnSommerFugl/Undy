@@ -65,9 +65,6 @@ namespace Undy.Data.Repository
 
         public async Task AddAsync(T entity)
         {
-            if (GetKey(entity) is Guid g && g == Guid.Empty)
-                throw new InvalidOperationException("Entity key must be set before insert.");
-
             using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlInsert, con);
             cmd.CommandType = CommandType.StoredProcedure;
