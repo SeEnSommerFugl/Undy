@@ -1,11 +1,6 @@
 ﻿USE Undy;
 GO
 
--- Opret tabelstruktur for lagerstyringssystem
-CREATE TABLE Stock(
-	StockID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	NumberInStock INT NOT NULL
-);
 
 CREATE TABLE [Product](
 	ProductID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
@@ -14,10 +9,7 @@ CREATE TABLE [Product](
 	Price DECIMAL(10,2) NOT NULL,
 	Size NVARCHAR(255) NOT NULL,
 	Colour NVARCHAR(255) NOT NULL,
-	StockID INT NOT NULL
-	CONSTRAINT FK_Stock_Product
-		FOREIGN KEY(StockID)
-		REFERENCES Stock(StockID)
+	NumberInStock INT DEFAULT 0 NOT NULL,
 );
 
 CREATE TABLE PurchaseOrder(
