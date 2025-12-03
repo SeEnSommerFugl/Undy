@@ -1,28 +1,192 @@
 ﻿<UserControl x:Class="Undy.Views.PaymentView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Undy.Views"
-             mc:Ignorable="d" 
-             d:DesignWidth="1652" d:DesignHeight="1048">
-    <Grid>
-        <Border Style="{StaticResource Card}">
-            <Border Style="{StaticResource Card}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+             MaxWidth="1920" MaxHeight="1080"
+             Background="White">
 
-                    <Button Command="{Binding NewRenterCommand}"
-    Style="{StaticResource ButtonBase}"
-    Content="NY LEJER"
-    Width="150" Height="48" FontSize="14"/>
+    <Border Style="{DynamicResource Card}" Margin="40">
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                
+                <RowDefinition Height="Auto"/>  <!-- Titel -->
+                <RowDefinition Height="Auto"/>  <!-- Undertitel -->
+                <RowDefinition Height="Auto"/>  <!-- Ordre & Kunde oversigt -->
+                <RowDefinition Height="*"/>     <!-- Main content: Orderlinjer + Betalingspanel --> 
+                <RowDefinition Height="Auto"/>  <!-- Status besked -->
+            </Grid.RowDefinitions>
 
-                    <Button Command="{Binding EditRenterCommand}"
-    Style="{StaticResource ButtonBase}"
-    Content="REDIGER LEJER"
-    Width="150" Height="48" FontSize="14"/>
+            <!-- Titel -->
+            <TextBlock Grid.Row="0"
+                       Text="Salgsordrer"
+                       Style="{DynamicResource H2}"/>
+
+            <!-- undertitel -->
+            <TextBlock Grid.Row="1"
+                       Text="Gennemgå ordreoplysninger og behandl ordren."
+                       Style="{DynamicResource H2}"
+                       HorizontalAlignment="Center"
+                       Foreground="Red"/>
+
+            <!-- Ordre & Kunde oversigt -->
+            <Grid Grid.Row="2"
+                  Margin="0,20,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Order nummer -->
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <TextBlock Text="Ordre nr."
+                               Style="{DynamicResource TitleLeft}"/>
+                    <TextBlock Text="{Binding OrderNumber}"
+                               FontSize="18"
+                               FontWeight="Bold"/>
                 </StackPanel>
-            </Border>
 
-        </Border>
-    </Grid>
+                <!-- Kunde -->
+                <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <TextBlock Text="Kunde"
+                               Style="{DynamicResource TitleLeft}"/>
+                    <TextBlock Text="{Binding CustomerName}"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+                </StackPanel>
+
+                <!-- Total -->
+                <StackPanel Grid.Column="2" Orientation="Vertical">
+                    <TextBlock Text="Totalbeløb"
+                               Style="{DynamicResource TitleLeft}"/>
+                    <TextBlock Text="{Binding TotalAmount}"
+                               FontSize="18"
+                               FontWeight="Bold"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Main content: Orderlinjer + Betalingspanel -->
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <!-- Ordrelinjer -->
+                    <ColumnDefinition Width="3*"/>
+                    <!-- Spacer -->
+                    <ColumnDefinition Width="30"/>
+                    <!-- Betaling -->
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Ordrelinjer -->
+                <Border Grid.Column="0"
+                        Padding="10"
+                        BorderThickness="0,1,0,0"
+                        BorderBrush="#FFE0E0E0">
+                    <StackPanel>
+                        <TextBlock Text="Ordrelinjer"
+                                   Style="{DynamicResource TitleLeft}"
+                                   Margin="0,0,0,10"/>
+
+                        <DataGrid ItemsSource="{Binding OrderLines}"
+                                  AutoGenerateColumns="False"
+                                  HeadersVisibility="Column"
+                                  IsReadOnly="True"
+                                  CanUserAddRows="False"
+                                  Height="350">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Produkt"
+                                                    Binding="{Binding ProductName}"
+                                                    Width="*"/>
+                                <DataGridTextColumn Header="Antal"
+                                                    Binding="{Binding Quantity}"
+                                                    Width="80"/>
+                                <DataGridTextColumn Header="Pris"
+                                                    Binding="{Binding UnitPrice}"
+                                                    Width="100"/>
+                                <DataGridTextColumn Header="I alt"
+                                                    Binding="{Binding LineTotal}"
+                                                    Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Ordre grid / oversigt -->
+                <Border Grid.Column="2"
+                        Padding="10"
+                        BorderThickness="0,1,0,0"
+                        BorderBrush="#FFE0E0E0">
+                    <Grid Margin="-10,0,10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Beløb -->
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Text="Beløb"
+                                   Style="{DynamicResource TitleLeft}"/>
+
+                        <TextBox Grid.Row="0" Grid.Column="2"
+                                 Text="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="True"
+                                 Style="{DynamicResource InputRight}"
+                                 HorizontalAlignment="Stretch"
+                                 Margin="0,0,0,8"
+                                 MinWidth="220"/>
+
+                        <!-- Betalingsmetode -->
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                   Text="Betalingsmetode"
+                                   Style="{DynamicResource TitleLeft}"/>
+
+                        <ComboBox Grid.Row="1" Grid.Column="2"
+                                  ItemsSource="{Binding PaymentMethods}"
+                                  SelectedItem="{Binding SelectedPaymentMethod}"
+                                  HorizontalAlignment="Stretch"
+                                  Margin="0,0,0,8"
+                                  MinWidth="220"
+                                  Height="40"/>
+
+                        <!-- Status -->
+                        <TextBlock Grid.Row="2" Grid.Column="0"
+                                   Text="Status"
+                                   Style="{DynamicResource TitleLeft}"/>
+
+                        <ComboBox Grid.Row="2" Grid.Column="2"
+                                  ItemsSource="{Binding StatusOptions}"
+                                  SelectedItem="{Binding SelectedStatus}"
+                                  HorizontalAlignment="Stretch"
+                                  Margin="0,0,0,16"
+                                  MinWidth="220"
+                                  Height="40"/>
+
+                        <!-- Behandl ordre knap -->
+                        <Button Grid.Row="3" Grid.ColumnSpan="3"
+                                Content="Behandl ordre"
+                                Style="{DynamicResource ButtonBase}"
+                                Command="{Binding ConfirmPaymentCommand}"
+                                HorizontalAlignment="Stretch"
+                                Margin="0,10,0,0"
+                                MinWidth="220"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Status besked -->
+            <TextBlock Grid.Row="4"
+                       Text="{Binding StatusMessage}"
+                       Foreground="Red"
+                       HorizontalAlignment="Center"
+                       Margin="0,20,0,0"
+                       FontSize="20"
+                       FontWeight="Bold"/>
+        </Grid>
+    </Border>
 </UserControl>
