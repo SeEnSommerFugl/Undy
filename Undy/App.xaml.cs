@@ -53,7 +53,7 @@ namespace Undy
 
             await Task.WhenAll(
             //startPageRepo.InitializeAsync(),
-            //productRepo.InitializeAsync(),
+            productRepo.InitializeAsync(),
             //stockRepo.InitializeAsync(),
             wholesaleOrderRepo.InitializeAsync(),
             //salesOrderRepo.InitializeAsync(),

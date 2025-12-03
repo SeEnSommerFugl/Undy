@@ -21,4 +21,3 @@ INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, NumberInSto
 VALUES('UBBABLXXXL1', 'Bambus Boxerbriefs', 139, '3XL', 'Sort', 20);
 
 -- PurchaseOrder insert
-
