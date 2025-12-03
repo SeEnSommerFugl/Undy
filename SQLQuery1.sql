@@ -108,7 +108,7 @@ GO
 -- Inserts til Products
 
 CREATE PROCEDURE usp_Insert_Product
-	@ProductNumber INT,
+	@ProductNumber NVARCHAR(255),
 	@ProductName NVARCHAR(255),
 	@Price DECIMAL(10,2),
 	@Size NVARCHAR(255),
@@ -462,7 +462,7 @@ GO
 
 CREATE PROCEDURE usp_Update_Product
 	@ProductID UNIQUEIDENTIFIER,
-	@ProductNumber INT = NULL,
+	@ProductNumber NVARCHAR(255) = NULL,
 	@ProductName NVARCHAR(255) = NULL,
 	@Price DECIMAL(10,2) = NULL,
 	@Size NVARCHAR(255) = NULL,
@@ -509,3 +509,21 @@ BEGIN
         StockStatus   = ISNULL(@StockStatus,   StockStatus)
     WHERE StockID = @StockID;
 END;
+
+INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
+VALUES('UBBABLS', 'Bambus Boxerbriefs', 139, 'S', 'Sort', 1);
+
+INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
+VALUES('UBBABLM', 'Bambus Boxerbriefs', 139, 'M', 'Sort', 1);
+
+INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
+VALUES('UBBABLL', 'Bambus Boxerbriefs', 139, 'L', 'Sort', 1);
+
+INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
+VALUES('UBBABLXL', 'Bambus Boxerbriefs', 139, 'XL', 'Sort', 1);
+
+INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
+VALUES('UBBABLXXL', 'Bambus Boxerbriefs', 139, '2XL', 'Sort', 1);
+
+INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
+VALUES('UBBABLXXXL', 'Bambus Boxerbriefs', 139, '3XL', 'Sort', 1);
