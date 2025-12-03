@@ -1,7 +1,6 @@
 ﻿USE Undy
 GO
 
-ALTER TABLE 
 
 -- Stock insert
 
