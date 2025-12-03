@@ -3,8 +3,7 @@ GO
 
 
 CREATE TABLE [Product](
-	ProductID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-	ProductNumber NVARCHAR(255) NOT NULL,
+	ProductID NVARCHAR(255) NOT NULL PRIMARY KEY,
 	ProductName NVARCHAR(255) NOT NULL,
 	Price DECIMAL(10,2) NOT NULL,
 	Size NVARCHAR(255) NOT NULL,
@@ -23,7 +22,7 @@ CREATE TABLE PurchaseOrder(
 
 CREATE TABLE ProductPurchaseOrder(
 	PurchaseOrderID UNIQUEIDENTIFIER NOT NULL,
-	ProductID UNIQUEIDENTIFIER NOT NULL,
+	ProductID NVARCHAR(255) NOT NULL,
 	Quantity INT NOT NULL,
 	UnitPrice DECIMAL(10,2) NOT NULL,
 	QuantityReceived INT NOT NULL
@@ -47,7 +46,7 @@ CREATE TABLE SalesOrder (
 
 CREATE TABLE ProductSalesOrder (
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL,
-	ProductID UNIQUEIDENTIFIER NOT NULL,
+	ProductID NVARCHAR(255) NOT NULL,
 	Quantity INT NOT NULL,
 	UnitPrice DECIMAL NOT NULL,
 	CONSTRAINT PK_ProductSalesOrder PRIMARY KEY(SalesOrderID, ProductID),
@@ -74,7 +73,7 @@ CREATE TABLE Customers(
 	LastName NVARCHAR(255) NOT NULL,
 	Email NVARCHAR(255) NOT NULL,
 	PhoneNumber NVARCHAR(50) NOT NULL,
-	Address NVARCHAR(255) NOT NULL,
+	[Address] NVARCHAR(255) NOT NULL,
 	City NVARCHAR(100) NOT NULL,
 	PostalCode NVARCHAR(20) NOT NULL,
 	Country NVARCHAR(100) NOT NULL
@@ -84,7 +83,7 @@ GO
 -- Inserts til Products
 
 CREATE PROCEDURE usp_Insert_Product
-	@ProductNumber NVARCHAR(255),
+	@ProductID NVARCHAR(255),
 	@ProductName NVARCHAR(255),
 	@Price DECIMAL(10,2),
 	@Size NVARCHAR(255),
@@ -93,8 +92,8 @@ CREATE PROCEDURE usp_Insert_Product
 AS
 BEGIN
 SET NOCOUNT ON;
-	INSERT INTO [Product](ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
-	VALUES(@ProductNumber, @ProductName, @Price, @Size, @Colour, @NumberInStock);
+	INSERT INTO [Product](ProductID, ProductName, Price, Size, Colour, NumberInStock)
+	VALUES(@ProductID, @ProductName, @Price, @Size, @Colour, @NumberInStock);
 END;
 GO
 
@@ -116,7 +115,7 @@ GO
 
 CREATE PROCEDURE usp_Insert_ProductPurchaseOrder
 	@PurchaseOrderID UNIQUEIDENTIFIER,
-	@ProductID UNIQUEIDENTIFIER,
+	@ProductID NVARCHAR(255),
 	@Quantity INT,
 	@UnitPrice DECIMAL(10,2)
 AS
@@ -146,7 +145,7 @@ GO
 
 CREATE PROCEDURE usp_Insert_ProductSalesOrder
 	@SalesOrderID UNIQUEIDENTIFIER,
-	@ProductID UNIQUEIDENTIFIER,
+	@ProductID NVARCHAR(255),
 	@Quantity INT,
 	@UnitPrice DECIMAL(10,2)
 AS
@@ -192,13 +191,13 @@ GO
 -- View til at vise den aktuelle lagerbeholdning for produktkatalog
 CREATE VIEW vw_Products
 AS
-SELECT ProductNumber, ProductName, Price, Size, Colour, NumberInStock
+SELECT ProductID, ProductName, Price, Size, Colour, NumberInStock
 FROM Product
 GO
 
 -- View til at vise indkøbsordre
 CREATE VIEW vw_PurchaseOrders AS
-SELECT po.PurchaseOrderID, po.PurchaseOrderDate, po.ExpectedDeliveryDate, po.DeliveryDate, po.OrderStatus, p.ProductName, p.Size, p.Colour, ppo.Quantity
+SELECT po.PurchaseOrderID, po.PurchaseOrderDate, po.ExpectedDeliveryDate, po.DeliveryDate, po.OrderStatus, p.ProductID, p.ProductName, p.Size, p.Colour, ppo.Quantity
 FROM PurchaseOrder po
 JOIN ProductPurchaseOrder ppo ON po.PurchaseOrderID = ppo.PurchaseOrderID
 JOIN [Product] p ON ppo.ProductID = p.ProductID;
@@ -206,7 +205,7 @@ GO
 
 -- View til at vise salgsordre
 CREATE VIEW vw_SalesOrders AS
-SELECT so.SalesOrderID, so.OrderNumber, so.OrderStatus, so.PaymentStatus, so.SalesDate, so.TotalPrice, p.ProductName, pso.Quantity
+SELECT so.SalesOrderID, so.OrderNumber, so.OrderStatus, so.PaymentStatus, so.SalesDate, so.TotalPrice, p.ProductID, p.ProductName, pso.Quantity
 FROM SalesOrder so
 JOIN ProductSalesOrder pso ON so.SalesOrderID = pso.SalesOrderID
 JOIN [Product] p ON pso.ProductID = p.ProductID;
@@ -252,7 +251,7 @@ GO
 
 -- TODO Tilføj en QuantityReceived kolonne til ProductPurchaseOrder
 -- Stored Procedure til delvis modtagelse af indkøbsordre
-CREATE PROCEDURE usp_UpdatePartial_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER, @ProductID UNIQUEIDENTIFIER, @Quantity INT AS
+CREATE PROCEDURE usp_UpdatePartial_PurchaseOrder @PurchaseOrderID UNIQUEIDENTIFIER, @ProductID NVARCHAR, @Quantity INT AS
 BEGIN
 	-- Errorhandling hvis indkøbsordre ikke findes
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -432,8 +431,7 @@ GO
 -- Stored Procedure til updates
 
 CREATE PROCEDURE usp_Update_Product
-	@ProductID UNIQUEIDENTIFIER,
-	@ProductNumber NVARCHAR(255) = NULL,
+	@ProductID NVARCHAR(255),
 	@ProductName NVARCHAR(255) = NULL,
 	@Price DECIMAL(10,2) = NULL,
 	@Size NVARCHAR(255) = NULL,
@@ -453,8 +451,7 @@ BEGIN
 	END;
 	--Updaterer produktet
 	UPDATE [Product]
-	SET ProductNumber	= ISNULL(@ProductNumber,	ProductNumber),
-		ProductName		= ISNULL(@ProductName,		ProductName),
+	SET ProductName		= ISNULL(@ProductName,		ProductName),
 		Price			= ISNULL(@Price,			Price),
 		Size			= ISNULL(@Size,				Size),
 		Colour			= ISNULL(@Colour,			Colour),
