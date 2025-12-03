@@ -188,7 +188,7 @@ namespace Undy.Data.Repository
 
             using var con = await DB.OpenConnection();
             using var cmd = new SqlCommand(SqlSelectAll, con);
-            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandType = CommandType.Text;
             using var rd = await cmd.ExecuteReaderAsync();
 
             while (await rd.ReadAsync()) list.Add(Map(rd));

@@ -20,3 +20,5 @@ VALUES('UBBABLXXL1', 'Bambus Boxerbriefs', 139, '2XL', 'Sort', 20);
 INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
 VALUES('UBBABLXXXL1', 'Bambus Boxerbriefs', 139, '3XL', 'Sort', 20);
 
+-- PurchaseOrder insert
+

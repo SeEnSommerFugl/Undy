@@ -12,7 +12,6 @@ namespace Undy.ViewModels
     public class TestSalesOrderViewModel : BaseViewModel
     {
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
-        private readonly IBaseRepository<Stock, Guid> _stockRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly SalesOrderService _salesOrderService;
         private readonly ICollectionView _testSalesOrderView;
@@ -22,9 +21,8 @@ namespace Undy.ViewModels
         public ObservableCollection<SalesOrderLineViewModel> SalesOrderLines { get; } = new();
         public ICollectionView TestSalesOrderView => _testSalesOrderView;
 
-        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo) {
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo) {
             _salesOrderRepo = salesOrderRepo;
-            _stockRepo = stockRepo;
             _productRepo = productRepo;
             _salesOrderService = new SalesOrderService();
             _testSalesOrderView = CollectionViewSource.GetDefaultView(Products);

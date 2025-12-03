@@ -7,7 +7,7 @@ namespace Undy.Data.Repository
     public class WholesaleOrderDBRepository : BaseDBRepository<WholesaleOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "vw_PurchaseOrder";
+        protected override string SqlSelectAll => "SELECT * FROM vw_PurchaseOrders";
 
         // Stored procedure for getting by id
         protected override string SqlSelectById => "usp_SelectById_PurchaseOrder";

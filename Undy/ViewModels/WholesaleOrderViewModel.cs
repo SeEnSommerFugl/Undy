@@ -11,7 +11,7 @@ namespace Undy.ViewModels
     {
 
         private IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
-        private IBaseRepository<Stock, Guid> _productCatalogueRepo;
+        private IBaseRepository<Product, Guid> _productRepo;
         
         private readonly ICollectionView _wholesaleView;
         public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
@@ -19,10 +19,10 @@ namespace Undy.ViewModels
 
         public ICollectionView WholesaleView => _wholesaleView;
 
-        public WholesaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo, IBaseRepository<Stock, Guid> productCatalogueRepo)
+        public WholesaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo, IBaseRepository<Product, Guid> productRepo)
         {
             _wholesaleOrderRepo = wholesaleOrderRepo;
-            _productCatalogueRepo = productCatalogueRepo;
+            _productRepo = productRepo;
 
 
             _wholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
