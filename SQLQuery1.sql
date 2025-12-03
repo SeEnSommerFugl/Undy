@@ -81,19 +81,6 @@ CREATE TABLE Customers(
 );
 GO
 
-
--- Inserts til Stock
-
-CREATE PROCEDURE usp_Insert_Stock
-	@NumberInStock INT
-AS
-BEGIN
-SET NOCOUNT ON;
-	INSERT INTO Stock(NumberInStock)
-	VALUES(@NumberInStock);
-END;
-GO
-
 -- Inserts til Products
 
 CREATE PROCEDURE usp_Insert_Product

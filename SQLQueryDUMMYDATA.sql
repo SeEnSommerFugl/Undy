@@ -1,10 +1,7 @@
 ﻿USE Undy
 GO
 
-
-
--- Stock insert
-
+DROP PROCEDURE usp_Insert_Stock
 
 -- Product insert
 
