@@ -73,6 +73,7 @@
                            Text="Produkt"
                            Style="{DynamicResource TitleLeft}"/>
 
+                <!-- TODO Til Multi-Header ComboBox: ProductName, Colour, Size, Price, NumberInStock -->
                 <ComboBox Grid.Row="1" Grid.Column="2"
                           Height="45"
                           ItemsSource="{Binding Products}"
