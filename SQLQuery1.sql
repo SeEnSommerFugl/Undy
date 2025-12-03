@@ -3,7 +3,7 @@ GO
 
 -- Opret tabelstruktur for lagerstyringssystem
 CREATE TABLE Stock(
-	StockID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+	StockID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	StockLocation NVARCHAR(255) NOT NULL,
 	NumberInStock INT NOT NULL,
 	StockStatus NvarChar(255) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE [Product](
 	Price DECIMAL(10,2) NOT NULL,
 	Size NVARCHAR(255) NOT NULL,
 	Colour NVARCHAR(255) NOT NULL,
-	StockID UNIQUEIDENTIFIER NOT NULL
+	StockID INT NOT NULL
 	CONSTRAINT FK_Stock_Product
 		FOREIGN KEY(StockID)
 		REFERENCES Stock(StockID)
@@ -113,7 +113,7 @@ CREATE PROCEDURE usp_Insert_Product
 	@Price DECIMAL(10,2),
 	@Size NVARCHAR(255),
 	@Colour NVARCHAR(255),
-	@StockID UNIQUEIDENTIFIER
+	@StockID INT
 AS
 BEGIN
 SET NOCOUNT ON;
@@ -492,7 +492,7 @@ GO
 
 -- Stored Procedure til updates af lager
 CREATE PROCEDURE usp_Update_Stock
-	@StockID UNIQUEIDENTIFIER,
+	@StockID INT,
 	@NumberInStock INT = NULL,
 	@StockStatus NVARCHAR(255) = NULL
 AS
