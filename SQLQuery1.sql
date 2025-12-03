@@ -4,9 +4,7 @@ GO
 -- Opret tabelstruktur for lagerstyringssystem
 CREATE TABLE Stock(
 	StockID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	StockLocation NVARCHAR(255) NOT NULL,
-	NumberInStock INT NOT NULL,
-	StockStatus NvarChar(255) NOT NULL,
+	NumberInStock INT NOT NULL
 );
 
 CREATE TABLE [Product](
@@ -95,13 +93,12 @@ GO
 -- Inserts til Stock
 
 CREATE PROCEDURE usp_Insert_Stock
-	@NumberInStock INT,
-	@StockStatus NVARCHAR(255)
+	@NumberInStock INT
 AS
 BEGIN
 SET NOCOUNT ON;
-	INSERT INTO Stock(NumberInStock, StockStatus)
-	VALUES(@NumberInStock, @StockStatus);
+	INSERT INTO Stock(NumberInStock)
+	VALUES(@NumberInStock);
 END;
 GO
 
@@ -215,7 +212,7 @@ GO
 
 -- View til at vise den aktuelle lagerbeholdning for produktkatalog
 CREATE VIEW vw_Stock AS
-SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, s.NumberInStock, s.StockStatus
+SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, s.NumberInStock
 FROM Stock s
 JOIN [Product] p ON s.StockID = p.StockID
 GO
@@ -493,8 +490,7 @@ GO
 -- Stored Procedure til updates af lager
 CREATE PROCEDURE usp_Update_Stock
 	@StockID INT,
-	@NumberInStock INT = NULL,
-	@StockStatus NVARCHAR(255) = NULL
+	@NumberInStock INT = NULL
 AS
 BEGIN
 	
@@ -505,25 +501,24 @@ BEGIN
     END;
 
     UPDATE Stock
-    SET NumberInStock = ISNULL(@NumberInStock, NumberInStock),
-        StockStatus   = ISNULL(@StockStatus,   StockStatus)
+    SET NumberInStock = ISNULL(@NumberInStock, NumberInStock)
     WHERE StockID = @StockID;
 END;
 
 INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLS', 'Bambus Boxerbriefs', 139, 'S', 'Sort', 1);
+VALUES('UBBABLS1', 'Bambus Boxerbriefs', 139, 'S', 'Sort', 1);
 
 INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLM', 'Bambus Boxerbriefs', 139, 'M', 'Sort', 1);
+VALUES('UBBABLM1', 'Bambus Boxerbriefs', 139, 'M', 'Sort', 1);
 
 INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLL', 'Bambus Boxerbriefs', 139, 'L', 'Sort', 1);
+VALUES('UBBABLL1', 'Bambus Boxerbriefs', 139, 'L', 'Sort', 1);
 
 INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLXL', 'Bambus Boxerbriefs', 139, 'XL', 'Sort', 1);
+VALUES('UBBABLXL1', 'Bambus Boxerbriefs', 139, 'XL', 'Sort', 1);
 
 INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLXXL', 'Bambus Boxerbriefs', 139, '2XL', 'Sort', 1);
+VALUES('UBBABLXXL1', 'Bambus Boxerbriefs', 139, '2XL', 'Sort', 1);
 
 INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLXXXL', 'Bambus Boxerbriefs', 139, '3XL', 'Sort', 1);
+VALUES('UBBABLXXXL1', 'Bambus Boxerbriefs', 139, '3XL', 'Sort', 1);
