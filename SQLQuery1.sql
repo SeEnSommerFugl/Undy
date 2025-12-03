@@ -89,12 +89,12 @@ CREATE PROCEDURE usp_Insert_Product
 	@Price DECIMAL(10,2),
 	@Size NVARCHAR(255),
 	@Colour NVARCHAR(255),
-	@StockID INT
+	@NumberInStock INT
 AS
 BEGIN
 SET NOCOUNT ON;
-	INSERT INTO [Product](ProductNumber, ProductName, Price, Size, Colour, StockID)
-	VALUES(@ProductNumber, @ProductName, @Price, @Size, @Colour, @StockID);
+	INSERT INTO [Product](ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
+	VALUES(@ProductNumber, @ProductName, @Price, @Size, @Colour, @NumberInStock);
 END;
 GO
 
@@ -190,10 +190,10 @@ END;
 GO
 
 -- View til at vise den aktuelle lagerbeholdning for produktkatalog
-CREATE VIEW vw_Stock AS
-SELECT p.ProductName, p.ProductNumber, p.Price, p.Size, p.Colour, s.NumberInStock
-FROM Stock s
-JOIN [Product] p ON s.StockID = p.StockID
+CREATE VIEW vw_Products
+AS
+SELECT ProductNumber, ProductName, Price, Size, Colour, NumberInStock
+FROM Product
 GO
 
 -- View til at vise indkøbsordre
@@ -235,10 +235,9 @@ BEGIN
 	END
 
 	-- Opdaterer lagerbeholdning for hver vare i ordren
-	UPDATE s
-	SET s.NumberInStock = s.NumberInStock + ppo.Quantity
-	FROM Stock s
-	JOIN [Product] p ON s.StockID = p.StockID
+	UPDATE p
+	SET p.NumberInStock = p.NumberInStock + ppo.Quantity
+	FROM [Product] p
 	JOIN ProductPurchaseOrder ppo ON p.ProductID = ppo.ProductID
 	WHERE ppo.PurchaseOrderID = @PurchaseOrderID
 
@@ -295,10 +294,9 @@ BEGIN
 	END
 
 	-- Opdaterer lagerbeholdning baseret på modtaget mængde
-	UPDATE s
-	SET s.NumberInStock = s.NumberInStock + @Quantity
-	FROM Stock s
-	JOIN Product p ON s.StockID = p.StockID
+	UPDATE p
+	SET p.NumberInStock = p.NumberInStock + @Quantity
+	FROM [Product] p
 	WHERE p.ProductID = @ProductID;
 
 	-- Opdaterer mængden modtaget i indkøbsordre
@@ -348,9 +346,8 @@ BEGIN
 	--Tjek om der er varer nok på lager
 	IF EXISTS (SELECT 1 FROM ProductSalesOrder pso
 	JOIN [Product] p ON pso.ProductID = p.ProductID
-	JOIN Stock s ON p.StockID = s.StockID
 	WHERE pso.SalesOrderID = @SalesOrderID
-		AND s.NumberInStock < pso.Quantity)
+		AND p.NumberInStock < pso.Quantity)
 
 	BEGIN
 		RAISERROR('Der er ikke nok varer på lager', 16, 1);
@@ -358,10 +355,9 @@ BEGIN
 	END;
 
 	-- Opdater lager med solgte varer
-	UPDATE s
-	SET s.NumberInStock = s.NumberInStock - pso.Quantity
-	FROM Stock s
-	JOIN [Product] p ON s.StockID = p.StockID
+	UPDATE p
+	SET p.NumberInStock = p.NumberInStock - pso.Quantity
+	FROM [Product] p
 	JOIN ProductSalesOrder pso ON p.ProductID = pso.ProductID
 	WHERE pso.SalesOrderID = @SalesOrderID;
 
@@ -382,7 +378,7 @@ GO
 
 -- Stored Procedure ReturOrdre
 
-CREATE PROCEDURE usp_Update_ReturnOrder @ReturnOrderID UNIQUEIDENTIFIER AS
+CREATE PROCEDURE usp_Update_ReturnOrder @ReturnOrderID INT AS
 BEGIN
 
 	--Tjek om returordre findes
@@ -418,10 +414,9 @@ BEGIN
 	END;
 
 	--Returner varer på lager fra salgsordren
-	UPDATE s
-	SET s.NumberInStock = s. NumberInStock + pso.Quantity
-	FROM Stock s
-	JOIN [Product] p ON s.StockID = p.StockID
+	UPDATE p
+	SET p.NumberInStock = p.NumberInStock + pso.Quantity
+	FROM [Product] p
 	JOIN  ProductSalesOrder pso ON p.ProductID = pso.ProductID
 	WHERE pso.SalesOrderID = @SalesOrdreID;
 
@@ -442,7 +437,8 @@ CREATE PROCEDURE usp_Update_Product
 	@ProductName NVARCHAR(255) = NULL,
 	@Price DECIMAL(10,2) = NULL,
 	@Size NVARCHAR(255) = NULL,
-	@Colour NVARCHAR(255) = NULL
+	@Colour NVARCHAR(255) = NULL,
+	@NumberInStock INT = NULL
 AS
 BEGIN
 	--Tjek om produkt findes
@@ -461,43 +457,8 @@ BEGIN
 		ProductName		= ISNULL(@ProductName,		ProductName),
 		Price			= ISNULL(@Price,			Price),
 		Size			= ISNULL(@Size,				Size),
-		Colour			= ISNULL(@Colour,			Colour)
+		Colour			= ISNULL(@Colour,			Colour),
+		NumberInStock	= ISNULL(@NumberInStock,	NumberInStock)
 	WHERE ProductID = @ProductID;
 END;
 GO
-
--- Stored Procedure til updates af lager
-CREATE PROCEDURE usp_Update_Stock
-	@StockID INT,
-	@NumberInStock INT = NULL
-AS
-BEGIN
-	
-	IF NOT EXISTS (SELECT 1 FROM Stock WHERE StockID = @StockID)
-    BEGIN
-        RAISERROR('Lagerpost findes ikke', 16, 1);
-        RETURN;
-    END;
-
-    UPDATE Stock
-    SET NumberInStock = ISNULL(@NumberInStock, NumberInStock)
-    WHERE StockID = @StockID;
-END;
-
-INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLS1', 'Bambus Boxerbriefs', 139, 'S', 'Sort', 1);
-
-INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLM1', 'Bambus Boxerbriefs', 139, 'M', 'Sort', 1);
-
-INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLL1', 'Bambus Boxerbriefs', 139, 'L', 'Sort', 1);
-
-INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLXL1', 'Bambus Boxerbriefs', 139, 'XL', 'Sort', 1);
-
-INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLXXL1', 'Bambus Boxerbriefs', 139, '2XL', 'Sort', 1);
-
-INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, StockID)
-VALUES('UBBABLXXXL1', 'Bambus Boxerbriefs', 139, '3XL', 'Sort', 1);
