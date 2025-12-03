@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using Undy.Data.Repository;
@@ -13,12 +15,16 @@ namespace Undy.ViewModels
         private readonly IBaseRepository<Stock, Guid> _stockRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly SalesOrderService _salesOrderService;
+        private readonly ICollectionView _testSalesOrderView;
+
+        public ObservableCollection<Product> Products => _productRepo.Items;
 
         public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo) {
             _salesOrderRepo = salesOrderRepo;
             _stockRepo = stockRepo;
             _productRepo = productRepo;
             _salesOrderService = new SalesOrderService();
+            _testSalesOrderView = CollectionViewSource.GetDefaultView(Products);
 
             ConfirmCommand = new RelayCommand(async _ => await CreateSalesOrderAsync());
             AddProductCommand = new RelayCommand(_ => AddProduct());
@@ -102,7 +108,7 @@ namespace Undy.ViewModels
                 Quantity = sl.Quantity,
             }).ToList();
 
-            //await _salesOrderService.CreateSalesOrderWithProducts(salesOrder,  salesOrderLineProducts);
+            await _salesOrderService.CreateSalesOrderWithProducts(salesOrder,  salesOrderLineProducts);
         }
     }
 }
