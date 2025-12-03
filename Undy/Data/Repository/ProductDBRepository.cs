@@ -25,7 +25,7 @@ namespace Undy.Data.Repository
         protected override Product Map(IDataRecord r) => new Product
         {
             ProductID = r.GetGuid(r.GetOrdinal("Product_ID")),
-            ProductNumber = r.GetInt32(r.GetOrdinal("ProductNumber")),
+            ProductNumber = r.GetString(r.GetOrdinal("ProductNumber")),
             ProductName = r.GetString(r.GetOrdinal("ProductName")),
             Price = r.GetDecimal(r.GetOrdinal("Price")),
             Size = r.GetString(r.GetOrdinal("Size")),
@@ -45,7 +45,7 @@ namespace Undy.Data.Repository
         protected override void BindInsert(SqlCommand cmd, Product e)
         {
             cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
-            cmd.Parameters.Add("@ProductNumber", SqlDbType.Int).Value = e.ProductNumber;
+            cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar).Value = e.ProductNumber;
             cmd.Parameters.Add("@ProductName", SqlDbType.NVarChar, 255).Value = e.ProductName;
             cmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = e.Price;
             cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 20).Value = e.Size;
@@ -57,7 +57,7 @@ namespace Undy.Data.Repository
         protected override void BindUpdate(SqlCommand cmd, Product e)
         {
             cmd.Parameters.Add("@Product_ID", SqlDbType.Int).Value = e.ProductID;
-            cmd.Parameters.Add("@ProductNumber", SqlDbType.Int).Value = e.ProductNumber;
+            cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar).Value = e.ProductNumber;
             cmd.Parameters.Add("@ProductName", SqlDbType.NVarChar, 255).Value = e.ProductName;
             cmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = e.Price;
             cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 20).Value = e.Size;
