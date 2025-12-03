@@ -29,7 +29,7 @@ namespace Undy.ViewModels
 
             ConfirmCommand = new RelayCommand(async _ => await CreateSalesOrderAsync());
             AddProductCommand = new RelayCommand(_ => AddProduct());
-            RemoveSalesOrderLineCommand = new RelayCommand(salesOrderLine => RemoveSalesOrderLine((SalesOrderLineViewModel)salesOrderLine));
+            RemoveSalesOrderLineCommand = new RelayCommand(salesOrderLine => RemoveSalesOrderLine(salesOrderLine as SalesOrderLineViewModel));
         }
 
         private SalesOrder _currentSalesOrder;
@@ -85,7 +85,9 @@ namespace Undy.ViewModels
         }
 
         private void RemoveSalesOrderLine(SalesOrderLineViewModel salesOrderLine) {
-            SalesOrderLines.Remove(salesOrderLine);
+            if(salesOrderLine != null) {
+                SalesOrderLines.Remove(salesOrderLine);
+            }
         }
 
         private async Task CreateSalesOrderAsync() {
