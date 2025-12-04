@@ -7,7 +7,7 @@ GO
 
 -- Product Table
 CREATE TABLE [Product](
-	ProductID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	ProductID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
 	ProductNumber NVARCHAR(255) NOT NULL UNIQUE,
 	ProductName NVARCHAR(255) NOT NULL,
 	Price DECIMAL(10,2) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE [Product](
 
 -- PurchaseOrder Table
 CREATE TABLE PurchaseOrder(
-	PurchaseOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	PurchaseOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
 	PurchaseOrderDate DATE NOT NULL,
 	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
@@ -43,7 +43,7 @@ CREATE TABLE ProductPurchaseOrder(
 
 -- SalesOrder Table
 CREATE TABLE SalesOrder (
-	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
 	OrderNumber INT IDENTITY(0000000001,1) NOT NULL,
 	OrderStatus NVARCHAR(255) NOT NULL,
 	PaymentStatus NVARCHAR(255) NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE ProductSalesOrder (
 
 -- ReturnOrder Table
 CREATE TABLE ReturnOrder(
-	ReturnOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	ReturnOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
 	ReturnOrderNumber INT IDENTITY(0000000001,1) NOT NULL UNIQUE,
 	ReturnOrderDate DATE NOT NULL,
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE ReturnOrder(
 
 -- Customers Table
 CREATE TABLE Customers(
-	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
 	CustomerNumber INT IDENTITY(0000000001,1) NOT NULL UNIQUE,
 	FirstName NVARCHAR(255) NOT NULL,
 	LastName NVARCHAR(255) NOT NULL,
@@ -103,14 +103,10 @@ CREATE PROCEDURE usp_Insert_Product
 	@Price DECIMAL(10,2),
 	@Size NVARCHAR(255),
 	@Colour NVARCHAR(255),
-	@NumberInStock INT,
-	@ProductID UNIQUEIDENTIFIER
+	@NumberInStock INT
 AS
 BEGIN
 	SET NOCOUNT ON;
-	
-	-- Generate new GUID
-	SET @ProductID = NEWID();
 
 	-- Validate ProductNumber doesn't already exist
 	IF EXISTS(SELECT 1 FROM [Product] WHERE ProductNumber = @ProductNumber)
@@ -126,8 +122,8 @@ BEGIN
 		RETURN;
 	END
 	
-	INSERT INTO [Product](ProductID, ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
-	VALUES(@ProductID, @ProductNumber, @ProductName, @Price, @Size, @Colour, @NumberInStock);
+	INSERT INTO [Product](ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
+	VALUES(@ProductNumber, @ProductName, @Price, @Size, @Colour, @NumberInStock);
 END;
 GO
 
@@ -135,8 +131,7 @@ GO
 CREATE PROCEDURE usp_Insert_PurchaseOrder
 	@PurchaseOrderDate DATE,
 	@ExpectedDeliveryDate DATE,
-	@OrderStatus NVARCHAR(255),
-	@PurchaseOrderID UNIQUEIDENTIFIER
+	@OrderStatus NVARCHAR(255)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -148,11 +143,8 @@ BEGIN
 		RETURN;
 	END
 	
-	-- Generate new GUID
-	SET @PurchaseOrderID = NEWID();
-	
-	INSERT INTO PurchaseOrder(PurchaseOrderID, PurchaseOrderDate, ExpectedDeliveryDate, OrderStatus)
-	VALUES(@PurchaseOrderID, @PurchaseOrderDate, @ExpectedDeliveryDate, @OrderStatus);
+	INSERT INTO PurchaseOrder(PurchaseOrderDate, ExpectedDeliveryDate, OrderStatus)
+	VALUES(@PurchaseOrderDate, @ExpectedDeliveryDate, @OrderStatus);
 END;
 GO
 
@@ -218,17 +210,13 @@ CREATE PROCEDURE usp_Insert_SalesOrder
 	@OrderStatus NVARCHAR(255),
 	@PaymentStatus NVARCHAR(255),
 	@SalesDate DATE,
-	@TotalPrice DECIMAL(10,2),
-	@SalesOrderID UNIQUEIDENTIFIER
+	@TotalPrice DECIMAL(10,2)
 AS
 BEGIN
 	SET NOCOUNT ON;
 	
-	-- Generate new GUID
-	SET @SalesOrderID = NEWID();
-	
-	INSERT INTO SalesOrder(SalesOrderID, OrderStatus, PaymentStatus, SalesDate, TotalPrice)
-	VALUES(@SalesOrderID, @OrderStatus, @PaymentStatus, @SalesDate, @TotalPrice);
+	INSERT INTO SalesOrder(OrderStatus, PaymentStatus, SalesDate, TotalPrice)
+	VALUES(@OrderStatus, @PaymentStatus, @SalesDate, @TotalPrice);
 END;
 GO
 
@@ -292,13 +280,10 @@ GO
 -- Insert ReturnOrder
 CREATE PROCEDURE usp_Insert_ReturnOrder
 	@ReturnOrderDate DATE,
-	@SalesOrderID UNIQUEIDENTIFIER,
-	@ReturnOrderID UNIQUEIDENTIFIER
+	@SalesOrderID UNIQUEIDENTIFIER
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	SET @ReturnOrderID = NEWID();
 	
 	-- Validate SalesOrder exists
 	IF NOT EXISTS(SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID)
@@ -314,8 +299,8 @@ BEGIN
 		RETURN;
 	END
 	
-	INSERT INTO ReturnOrder(ReturnOrderID, ReturnOrderDate, SalesOrderID)
-	VALUES(@ReturnOrderID, @ReturnOrderDate, @SalesOrderID);
+	INSERT INTO ReturnOrder(ReturnOrderDate, SalesOrderID)
+	VALUES(@ReturnOrderDate, @SalesOrderID);
 END;
 GO
 
@@ -328,8 +313,7 @@ CREATE PROCEDURE usp_Insert_Customer
 	@Address NVARCHAR(255),
 	@City NVARCHAR(100),
 	@PostalCode NVARCHAR(20),
-	@Country NVARCHAR(100),
-	@CustomerID UNIQUEIDENTIFIER
+	@Country NVARCHAR(100)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -341,12 +325,9 @@ BEGIN
 		RETURN;
 	END
 	
-	-- Generate new GUID for CustomerID
-	SET @CustomerID = NEWID();
-	
 	-- Insert customer
-	INSERT INTO Customers(CustomerID, FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode, Country)
-	VALUES(@CustomerID, @FirstName, @LastName, @Email, @PhoneNumber, @Address, @City, @PostalCode, @Country);
+	INSERT INTO Customers(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode, Country)
+	VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @Address, @City, @PostalCode, @Country);
 END;
 GO
 
