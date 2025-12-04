@@ -34,7 +34,4 @@ VALUES('2026-02-01', '2026-02-24', NULL, 'Pending');
 INSERT INTO PurchaseOrder(PurchaseOrderDate, ExpectedDeliveryDate, DeliveryDate, OrderStatus)
 VALUES('2026-03-01', '2026-03-24', NULL, 'Pending');
 
-
-
-DROP TABLE [Product]
-DROP TABLE ProductPurchaseOrder
+DROP TABLE ProductSalesOrder
