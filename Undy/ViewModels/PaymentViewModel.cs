@@ -20,11 +20,8 @@ namespace Undy.ViewModels
 
         private ObservableCollection<string> _statusOptions;
         private string _selectedStatus;
-
         private string _statusMessage;
         private string _currentStatus;
-        private string _paymentStatus;
-
 
         private Guid _currentSalesOrderId;
 
@@ -35,7 +32,6 @@ namespace Undy.ViewModels
             _salesOrderRepo = salesOrderRepo;
 
             SalesOrderLines = new ObservableCollection<SalesOrderLineViewModel>();
-
             StatusOptions = new ObservableCollection<string>();
 
             ConfirmPaymentCommand = new RelayCommand(
@@ -44,30 +40,28 @@ namespace Undy.ViewModels
             );
         }
 
-        // ----- Properties -----
+        // ----- Core properties (data) -----
 
         public string OrderNumber
         {
             get => _orderNumber;
-            set { _orderNumber = value; OnPropertyChanged(); }
-        }
-
-        public string PaymentStatus
-        {
-            get => _paymentStatus;
             set
             {
-                _paymentStatus = value;
+                _orderNumber = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayOrderNumber));
             }
         }
 
-        // Lige nu har SalesOrder ikke et kundenavn – denne kan evt. sættes
-        // fra en anden model/lookup.
         public string CustomerName
         {
             get => _customerName;
-            set { _customerName = value; OnPropertyChanged(); }
+            set
+            {
+                _customerName = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayCustomerName));
+            }
         }
 
         public decimal TotalAmount
@@ -77,14 +71,21 @@ namespace Undy.ViewModels
             {
                 _totalAmount = value;
                 OnPropertyChanged();
-                PaymentAmount = value; // som standard = total
+                OnPropertyChanged(nameof(DisplayTotalAmount));
+                // Vis som standard samme beløb som betaling
+                PaymentAmount = value;
             }
         }
 
         public decimal PaymentAmount
         {
             get => _paymentAmount;
-            set { _paymentAmount = value; OnPropertyChanged(); }
+            set
+            {
+                _paymentAmount = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(DisplayPaymentAmount));
+            }
         }
 
         public ObservableCollection<SalesOrderLineViewModel> SalesOrderLines
@@ -93,7 +94,6 @@ namespace Undy.ViewModels
             set { _salesOrderLines = value; OnPropertyChanged(); }
         }
 
-       
         public ObservableCollection<string> StatusOptions
         {
             get => _statusOptions;
@@ -132,8 +132,40 @@ namespace Undy.ViewModels
         public Guid CurrentSalesOrderId
         {
             get => _currentSalesOrderId;
-            set { _currentSalesOrderId = value; OnPropertyChanged(); }
+            set
+            {
+                _currentSalesOrderId = value;
+                OnPropertyChanged();
+
+                // når ID ændres, ændrer placeholders sig også
+                OnPropertyChanged(nameof(DisplayOrderNumber));
+                OnPropertyChanged(nameof(DisplayCustomerName));
+                OnPropertyChanged(nameof(DisplayTotalAmount));
+                OnPropertyChanged(nameof(DisplayPaymentAmount));
+            }
         }
+
+        // ----- Display properties (til UI / placeholders) SCOPE? -----
+
+        public string DisplayOrderNumber =>
+            CurrentSalesOrderId == Guid.Empty
+                ? "Ingen ordre valgt"
+                : OrderNumber;
+
+        public string DisplayCustomerName =>
+            CurrentSalesOrderId == Guid.Empty
+                ? "Ingen ordre valgt"
+                : CustomerName;
+
+        public string DisplayTotalAmount =>
+            CurrentSalesOrderId == Guid.Empty
+                ? "Ingen ordre valgt"
+                : TotalAmount.ToString("0.00");
+
+        public string DisplayPaymentAmount =>
+            CurrentSalesOrderId == Guid.Empty
+                ? "Ingen ordre valgt"
+                : PaymentAmount.ToString("0.00");
 
         // ----- Command -----
 
@@ -155,13 +187,13 @@ namespace Undy.ViewModels
                     StatusMessage = "Kunne ikke finde ordren.";
                     return;
                 }
-                               
+
+                // UC-03: vi ændrer kun ordrestatus her
                 order.OrderStatus = SelectedStatus;
 
                 await _salesOrderRepo.UpdateAsync(order);
 
                 CurrentStatus = SelectedStatus;
-                PaymentStatus = order.PaymentStatus; // opdater visningen
                 SelectedStatus = null;
                 StatusMessage = "Ordren er behandlet.";
             }
@@ -182,7 +214,6 @@ namespace Undy.ViewModels
             StatusOptions.Clear();
             SelectedStatus = null;
 
-          
             switch (CurrentStatus)
             {
                 case "Under behandling":
@@ -220,16 +251,15 @@ namespace Undy.ViewModels
 
             CurrentSalesOrderId = order.SalesOrderID;
             OrderNumber = order.OrderNumber.ToString();
-            TotalAmount = order.TotalPrice;
-            PaymentAmount = order.TotalPrice;    // samme beløb vises som "Betalt beløb"
+            TotalAmount = order.TotalPrice;   // sætter også PaymentAmount
             CurrentStatus = order.OrderStatus;
-            PaymentStatus = order.PaymentStatus; // fx "Betalt"
 
-            CustomerName = string.Empty; // TODO: Der skal kobles kunde på 
-            SalesOrderLines.Clear();     // ingen linjer endnu i modellen
+            // TODO: Der skal kobles kunde på senere?
+            CustomerName = string.Empty;
+
+            SalesOrderLines.Clear();  // kan senere fyldes med rigtige linjer
 
             StatusMessage = string.Empty;
         }
-
     }
 }
