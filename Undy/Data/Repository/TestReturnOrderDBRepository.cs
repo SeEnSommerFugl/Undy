@@ -14,7 +14,7 @@ namespace Undy.Data.Repository
     public class TestReturnOrderDBRepository : BaseDBRepository<ReturnOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "vw_ReturnOrder";
+        protected override string SqlSelectAll => "SELECT * FROM vw_ReturnOrder";
 
         // Stored procedure for getting by id
         protected override string SqlSelectById => "usp_SelectById_ReturnOrder";

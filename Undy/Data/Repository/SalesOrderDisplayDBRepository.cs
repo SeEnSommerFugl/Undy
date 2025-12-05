@@ -5,7 +5,7 @@ namespace Undy.Data.Repository
 {
     public class SalesOrderDisplayDBRepository : BaseDBRepository<SalesOrderDisplay, Guid>
     {
-        protected override string SqlSelectAll => "Select * From vw_SalesOrders";
+        protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrders";
 
         protected override SalesOrderDisplay Map(IDataRecord r)
         {

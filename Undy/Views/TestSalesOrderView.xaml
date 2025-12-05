@@ -73,6 +73,7 @@
                            Text="Produkt"
                            Style="{DynamicResource TitleLeft}"/>
 
+                <!-- TODO Til Multi-Header ComboBox: ProductName, Colour, Size, Price, NumberInStock -->
                 <ComboBox Grid.Row="1" Grid.Column="2"
                           Height="45"
                           ItemsSource="{Binding Products}"
@@ -110,8 +111,8 @@
                                 <TextBlock Text="{Binding UnitPrice}" Width="80"/>
                                 <Button Content="X"
                                         Command="{Binding DataContext.RemoveSalesOrderLineCommand,
-                                                  RelativeSource={RelativeSource AncestorType=ListView}}"
-                                        CommandParameter="Binding"/>
+                                                  RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

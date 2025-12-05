@@ -9,20 +9,20 @@ namespace Undy.ViewModels
 {
     public class WholesaleOrderViewModel : BaseViewModel
     {
-        private readonly ICollectionView _wholesaleView;
 
         private IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
-        private IBaseRepository<Stock, Guid> _productCatalogueRepo;
-
+        private IBaseRepository<Product, Guid> _productRepo;
+        
+        private readonly ICollectionView _wholesaleView;
         public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
         //public ObservableCollection<Stock> ProductCatalogue => _productCatalogueRepo.Items;
 
         public ICollectionView WholesaleView => _wholesaleView;
 
-        public WholesaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo, IBaseRepository<Stock, Guid> productCatalogueRepo)
+        public WholesaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo, IBaseRepository<Product, Guid> productRepo)
         {
             _wholesaleOrderRepo = wholesaleOrderRepo;
-            _productCatalogueRepo = productCatalogueRepo;
+            _productRepo = productRepo;
 
 
             _wholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);

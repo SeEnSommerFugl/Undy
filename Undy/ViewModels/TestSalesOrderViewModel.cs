@@ -1,4 +1,6 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using Undy.Data.Repository;
@@ -10,19 +12,24 @@ namespace Undy.ViewModels
     public class TestSalesOrderViewModel : BaseViewModel
     {
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
-        private readonly IBaseRepository<Stock, Guid> _stockRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly SalesOrderService _salesOrderService;
+        private readonly ICollectionView _testSalesOrderView;
 
-        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Stock, Guid> stockRepo, IBaseRepository<Product, Guid> productRepo) {
+
+        public ObservableCollection<Product> Products => _productRepo.Items;
+        public ObservableCollection<SalesOrderLineViewModel> SalesOrderLines { get; } = new();
+        public ICollectionView TestSalesOrderView => _testSalesOrderView;
+
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo) {
             _salesOrderRepo = salesOrderRepo;
-            _stockRepo = stockRepo;
             _productRepo = productRepo;
             _salesOrderService = new SalesOrderService();
+            _testSalesOrderView = CollectionViewSource.GetDefaultView(Products);
 
             ConfirmCommand = new RelayCommand(async _ => await CreateSalesOrderAsync());
             AddProductCommand = new RelayCommand(_ => AddProduct());
-            RemoveSalesOrderLineCommand = new RelayCommand(salesOrderLine => RemoveSalesOrderLine((SalesOrderLineViewModel)salesOrderLine));
+            RemoveSalesOrderLineCommand = new RelayCommand(salesOrderLine => RemoveSalesOrderLine(salesOrderLine as SalesOrderLineViewModel));
         }
 
         private SalesOrder _currentSalesOrder;
@@ -64,8 +71,6 @@ namespace Undy.ViewModels
             }
         }
 
-        public ObservableCollection<Product> Products { get; set; }
-        public ObservableCollection<SalesOrderLineViewModel> SalesOrderLines { get; } = new();
 
         public ICommand ConfirmCommand { get; }
         public ICommand RemoveSalesOrderLineCommand { get; }
@@ -80,7 +85,9 @@ namespace Undy.ViewModels
         }
 
         private void RemoveSalesOrderLine(SalesOrderLineViewModel salesOrderLine) {
-            SalesOrderLines.Remove(salesOrderLine);
+            if(salesOrderLine != null) {
+                SalesOrderLines.Remove(salesOrderLine);
+            }
         }
 
         private async Task CreateSalesOrderAsync() {
@@ -102,7 +109,7 @@ namespace Undy.ViewModels
                 Quantity = sl.Quantity,
             }).ToList();
 
-            //await _salesOrderService.CreateSalesOrderWithProducts(salesOrder,  salesOrderLineProducts);
+            await _salesOrderService.CreateSalesOrderWithProducts(salesOrder,  salesOrderLineProducts);
         }
     }
 }
