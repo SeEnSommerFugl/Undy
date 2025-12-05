@@ -37,6 +37,7 @@
             <DataTemplate DataType="{x:Type vm:TestSalesOrderViewModel}">
                 <views:TestSalesOrderView/>
             </DataTemplate>
+            
 
 
         </ResourceDictionary>
