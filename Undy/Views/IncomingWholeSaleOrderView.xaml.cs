@@ -5,9 +5,9 @@ namespace Undy.Views
     /// <summary>
     /// Interaction logic for GoodsReciept.xaml
     /// </summary>
-    public partial class GoodsReceiptView : UserControl
+    public partial class IncomingWholeSaleOrderView : UserControl
     {
-        public GoodsReceiptView()
+        public IncomingWholeSaleOrderView()
         {
             InitializeComponent();
         }
