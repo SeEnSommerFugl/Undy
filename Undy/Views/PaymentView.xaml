@@ -11,8 +11,6 @@
                 <!-- Titel -->
                 <RowDefinition Height="Auto"/>
                 <!-- Undertitel -->
-                <RowDefinition Height="Auto"/>
-                <!-- Ordre & Kunde oversigt -->
                 <RowDefinition Height="*"/>
                 <!-- Main content -->
                 <RowDefinition Height="Auto"/>
@@ -33,64 +31,63 @@
                        Margin="0,10,0,20"
                        Foreground="Red"/>
 
-            <!-- Ordre & Kunde oversigt -->
-            <Grid Grid.Row="2"
-                  Margin="0,0,0,20">
+            <!-- Main content: venstre (ordreinfo + linjer) / højre (status) -->
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Ordre nr. -->
-                <StackPanel Grid.Column="0"
-                            Orientation="Vertical">
-                    <TextBlock Text="Ordre nr."
-                               Style="{DynamicResource TitleLeft}"/>
-                    <TextBlock Text="{Binding OrderNumber}"
-                               FontSize="18"
-                               FontWeight="Bold"/>
-                </StackPanel>
-
-                <!-- Kunde -->
-                <StackPanel Grid.Column="1"
-                            Orientation="Vertical">
-                    <TextBlock Text="Kunde"
-                               Style="{DynamicResource TitleLeft}"/>
-                    <TextBlock Text="{Binding CustomerName}"
-                               FontSize="18"
-                               FontWeight="Bold"/>
-                </StackPanel>
-
-                <!-- Totalbeløb -->
-                <StackPanel Grid.Column="2"
-                            Orientation="Vertical">
-                    <TextBlock Text="Totalbeløb"
-                               Style="{DynamicResource TitleLeft}"/>
-                    <TextBlock Text="{Binding TotalAmount}"
-                               FontSize="18"
-                               FontWeight="Bold"/>
-                </StackPanel>
-            </Grid>
-
-            <!-- Main content: Ordrelinjer + højre panel -->
-            <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="40" />
-                    <ColumnDefinition Width="2*" />
-                </Grid.ColumnDefinitions>
-
-                <!-- Ordrelinjer -->
+                <!-- VENSTRE: ordreinfo + ordrelinjer -->
                 <Border Grid.Column="0"
                         Padding="10"
                         BorderThickness="0,1,0,0"
                         BorderBrush="#FFE0E0E0">
                     <StackPanel>
+
+                        <!-- Ordre info i én linje: Ordre nr / Kunde / Totalbeløb -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Ordre nr. -->
+                            <StackPanel Grid.Column="0" Orientation="Vertical">
+                                <TextBlock Text="Ordre nr."
+                                           Style="{DynamicResource TitleLeft}"/>
+                                <TextBlock Text="{Binding OrderNumber}"
+                                           FontSize="18"
+                                           FontWeight="Bold"/>
+                            </StackPanel>
+
+                            <!-- Kunde -->
+                            <StackPanel Grid.Column="1" Orientation="Vertical">
+                                <TextBlock Text="Kunde"
+                                           Style="{DynamicResource TitleLeft}"/>
+                                <TextBlock Text="{Binding CustomerName}"
+                                           FontSize="18"
+                                           FontWeight="Bold"/>
+                            </StackPanel>
+
+                            <!-- Totalbeløb -->
+                            <StackPanel Grid.Column="2" Orientation="Vertical">
+                                <TextBlock Text="Totalbeløb"
+                                           Style="{DynamicResource TitleLeft}"/>
+                                <TextBlock Text="{Binding TotalAmount}"
+                                           FontSize="18"
+                                           FontWeight="Bold"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Ordrelinjer label -->
                         <TextBlock Text="Ordrelinjer"
                                    Style="{DynamicResource TitleLeft}"
                                    Margin="0,0,0,10"/>
 
+                        <!-- DataGrid med SalesOrderLineViewModel -->
                         <DataGrid ItemsSource="{Binding SalesOrderLines}"
                                   AutoGenerateColumns="False"
                                   HeadersVisibility="Column"
@@ -115,21 +112,21 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Højre panel: betaling + status -->
+                <!-- HØJRE: Beløb + Ordrestatus + knap -->
                 <Border Grid.Column="2"
                         Padding="10"
                         BorderThickness="0,1,0,0"
                         BorderBrush="#FFE0E0E0">
-                    <Grid Margin="0,10,0,0">
+                    <Grid Margin="0,20,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <!-- Beløb -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Betalingsstatus -->
-                            <RowDefinition Height="Auto"/>
                             <!-- Ordrestatus -->
+                            <RowDefinition Height="*"/>
+                            <!-- SPACER som fylder al resterende plads -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Knap -->
+                            <!-- Behandl ordre knap -->
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
@@ -151,23 +148,12 @@
                                  Margin="0,0,0,8"
                                  MinWidth="220"/>
 
-                        <!-- Betalingsstatus (kun visning) -->
+                        <!-- Ordrestatus (den medarbejderen må ændre) -->
                         <TextBlock Grid.Row="1" Grid.Column="0"
-                                   Text="Betalingsstatus"
-                                   Style="{DynamicResource TitleLeft}"/>
-
-                        <TextBlock Grid.Row="1" Grid.Column="2"
-                                   Text="{Binding PaymentStatus}"
-                                   FontSize="16"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-
-                        <!-- Ordrestatus (kan ændres) -->
-                        <TextBlock Grid.Row="2" Grid.Column="0"
                                    Text="Ordrestatus"
                                    Style="{DynamicResource TitleLeft}"/>
 
-                        <ComboBox Grid.Row="2" Grid.Column="2"
+                        <ComboBox Grid.Row="1" Grid.Column="2"
                                   ItemsSource="{Binding StatusOptions}"
                                   SelectedItem="{Binding SelectedStatus}"
                                   HorizontalAlignment="Stretch"
@@ -188,7 +174,7 @@
             </Grid>
 
             <!-- Status besked -->
-            <TextBlock Grid.Row="4"
+            <TextBlock Grid.Row="3"
                        Text="{Binding StatusMessage}"
                        Foreground="Red"
                        HorizontalAlignment="Center"
