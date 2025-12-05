@@ -19,6 +19,8 @@ CREATE TABLE [Product](
 -- PurchaseOrder Table
 CREATE TABLE PurchaseOrder(
 	PurchaseOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+	PurchaseOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
+	DisplayPurchaseOrderNumber AS 'KØOR-' + RIGHT('000000000' + CAST(PurchaseOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
 	PurchaseOrderDate DATE NOT NULL,
 	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
@@ -44,7 +46,8 @@ CREATE TABLE ProductPurchaseOrder(
 -- SalesOrder Table
 CREATE TABLE SalesOrder (
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-	OrderNumber INT IDENTITY(0000000001,1) NOT NULL,
+	SalesOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
+	DisplaySalesOrderNumber AS 'KØOR-' + RIGHT('000000000' + CAST(SalesOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
 	OrderStatus NVARCHAR(255) NOT NULL,
 	PaymentStatus NVARCHAR(255) NOT NULL,
 	SalesDate DATE NOT NULL,
@@ -69,7 +72,6 @@ CREATE TABLE ProductSalesOrder (
 -- ReturnOrder Table
 CREATE TABLE ReturnOrder(
 	ReturnOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-	ReturnOrderNumber INT IDENTITY(0000000001,1) NOT NULL UNIQUE,
 	ReturnOrderDate DATE NOT NULL,
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL,
 	CONSTRAINT FK_SalesOrder_ReturnOrder
@@ -80,15 +82,16 @@ CREATE TABLE ReturnOrder(
 -- Customers Table
 CREATE TABLE Customers(
 	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-	CustomerNumber INT IDENTITY(0000000001,1) NOT NULL UNIQUE,
+	CustomerNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
+	DisplayCustomerNumber AS 'KUND-' + RIGHT('000000000' + CAST(CustomerNumber AS NVARCHAR(10)), 10) PERSISTED,
 	FirstName NVARCHAR(255) NOT NULL,
 	LastName NVARCHAR(255) NOT NULL,
 	Email NVARCHAR(255) NOT NULL UNIQUE,
-	PhoneNumber NVARCHAR(50) NOT NULL,
+	PhoneNumber INT NOT NULL UNIQUE,
 	[Address] NVARCHAR(255) NOT NULL,
 	City NVARCHAR(100) NOT NULL,
-	PostalCode NVARCHAR(20) NOT NULL,
-	Country NVARCHAR(100) NOT NULL
+	PostalCode INT NOT NULL,
+	-- Country NVARCHAR(100) NOT NULL -- Hvis der er tid Out of scope for nu, evt flag i view?
 );
 GO
 
@@ -280,10 +283,17 @@ GO
 -- Insert ReturnOrder
 CREATE PROCEDURE usp_Insert_ReturnOrder
 	@ReturnOrderDate DATE,
-	@SalesOrderID UNIQUEIDENTIFIER
+	@SalesOrderNumber INT
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	-- Look up SalesOrderID from SalesOrderNumber
+	DECLARE @SalesOrderID UNIQUEIDENTIFIER;
+	
+	SELECT @SalesOrderID = SalesOrderID
+	FROM SalesOrder
+	WHERE SalesOrderNumber = @SalesOrderNumber;
 	
 	-- Validate SalesOrder exists
 	IF NOT EXISTS(SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID)
@@ -309,11 +319,10 @@ CREATE PROCEDURE usp_Insert_Customer
 	@FirstName NVARCHAR(255),
 	@LastName NVARCHAR(255),
 	@Email NVARCHAR(255),
-	@PhoneNumber NVARCHAR(50),
+	@PhoneNumber INT,
 	@Address NVARCHAR(255),
 	@City NVARCHAR(100),
-	@PostalCode NVARCHAR(20),
-	@Country NVARCHAR(100)
+	@PostalCode INT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -324,10 +333,17 @@ BEGIN
 		RAISERROR('Customer with email %s already exists', 16, 1, @Email);
 		RETURN;
 	END
+
+	-- Validate PhoneNumber doesn't already exist
+	IF EXISTS(SELECT 1 FROM Customers WHERE PhoneNumber = @PhoneNumber)
+	BEGIN
+		RAISERROR('Customer with phone number %s already exists', 16, 1, @PhoneNumber);
+		RETURN;
+	END
 	
 	-- Insert customer
-	INSERT INTO Customers(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode, Country)
-	VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @Address, @City, @PostalCode, @Country);
+	INSERT INTO Customers(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
+	VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @Address, @City, @PostalCode);
 END;
 GO
 
@@ -352,7 +368,9 @@ GO
 -- View PurchaseOrders
 CREATE VIEW vw_PurchaseOrders AS
 SELECT 
-	po.PurchaseOrderID, 
+	po.PurchaseOrderID,
+	po.PurchaseOrderNumber,
+	po.DisplayPurchaseOrderNumber,
 	po.PurchaseOrderDate, 
 	po.ExpectedDeliveryDate, 
 	po.DeliveryDate, 
@@ -375,7 +393,8 @@ GO
 CREATE VIEW vw_SalesOrders AS
 SELECT 
 	so.SalesOrderID, 
-	so.OrderNumber, 
+	so.SalesOrderNumber, 
+	so.DisplaySalesOrderNumber,
 	so.OrderStatus, 
 	so.PaymentStatus, 
 	so.SalesDate, 
@@ -397,7 +416,7 @@ SELECT
 	ro.ReturnOrderID, 
 	ro.ReturnOrderDate, 
 	so.SalesOrderID,
-	so.OrderNumber, 
+	so.SalesOrderNumber, 
 	so.TotalPrice,
 	so.OrderStatus,
 	so.PaymentStatus
@@ -410,6 +429,7 @@ CREATE VIEW vw_Customers AS
 SELECT 
 	CustomerID,
 	CustomerNumber,
+	DisplayCustomerNumber,
 	FirstName,
 	LastName,
 	Email,
@@ -417,7 +437,6 @@ SELECT
 	[Address],
 	City,
 	PostalCode,
-	Country,
 	FirstName + ' ' + LastName AS FullName
 FROM Customers;
 GO
@@ -428,10 +447,16 @@ GO
 
 -- Update PurchaseOrder
 CREATE PROCEDURE usp_Update_PurchaseOrder 
-	@PurchaseOrderID UNIQUEIDENTIFIER 
+	@PurchaseOrderNumber INT 
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	DECLARE @PurchaseOrderID UNIQUEIDENTIFIER;
+	
+	SELECT @PurchaseOrderID = PurchaseOrderID
+	FROM PurchaseOrder
+	WHERE PurchaseOrderNumber = @PurchaseOrderNumber;
 	
 	-- Validate purchase order exists
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -470,12 +495,18 @@ GO
 
 -- Update Partial PurchaseOrder
 CREATE PROCEDURE usp_UpdatePartial_PurchaseOrder 
-	@PurchaseOrderID UNIQUEIDENTIFIER, 
+	@PurchaseOrderNumber INT, 
 	@ProductNumber NVARCHAR(255),
-	@Quantity INT 
+	@Quantity INT
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	DECLARE @PurchaseOrderID UNIQUEIDENTIFIER;
+	
+	SELECT @PurchaseOrderID = PurchaseOrderID
+	FROM PurchaseOrder
+	WHERE PurchaseOrderNumber = @PurchaseOrderNumber;
 	
 	-- Validate purchase order exists
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -553,10 +584,16 @@ GO
 
 -- Update SalesOrder
 CREATE PROCEDURE usp_Update_SalesOrder 
-	@SalesOrderID UNIQUEIDENTIFIER 
+	@SalesOrderNumber INT 
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	DECLARE @SalesOrderID UNIQUEIDENTIFIER;
+	
+	SELECT @SalesOrderID = SalesOrderID
+	FROM SalesOrder
+	WHERE SalesOrderNumber = @SalesOrderNumber;
 
 	-- Validate order exists
 	IF NOT EXISTS(SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID)
@@ -612,10 +649,31 @@ GO
 
 -- Update ReturnOrder
 CREATE PROCEDURE usp_Update_ReturnOrder 
-	@ReturnOrderID UNIQUEIDENTIFIER 
+	@SalesOrderNumber INT 
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	-- Look up SalesOrderID from SalesOrderNumber
+	DECLARE @SalesOrderID UNIQUEIDENTIFIER;
+	
+	SELECT @SalesOrderID = SalesOrderID
+	FROM SalesOrder
+	WHERE SalesOrderNumber = @SalesOrderNumber;
+
+		-- Validate sales order exists
+	IF NOT EXISTS (SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID)
+	BEGIN
+		RAISERROR('The sale order does not exist', 16, 1);
+		RETURN;
+	END
+
+	-- Look up ReturnOrderID from SalesOrderID
+	DECLARE @ReturnOrderID UNIQUEIDENTIFIER;
+
+	SELECT @ReturnOrderID = ReturnOrderID
+	FROM ReturnOrder
+	WHERE SalesOrderID = @SalesOrderID;
 
 	-- Validate return order exists
 	IF NOT EXISTS (SELECT 1 FROM ReturnOrder WHERE ReturnOrderID = @ReturnOrderID)
@@ -624,19 +682,7 @@ BEGIN
 		RETURN;
 	END
 
-	-- Get the associated sales order
-	DECLARE @SalesOrderID UNIQUEIDENTIFIER;
-	
-	SELECT @SalesOrderID = SalesOrderID
-	FROM ReturnOrder
-	WHERE ReturnOrderID = @ReturnOrderID;
 
-	-- Validate sales order exists
-	IF NOT EXISTS (SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID)
-	BEGIN
-		RAISERROR('Associated sales order does not exist', 16, 1);
-		RETURN;
-	END
 
 	-- Check if already returned
 	IF EXISTS(
@@ -729,11 +775,10 @@ CREATE PROCEDURE usp_Update_Customer
 	@FirstName NVARCHAR(255) = NULL,
 	@LastName NVARCHAR(255) = NULL,
 	@Email NVARCHAR(255) = NULL,
-	@PhoneNumber NVARCHAR(50) = NULL,
+	@PhoneNumber INT = NULL,
 	@Address NVARCHAR(255) = NULL,
 	@City NVARCHAR(100) = NULL,
-	@PostalCode NVARCHAR(20) = NULL,
-	@Country NVARCHAR(100) = NULL
+	@PostalCode INT = NULL
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -761,6 +806,15 @@ BEGIN
 			RETURN;
 		END
 	END
+
+	IF @PhoneNumber IS NOT NULL
+	BEGIN
+		IF EXISTS(SELECT 1 FROM Customers WHERE PhoneNumber = @PhoneNumber AND CustomerID != @CustomerID)
+		BEGIN
+			RAISERROR('Phone Number %s is already in use by another customer', 16, 1, @PhoneNumber);
+			RETURN;
+		END
+	END
 	
 	-- Update customer
 	UPDATE Customers
@@ -771,54 +825,7 @@ BEGIN
 		PhoneNumber = ISNULL(@PhoneNumber, PhoneNumber),
 		[Address] = ISNULL(@Address, [Address]),
 		City = ISNULL(@City, City),
-		PostalCode = ISNULL(@PostalCode, PostalCode),
-		Country = ISNULL(@Country, Country)
+		PostalCode = ISNULL(@PostalCode, PostalCode)
 	WHERE CustomerID = @CustomerID;
-END;
-GO
-
--- Get Customer by CustomerNumber
-CREATE PROCEDURE usp_Get_CustomerByNumber
-	@CustomerNumber INT
-AS
-BEGIN
-	SET NOCOUNT ON;
-	
-	SELECT 
-		CustomerID,
-		CustomerNumber,
-		FirstName,
-		LastName,
-		Email,
-		PhoneNumber,
-		[Address],
-		City,
-		PostalCode,
-		Country
-	FROM Customers
-	WHERE CustomerNumber = @CustomerNumber;
-END;
-GO
-
--- Get Customer by Email
-CREATE PROCEDURE usp_Get_CustomerByEmail
-	@Email NVARCHAR(255)
-AS
-BEGIN
-	SET NOCOUNT ON;
-	
-	SELECT 
-		CustomerID,
-		CustomerNumber,
-		FirstName,
-		LastName,
-		Email,
-		PhoneNumber,
-		[Address],
-		City,
-		PostalCode,
-		Country
-	FROM Customers
-	WHERE Email = @Email;
 END;
 GO
