@@ -62,7 +62,6 @@ namespace Undy.ViewModels
             }
         }
 
-
         // Lige nu har SalesOrder ikke et kundenavn – denne kan evt. sættes
         // fra en anden model/lookup.
         public string CustomerName
@@ -177,19 +176,13 @@ namespace Undy.ViewModels
             (ConfirmPaymentCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
 
-        // ----- UC-03 statusflow -----
-
+        
         private void UpdateStatusOptions()
         {
             StatusOptions.Clear();
             SelectedStatus = null;
 
-            // Simpelt flow efter UC-03:
-            // Efter betaling: "Under behandling"
-            // -> "Klar til afsendelse"
-            // -> "Afsendt"
-            // (samt mulighed for "Returneret" fra alle trin)
-
+          
             switch (CurrentStatus)
             {
                 case "Under behandling":

@@ -18,7 +18,7 @@ namespace Undy.ViewModels
         public ObservableCollection<SalesOrderDisplay> SalesDisplay => _salesDisplayRepo.Items;
         public ICollectionView SaleView { get; }
 
-        // Callback til MainViewModel
+        
         public Action<SalesOrderDisplay> PaymentRequested { get; set; }
 
         public SalesOrderViewModel(IBaseRepository<SalesOrderDisplay, Guid> salesDisplayRepo)
