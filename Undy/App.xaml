@@ -22,8 +22,8 @@
             <DataTemplate DataType="{x:Type vm:PaymentViewModel}">
                 <views:PaymentView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:GoodsReceiptViewModel}">
-                <views:GoodsReceiptView/>
+            <DataTemplate DataType="{x:Type vm:IncomingWholeSaleOrderViewModel}">
+                <views:IncomingWholeSaleOrderView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:StartPageViewModel}">
                 <views:StartPage/>

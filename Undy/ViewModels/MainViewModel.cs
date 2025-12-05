@@ -6,7 +6,7 @@ namespace Undy.ViewModels
     {
         public Navigation Nav { get; } = new();
         private readonly WholesaleOrderViewModel _wholesaleOrderViewModel;
-        private readonly GoodsReceiptViewModel _goodsReceiptViewModel;
+        private readonly IncomingWholeSaleOrderViewModel _incomingWholeSaleOrderViewModel;
         private readonly PickListViewModel _pickListViewModel;
         private readonly SalesOrderViewModel _salesOrderViewModel;
         private readonly PaymentViewModel _paymentViewModel;
@@ -16,14 +16,14 @@ namespace Undy.ViewModels
         private readonly StartPageViewModel _startPageViewModel;
 
 
-        public MainViewModel(StartPageViewModel startPageViewModel, WholesaleOrderViewModel wholesaleOrderViewModel, 
-            GoodsReceiptViewModel goodsReceiptViewModel, PickListViewModel pickListViewModel, 
+        public MainViewModel(StartPageViewModel startPageViewModel, WholesaleOrderViewModel wholesaleOrderViewModel,
+            IncomingWholeSaleOrderViewModel incomingWholeSaleOrderViewModel, PickListViewModel pickListViewModel, 
             SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, 
             TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, 
             TestWholesaleOrderViewModel testWholesaleOrderViewModel)
         {
             _wholesaleOrderViewModel = wholesaleOrderViewModel;
-            _goodsReceiptViewModel = goodsReceiptViewModel;
+            _incomingWholeSaleOrderViewModel = incomingWholeSaleOrderViewModel;
             _pickListViewModel = pickListViewModel;
             _salesOrderViewModel = salesOrderViewModel;
             _paymentViewModel = paymentViewModel;
@@ -35,7 +35,7 @@ namespace Undy.ViewModels
             Nav.AddRange(
                 ("StartPage", "Startside", _startPageViewModel),
                 ("WholesaleOrder", "Indkøb", _wholesaleOrderViewModel),
-                ("GoodsReceipts", "Vare modtagelse", _goodsReceiptViewModel),
+                ("IncomingWholeSaleOrder", "Vare modtagelse", _incomingWholeSaleOrderViewModel),
                 ("PickLists", "Pluklister", _pickListViewModel),
                 ("SalesOrders", "Salgs ordrer", _salesOrderViewModel),
                 ("Payments", "Betalinger", _paymentViewModel),
