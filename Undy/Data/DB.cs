@@ -21,10 +21,10 @@ namespace Undy.Data
         /// Encapsulaped connection string, for privacy concerns
         /// Gets the connection string for the default database connection.
         /// </summary>
-        protected static string ConnectionString =>
+       protected static string ConnectionString =>
 
             _config.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Missing 'DefaultConnection'.");
+           ?? throw new InvalidOperationException("Missing 'DefaultConnection'.");
 
         /// <summary>
         /// Opens an connection with the given connection string <see cref="SqlConnection()"/>, 
