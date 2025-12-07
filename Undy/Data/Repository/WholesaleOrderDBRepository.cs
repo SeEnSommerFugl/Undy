@@ -32,9 +32,6 @@ namespace Undy.Data.Repository
             OrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("OrderDate"))),
             DeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("DeliveryDate"))),
             OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
-            ProductID = r.GetGuid(r.GetOrdinal("Product_ID"))
-
-            //missing db.null check for ProductID?
         };
 
         // Parameter binding for id
@@ -51,8 +48,7 @@ namespace Undy.Data.Repository
             cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
             cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 50).Value = e.OrderStatus;
-            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier)
-                .Value = (object?)e.ProductID ?? DBNull.Value;
+            
         }
 
         // Parameter binding for update
@@ -63,8 +59,7 @@ namespace Undy.Data.Repository
             cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
             cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 50).Value = e.OrderStatus;
-            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier)
-                .Value = (object?)e.ProductID ?? DBNull.Value;
+            
         }
 
         // Get key from entity
