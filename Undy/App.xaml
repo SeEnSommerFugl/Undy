@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:Undy"
              xmlns:vm="clr-namespace:Undy.ViewModels"
              xmlns:views="clr-namespace:Undy.Views">
+    
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,8 +23,8 @@
             <DataTemplate DataType="{x:Type vm:PaymentViewModel}">
                 <views:PaymentView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:IncomingWholeSaleOrderViewModel}">
-                <views:IncomingWholeSaleOrderView/>
+            <DataTemplate DataType="{x:Type vm:IncomingWholesaleOrderViewModel}">
+                <views:IncomingWholesaleOrderView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:StartPageViewModel}">
                 <views:StartPage/>
@@ -38,8 +39,6 @@
                 <views:TestSalesOrderView/>
             </DataTemplate>
             
-
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

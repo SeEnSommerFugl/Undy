@@ -3,60 +3,200 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.Data.SqlClient;
 using System.Data;
-using Undy.Data;
 using Undy.Data.Repository;
 using Undy.Models;
 
 namespace Undy.ViewModels
 {
-    public class IncomingWholeSaleOrderViewModel : BaseViewModel
+    public class IncomingWholesaleOrderViewModel : BaseViewModel
     {
         private readonly IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
+        private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly IBaseRepository<ProductWholesaleOrder, Guid> _productWholesaleOrderRepo;
 
-        private WholesaleOrder _SelectedOrder;
-        private bool _IsFullyReceived;
+        private WholesaleOrder? _selectedOrder;
+        private bool _isFullyReceived;
         private string _statusMessage;
 
-
-        public IncomingWholeSaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> purchaseOrderRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo)
+        public IncomingWholesaleOrderViewModel(
+            IBaseRepository<WholesaleOrder, Guid> purchaseOrderRepo,
+            IBaseRepository<Product, Guid> productRepo,
+            IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo)
         {
-            _wholesaleOrderRepo = purchaseOrderRepo;            
+            _wholesaleOrderRepo = purchaseOrderRepo;
+            _productRepo = productRepo;
             _productWholesaleOrderRepo = productWholesaleOrderRepo;
 
+            Lines = new ObservableCollection<IncomingOrderLineViewModel>();
+
+            ConfirmOrderCommand = new RelayCommand(
+                async _ => await ConfirmAsync(),
+                _ => SelectedOrder != null
+            );
         }
+
+        // ---------- Properties ----------
 
         public ObservableCollection<WholesaleOrder> WholesaleOrders
             => _wholesaleOrderRepo.Items;
 
-        private WholesaleOrder? _selectedOrder;
+        public ObservableCollection<IncomingOrderLineViewModel> Lines { get; }
+
         public WholesaleOrder? SelectedOrder
         {
             get => _selectedOrder;
-            set => SetProperty(ref _selectedOrder, value);
+            set
+            {
+                if (SetProperty(ref _selectedOrder, value))
+                {
+                    _ = LoadLinesForSelectedOrderAsync();
+                    (ConfirmOrderCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                }
+            }
         }
-        public ObservableCollection<IncomingOrderLineViewModel> Lines { get; }
 
-        private bool _isFullyReceived;
         public bool IsFullyReceived
         {
             get => _isFullyReceived;
             set => SetProperty(ref _isFullyReceived, value);
         }
+
         public string StatusMessage
         {
             get => _statusMessage;
-            set { _statusMessage = value; OnPropertyChanged(); }
+            set => SetProperty(ref _statusMessage, value);
         }
 
-        //public async Task LoadAsync()
-        
-        
-        //public async Task ConfirmAsync()
-        
-     
-        
+        public ICommand ConfirmOrderCommand { get; }
+
+        // ---------- Public metode til at loade data ----------
+
+        public async Task LoadAsync()
+        {
+            try
+            {
+                IsBusy = true;
+
+                await _wholesaleOrderRepo.InitializeAsync();
+                await _productRepo.InitializeAsync();
+                await _productWholesaleOrderRepo.InitializeAsync();
+
+                StatusMessage = string.Empty;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        // ---------- Hent linjer når SelectedOrder ændres ----------
+
+        private async Task LoadLinesForSelectedOrderAsync()
+        {
+            Lines.Clear();
+            IsFullyReceived = false;
+
+            if (SelectedOrder == null)
+                return;
+
+            try
+            {
+                IsBusy = true;
+
+                // find alle linjer for den valgte ordre
+                var orderLines = _productWholesaleOrderRepo.Items
+                    .Where(l => l.PurchaseOrderID == SelectedOrder.PurchaseOrderID);
+
+                foreach (var line in orderLines)
+                {
+                    // slå produktet op for navn/nummer (hvis det findes)
+                    var product = _productRepo.Items
+                        .FirstOrDefault(p => p.ProductID == line.ProductID);
+
+                    Lines.Add(new IncomingOrderLineViewModel
+                    {
+                        PurchaseOrderID = line.PurchaseOrderID,
+                        ProductID = line.ProductID,
+                        ProductNumber = product?.ProductNumber ?? string.Empty,
+                        ProductName = product?.ProductName ?? string.Empty,
+                        OrderedQuantity = line.Quantity,
+                        AlreadyReceived = line.QuantityReceived,
+                        ReceivedQuantity = 0
+                    });
+                }
+
+                // er alle linjer allerede fuldt modtaget?
+                IsFullyReceived = Lines.All(l => l.OrderedQuantity <= l.AlreadyReceived);
+
+                StatusMessage = string.Empty;
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        // ---------- Bekræft varemodtagelse ----------
+
+        private async Task ConfirmAsync()
+        {
+            if (SelectedOrder == null)
+            {
+                StatusMessage = "Vælg en ordre først.";
+                return;
+            }
+
+            try
+            {
+                IsBusy = true;
+
+                // vi skal bruge de ekstra metoder på det KONKRETE repo
+                if (_wholesaleOrderRepo is not WholesaleOrderDBRepository concreteRepo)
+                {
+                    StatusMessage = "Kan ikke bekræfte varemodtagelse (forkert repo-type).";
+                    return;
+                }
+
+                if (IsFullyReceived)
+                {
+                    // fuld modtagelse
+                    await concreteRepo.ConfirmFullReceiveAsync(SelectedOrder.PurchaseOrderNumber);
+                }
+                else
+                {
+                    // delvis modtagelse – kun linjer med ReceivedQuantity > 0
+                    foreach (var line in Lines.Where(l => l.ReceivedQuantity > 0))
+                    {
+                        var maxRemaining = line.OrderedQuantity - line.AlreadyReceived;
+                        if (line.ReceivedQuantity > maxRemaining)
+                        {
+                            // simpelt værn mod at modtage flere end der er tilbage
+                            continue;
+                        }
+
+                        await concreteRepo.ConfirmPartialReceiveAsync(
+                            SelectedOrder.PurchaseOrderNumber,
+                            line.ProductNumber,
+                            line.ReceivedQuantity);
+                    }
+                }
+
+                // reload data efter opdatering
+                await _wholesaleOrderRepo.InitializeAsync();
+                await _productWholesaleOrderRepo.InitializeAsync();
+                await LoadLinesForSelectedOrderAsync();
+
+                StatusMessage = "Varemodtagelse registreret.";
+            }
+            catch
+            {
+                StatusMessage = "Der opstod en fejl ved varemodtagelsen.";
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
     }
 }
