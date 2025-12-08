@@ -57,7 +57,7 @@ namespace Undy
             productRepo.InitializeAsync(),
             //stockRepo.InitializeAsync(),
             wholesaleOrderRepo.InitializeAsync(),
-            //salesOrderRepo.InitializeAsync(),
+            salesOrderRepo.InitializeAsync(),
             //testReturnRepo.InitializeAsync(),
             //testPurchaseOrderRepo.InitializeAsync(),
             //testSalesOrderRepo.InitializeAsync(),

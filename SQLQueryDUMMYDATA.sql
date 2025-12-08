@@ -62,56 +62,52 @@ GO
 EXEC usp_Insert_PurchaseOrder
 	@PurchaseOrderDate = '2025-12-01',
 	@ExpectedDeliveryDate = '2025-12-24',
-	@DeliveryDate = NULL,
 	@OrderStatus = 'Pending'
 GO
 
 EXEC usp_Insert_PurchaseOrder
 	@PurchaseOrderDate = '2026-01-01',
 	@ExpectedDeliveryDate = '2026-01-24',
-	@DeliveryDate = NULL,
 	@OrderStatus = 'Pending'
 GO
 
 EXEC usp_Insert_PurchaseOrder
 	@PurchaseOrderDate = '2026-02-01',
 	@ExpectedDeliveryDate = '2026-02-24',
-	@DeliveryDate = NULL,
 	@OrderStatus = 'Pending'
 GO
 
 EXEC usp_Insert_PurchaseOrder
 	@PurchaseOrderDate = '2026-03-01',
 	@ExpectedDeliveryDate = '2026-03-24',
-	@DeliveryDate = NULL,
 	@OrderStatus = 'Pending'
 GO
 
 -- Insert ProductPurchaseOrder
 
 EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID = 1,
+	@PurchaseOrderNumber = 1,
 	@ProductNumber = 'UBBABLS1',
 	@Quantity = 50,
 	@UnitPrice = 139
 GO
 
 EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID = 2,
+	@PurchaseOrderNumber = 2,
 	@ProductNumber = 'UBBABLM1',
 	@Quantity = 60,
 	@UnitPrice = 139
 GO
 
 EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID = 3,
+	@PurchaseOrderNumber = 3,
 	@ProductNumber = 'UBBABLL1',
 	@Quantity = 50,
 	@UnitPrice = 139
 GO
 
 EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID = 4,
+	@PurchaseOrderNumber = 4,
 	@ProductNumber = 'UBBABLXL1',
 	@Quantity = 40,
 	@UnitPrice = 139
@@ -119,6 +115,55 @@ GO
 
 -- Insert SalesOrder
 
+EXEC usp_Insert_SalesOrder
+	@OrderStatus = 'Pending',
+	@PaymentStatus = 'Unpaid',
+	@SalesDate = '2025-12-05',
+	@CustomerNumber = 1
+GO
+
+EXEC usp_Insert_SalesOrder
+	@OrderStatus = 'Sent',
+	@PaymentStatus = 'Paid',
+	@SalesDate = '2025-12-05',
+	@CustomerNumber = 2
+GO
+
+EXEC usp_Insert_SalesOrder
+	@OrderStatus = 'Being processed',
+	@PaymentStatus = 'Unpaid',
+	@SalesDate = '2025-12-05',
+	@CustomerNumber = 3
+GO
+
+-- Insert ProductSalesOrder
+EXEC usp_Insert_ProductSalesOrder
+	@SalesOrderNumber = 1,
+	@ProductNumber = 'UBBABLS1',
+	@Quantity = 2,
+	@UnitPrice = 139
+GO
+
+EXEC usp_Insert_ProductSalesOrder
+	@SalesOrderNumber = 2,
+	@ProductNumber = 'UBBABLS1',
+	@Quantity = 1,
+	@UnitPrice = 139
+GO
+
+EXEC usp_Insert_ProductSalesOrder
+	@SalesOrderNumber = 2,
+	@ProductNumber = 'UBBABLM1',
+	@Quantity = 1,
+	@UnitPrice = 139
+GO
+
+EXEC usp_Insert_ProductSalesOrder
+	@SalesOrderNumber = 3,
+	@ProductNumber = 'UBBABLXL1',
+	@Quantity = 4,
+	@UnitPrice = 139
+GO
 
 -- Customer Insert
 EXEC usp_Insert_Customer
@@ -161,3 +206,95 @@ EXEC usp_Insert_Customer
 	@PostalCode = 2600
 GO
 
+EXEC usp_Insert_Customer
+	@Firstname = 'Martin',
+    @LastName = 'Hansen',
+    @Email = 'MartinH@email.com',
+    @PhoneNumber = 56789123,
+    @Address = 'Skovvej 12',
+    @City = 'Skovby',
+    @PostalCode = 2700
+GO
+
+EXEC usp_insert_Customer
+	@FirstName = 'Mikkel',
+	@LastName = 'Nielsen',
+	@Email = 'MikkelN@email.com',
+	@PhoneNumber = 67891234,
+    @Address = 'Bakkevej 44',
+    @City = 'Bakkeby',
+    @PostalCode = 2800
+GO
+
+EXEC usp_Insert_Customer
+    @Firstname = 'Søren',
+    @LastName = 'Madsen',
+    @Email = 'SørenM@email.com',
+    @PhoneNumber = 78912345,
+    @Address = 'Engvej 7',
+    @City = 'Engby',
+    @PostalCode = 2900
+GO
+
+EXEC usp_Insert_Customer
+    @Firstname = 'Anders',
+    @LastName = 'Kristensen',
+    @Email = 'AndersK@email.com',
+    @PhoneNumber = 89123456,
+    @Address = 'Strandvej 55',
+    @City = 'Strandby',
+    @PostalCode = 2100
+GO
+
+EXEC usp_Insert_Customer
+    @Firstname = 'Karsten',
+    @LastName = 'Olsen',
+    @Email = 'KarstenO@email.com',
+    @PhoneNumber = 91234567,
+    @Address = 'Mosevej 9',
+    @City = 'Moseby',
+    @PostalCode = 2300
+GO
+
+EXEC usp_Insert_Customer
+    @Firstname = 'Thomas',
+    @LastName = 'Mortensen',
+    @Email = 'ThomasM@email.com',
+    @PhoneNumber = 12349876,
+    @Address = 'Klitvej 21',
+    @City = 'Klitby',
+    @PostalCode = 2500
+GO
+
+
+-- ALTERS
+ALTER TABLE SalesOrder
+ADD CustomerID UNIQUEIDENTIFIER NOT NULL;
+
+ALTER TABLE SalesOrder
+ADD CONSTRAINT FK_SalesOrder_Customer
+FOREIGN KEY (CustomerID) 
+REFERENCES Customers(CustomerID);
+
+ALTER TABLE SalesOrder
+DROP COLUMN DisplaySalesOrderNumber;
+
+ALTER TABLE SalesOrder
+ADD DisplaySalesOrderNumber AS    
+	'SALG-' + RIGHT('000000000' + CAST(SalesOrderNumber AS NVARCHAR(10)), 10)
+    PERSISTED;
+
+ALTER TABLE PurchaseOrder
+DROP COLUMN DisplayPurchaseOrderNumber;
+
+ALTER TABLE PurchaseOrder
+ADD DisplayPurchaseOrderNumber AS    
+	'KØB-' + RIGHT('000000000' + CAST(PurchaseOrderNumber AS NVARCHAR(10)), 10)
+	PERSISTED;
+
+
+	ALTER TABLE SalesOrder
+	DROP COLUMN TotalPrice;
+
+	ALTER TABLE SalesOrder
+	ADD TotalPrice DECIMAL(10,2) NOT NULL DEFAULT 0;

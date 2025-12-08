@@ -20,7 +20,7 @@ CREATE TABLE [Product](
 CREATE TABLE PurchaseOrder(
 	PurchaseOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
 	PurchaseOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
-	DisplayPurchaseOrderNumber AS 'KØOR-' + RIGHT('000000000' + CAST(PurchaseOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
+	DisplayPurchaseOrderNumber AS 'KØB-' + RIGHT('000000000' + CAST(PurchaseOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
 	PurchaseOrderDate DATE NOT NULL,
 	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
@@ -46,12 +46,16 @@ CREATE TABLE ProductPurchaseOrder(
 -- SalesOrder Table
 CREATE TABLE SalesOrder (
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+	CustomerID UNIQUEIDENTIFIER NOT NULL,
 	SalesOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
-	DisplaySalesOrderNumber AS 'KØOR-' + RIGHT('000000000' + CAST(SalesOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
+	DisplaySalesOrderNumber AS 'SALG-' + RIGHT('000000000' + CAST(SalesOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
 	OrderStatus NVARCHAR(255) NOT NULL,
 	PaymentStatus NVARCHAR(255) NOT NULL,
 	SalesDate DATE NOT NULL,
-	TotalPrice DECIMAL(10,2) NOT NULL
+	TotalPrice DECIMAL(10,2) NOT NULL DEFAULT 0,
+		CONSTRAINT FK_Customer_SalesOrder
+		FOREIGN KEY(CustomerID)
+		REFERENCES Customers(CustomerID)
 );
 
 -- ProductSalesOrder
@@ -100,7 +104,7 @@ GO
 -- ============================================================================
 
 -- Insert Product
-CREATE PROCEDURE usp_Insert_Product
+CREATE OR ALTER PROCEDURE usp_Insert_Product
 	@ProductNumber NVARCHAR(255),
 	@ProductName NVARCHAR(255),
 	@Price DECIMAL(10,2),
@@ -131,7 +135,7 @@ END;
 GO
 
 -- Insert PurchaseOrder
-CREATE PROCEDURE usp_Insert_PurchaseOrder
+CREATE OR ALTER PROCEDURE usp_Insert_PurchaseOrder
 	@PurchaseOrderDate DATE,
 	@ExpectedDeliveryDate DATE,
 	@OrderStatus NVARCHAR(255)
@@ -152,14 +156,20 @@ END;
 GO
 
 -- Insert ProductPurchaseOrder
-CREATE PROCEDURE usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID UNIQUEIDENTIFIER,
+CREATE OR ALTER  PROCEDURE usp_Insert_ProductPurchaseOrder
+	@PurchaseOrderNumber INT,
 	@ProductNumber NVARCHAR(255),
 	@Quantity INT,
 	@UnitPrice DECIMAL(10,2)
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	DECLARE @PurchaseOrderID UNIQUEIDENTIFIER;
+	
+	SELECT @PurchaseOrderID = PurchaseOrderID
+	FROM PurchaseOrder
+	WHERE PurchaseOrderNumber = @PurchaseOrderNumber;
 	
 	-- Validate PurchaseOrder exists
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -209,29 +219,42 @@ END;
 GO
 
 -- Insert SalesOrder
-CREATE PROCEDURE usp_Insert_SalesOrder
+CREATE OR ALTER PROCEDURE usp_Insert_SalesOrder
 	@OrderStatus NVARCHAR(255),
 	@PaymentStatus NVARCHAR(255),
 	@SalesDate DATE,
-	@TotalPrice DECIMAL(10,2)
+	@CustomerNumber NVARCHAR(255)
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	-- Look up CustomerID from CustomerNumber
+	DECLARE @CustomerID UNIQUEIDENTIFIER;
 	
-	INSERT INTO SalesOrder(OrderStatus, PaymentStatus, SalesDate, TotalPrice)
-	VALUES(@OrderStatus, @PaymentStatus, @SalesDate, @TotalPrice);
+	SELECT @CustomerID = CustomerID
+	FROM Customers
+	WHERE CustomerNumber = @CustomerNumber;
+	
+	INSERT INTO SalesOrder(OrderStatus, PaymentStatus, SalesDate,CustomerID)
+	VALUES(@OrderStatus, @PaymentStatus, @SalesDate, @CustomerID);
 END;
 GO
 
 -- Insert ProductSalesOrder
-CREATE PROCEDURE usp_Insert_ProductSalesOrder
-	@SalesOrderID UNIQUEIDENTIFIER,
+CREATE OR ALTER PROCEDURE usp_Insert_ProductSalesOrder
+	@SalesOrderNumber INT,
 	@ProductNumber NVARCHAR(255),
 	@Quantity INT,
 	@UnitPrice DECIMAL(10,2)
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	-- Look up SalesOrderID from SalesOrderNumber
+	DECLARE @SalesOrderID UNIQUEIDENTIFIER;
+	SELECT @SalesOrderID = SalesOrderID
+	FROM SalesOrder
+	WHERE SalesOrderNumber = @SalesOrderNumber;
 	
 	-- Validate SalesOrder exists
 	IF NOT EXISTS(SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID)
@@ -277,11 +300,19 @@ BEGIN
 	
 	INSERT INTO ProductSalesOrder(SalesOrderID, ProductID, Quantity, UnitPrice)
 	VALUES(@SalesOrderID, @ProductID, @Quantity, @UnitPrice);
+
+	UPDATE SalesOrder
+	SET TotalPrice = (
+		SELECT SUM(Quantity * UnitPrice)
+		FROM ProductSalesOrder
+		WHERE SalesOrderID = @SalesOrderID
+	)
+	WHERE SalesOrderID = @SalesOrderID;
 END;
 GO
 
 -- Insert ReturnOrder
-CREATE PROCEDURE usp_Insert_ReturnOrder
+CREATE OR ALTER PROCEDURE usp_Insert_ReturnOrder
 	@ReturnOrderDate DATE,
 	@SalesOrderNumber INT
 AS
@@ -315,7 +346,7 @@ END;
 GO
 
 -- Insert Customer
-CREATE PROCEDURE usp_Insert_Customer
+CREATE OR ALTER PROCEDURE usp_Insert_Customer
 	@FirstName NVARCHAR(255),
 	@LastName NVARCHAR(255),
 	@Email NVARCHAR(255),
@@ -352,7 +383,7 @@ GO
 -- ============================================================================
 
 -- View Products
-CREATE VIEW vw_Products
+CREATE OR ALTER VIEW vw_Products
 AS
 SELECT 
 	ProductID, 
@@ -366,7 +397,7 @@ FROM [Product];
 GO
 
 -- View PurchaseOrders
-CREATE VIEW vw_PurchaseOrders AS
+CREATE OR ALTER VIEW vw_PurchaseOrders AS
 SELECT 
 	po.PurchaseOrderID,
 	po.PurchaseOrderNumber,
@@ -390,7 +421,7 @@ JOIN [Product] p ON ppo.ProductID = p.ProductID;
 GO
 
 -- View SalesOrders
-CREATE VIEW vw_SalesOrders AS
+CREATE OR ALTER VIEW vw_SalesOrders AS
 SELECT 
 	so.SalesOrderID, 
 	so.SalesOrderNumber, 
@@ -411,7 +442,7 @@ JOIN [Product] p ON pso.ProductID = p.ProductID;
 GO
 
 -- View ReturnOrders
-CREATE VIEW vw_ReturnOrders AS
+CREATE OR ALTER VIEW vw_ReturnOrders AS
 SELECT 
 	ro.ReturnOrderID, 
 	ro.ReturnOrderDate, 
@@ -425,7 +456,7 @@ JOIN SalesOrder so ON ro.SalesOrderID = so.SalesOrderID;
 GO
 
 -- View Customers
-CREATE VIEW vw_Customers AS
+CREATE OR ALTER VIEW vw_Customers AS
 SELECT 
 	CustomerID,
 	CustomerNumber,
@@ -446,7 +477,7 @@ GO
 -- ============================================================================
 
 -- Update PurchaseOrder
-CREATE PROCEDURE usp_Update_PurchaseOrder 
+CREATE OR ALTER PROCEDURE usp_Update_PurchaseOrder 
 	@PurchaseOrderNumber INT 
 AS
 BEGIN
@@ -494,7 +525,7 @@ END;
 GO
 
 -- Update Partial PurchaseOrder
-CREATE PROCEDURE usp_UpdatePartial_PurchaseOrder 
+CREATE OR ALTER PROCEDURE usp_UpdatePartial_PurchaseOrder 
 	@PurchaseOrderNumber INT, 
 	@ProductNumber NVARCHAR(255),
 	@Quantity INT
@@ -583,7 +614,7 @@ END;
 GO
 
 -- Update SalesOrder
-CREATE PROCEDURE usp_Update_SalesOrder 
+CREATE OR ALTER PROCEDURE usp_Update_SalesOrder 
 	@SalesOrderNumber INT 
 AS
 BEGIN
@@ -648,7 +679,7 @@ END;
 GO
 
 -- Update ReturnOrder
-CREATE PROCEDURE usp_Update_ReturnOrder 
+CREATE OR ALTER PROCEDURE usp_Update_ReturnOrder 
 	@SalesOrderNumber INT 
 AS
 BEGIN
@@ -713,7 +744,7 @@ END;
 GO
 
 -- Update Product
-CREATE PROCEDURE usp_Update_Product
+CREATE OR ALTER PROCEDURE usp_Update_Product
 	@ProductNumber NVARCHAR(255),
 	@NewProductNumber NVARCHAR(255) = NULL,
 	@ProductName NVARCHAR(255) = NULL,
@@ -770,7 +801,7 @@ END;
 GO
 
 -- Update Customer - Uses CustomerNumber to identify customer
-CREATE PROCEDURE usp_Update_Customer
+CREATE OR ALTER PROCEDURE usp_Update_Customer
 	@CustomerNumber INT,
 	@FirstName NVARCHAR(255) = NULL,
 	@LastName NVARCHAR(255) = NULL,
