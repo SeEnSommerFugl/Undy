@@ -63,7 +63,7 @@ namespace Undy.Data.Repository {
             cmd.Parameters.Add("@QuantityReceived", SqlDbType.Int).Value = e.QuantityReceived;
         }
 
-        protected override Guid GetKey(ProductWholesaleOrder entity) => e.PurchaseOrderID;
+        protected override Guid GetKey(ProductWholesaleOrder e) => e.PurchaseOrderID;
         
 
         }
