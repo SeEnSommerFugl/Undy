@@ -52,7 +52,7 @@ CREATE TABLE SalesOrder (
 	OrderStatus NVARCHAR(255) NOT NULL,
 	PaymentStatus NVARCHAR(255) NOT NULL,
 	SalesDate DATE NOT NULL,
-	TotalPrice DECIMAL(10,2) NOT NULL,
+	TotalPrice DECIMAL(10,2) NOT NULL DEFAULT 0,
 		CONSTRAINT FK_Customer_SalesOrder
 		FOREIGN KEY(CustomerID)
 		REFERENCES Customers(CustomerID)
@@ -157,13 +157,19 @@ GO
 
 -- Insert ProductPurchaseOrder
 CREATE OR ALTER  PROCEDURE usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID UNIQUEIDENTIFIER,
+	@PurchaseOrderNumber INT,
 	@ProductNumber NVARCHAR(255),
 	@Quantity INT,
 	@UnitPrice DECIMAL(10,2)
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	DECLARE @PurchaseOrderID UNIQUEIDENTIFIER;
+	
+	SELECT @PurchaseOrderID = PurchaseOrderID
+	FROM PurchaseOrder
+	WHERE PurchaseOrderNumber = @PurchaseOrderNumber;
 	
 	-- Validate PurchaseOrder exists
 	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
@@ -217,7 +223,6 @@ CREATE OR ALTER PROCEDURE usp_Insert_SalesOrder
 	@OrderStatus NVARCHAR(255),
 	@PaymentStatus NVARCHAR(255),
 	@SalesDate DATE,
-	@TotalPrice DECIMAL(10,2),
 	@CustomerNumber NVARCHAR(255)
 AS
 BEGIN
@@ -230,8 +235,8 @@ BEGIN
 	FROM Customers
 	WHERE CustomerNumber = @CustomerNumber;
 	
-	INSERT INTO SalesOrder(OrderStatus, PaymentStatus, SalesDate, TotalPrice, CustomerID)
-	VALUES(@OrderStatus, @PaymentStatus, @SalesDate, @TotalPrice, @CustomerID);
+	INSERT INTO SalesOrder(OrderStatus, PaymentStatus, SalesDate,CustomerID)
+	VALUES(@OrderStatus, @PaymentStatus, @SalesDate, @CustomerID);
 END;
 GO
 
@@ -295,6 +300,14 @@ BEGIN
 	
 	INSERT INTO ProductSalesOrder(SalesOrderID, ProductID, Quantity, UnitPrice)
 	VALUES(@SalesOrderID, @ProductID, @Quantity, @UnitPrice);
+
+	UPDATE SalesOrder
+	SET TotalPrice = (
+		SELECT SUM(Quantity * UnitPrice)
+		FROM ProductSalesOrder
+		WHERE SalesOrderID = @SalesOrderID
+	)
+	WHERE SalesOrderID = @SalesOrderID;
 END;
 GO
 

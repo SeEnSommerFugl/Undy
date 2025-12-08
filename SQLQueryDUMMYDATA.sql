@@ -62,56 +62,52 @@ GO
 EXEC usp_Insert_PurchaseOrder
 	@PurchaseOrderDate = '2025-12-01',
 	@ExpectedDeliveryDate = '2025-12-24',
-	@DeliveryDate = NULL,
 	@OrderStatus = 'Pending'
 GO
 
 EXEC usp_Insert_PurchaseOrder
 	@PurchaseOrderDate = '2026-01-01',
 	@ExpectedDeliveryDate = '2026-01-24',
-	@DeliveryDate = NULL,
 	@OrderStatus = 'Pending'
 GO
 
 EXEC usp_Insert_PurchaseOrder
 	@PurchaseOrderDate = '2026-02-01',
 	@ExpectedDeliveryDate = '2026-02-24',
-	@DeliveryDate = NULL,
 	@OrderStatus = 'Pending'
 GO
 
 EXEC usp_Insert_PurchaseOrder
 	@PurchaseOrderDate = '2026-03-01',
 	@ExpectedDeliveryDate = '2026-03-24',
-	@DeliveryDate = NULL,
 	@OrderStatus = 'Pending'
 GO
 
 -- Insert ProductPurchaseOrder
 
 EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID = 1,
+	@PurchaseOrderNumber = 1,
 	@ProductNumber = 'UBBABLS1',
 	@Quantity = 50,
 	@UnitPrice = 139
 GO
 
 EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID = 2,
+	@PurchaseOrderNumber = 2,
 	@ProductNumber = 'UBBABLM1',
 	@Quantity = 60,
 	@UnitPrice = 139
 GO
 
 EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID = 3,
+	@PurchaseOrderNumber = 3,
 	@ProductNumber = 'UBBABLL1',
 	@Quantity = 50,
 	@UnitPrice = 139
 GO
 
 EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderID = 4,
+	@PurchaseOrderNumber = 4,
 	@ProductNumber = 'UBBABLXL1',
 	@Quantity = 40,
 	@UnitPrice = 139
@@ -119,6 +115,20 @@ GO
 
 -- Insert SalesOrder
 
+EXEC usp_Insert_SalesOrder
+	@OrderStatus = 'Pending',
+	@PaymentStatus = 'Unpaid',
+	@SalesDate = '2025-12-05',
+	@CustomerNumber = 1
+GO
+
+-- Insert ProductSalesOrder
+EXEC usp_Insert_ProductSalesOrder
+	@SalesOrderNumber = 1,
+	@ProductNumber = 'UBBABLS1',
+	@Quantity = 2,
+	@UnitPrice = 139
+GO
 
 -- Customer Insert
 EXEC usp_Insert_Customer
@@ -246,3 +256,10 @@ ALTER TABLE PurchaseOrder
 ADD DisplayPurchaseOrderNumber AS    
 	'KØB-' + RIGHT('000000000' + CAST(PurchaseOrderNumber AS NVARCHAR(10)), 10)
 	PERSISTED;
+
+
+	ALTER TABLE SalesOrder
+	DROP COLUMN TotalPrice;
+
+	ALTER TABLE SalesOrder
+	ADD TotalPrice DECIMAL(10,2) NOT NULL DEFAULT 0;
