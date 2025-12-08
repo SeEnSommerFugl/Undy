@@ -1,6 +1,6 @@
 ﻿namespace Undy.Models
 {
-    public class ProductWholesaleOrderLine
+    public class ProductWholesaleOrder
     {
         public Guid PurchaseOrderID { get; set; }
         public Guid ProductID { get; set; }
