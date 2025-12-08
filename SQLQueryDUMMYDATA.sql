@@ -1,25 +1,6 @@
 ﻿USE Undy
 GO
 -- Product insert
-
---INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
---VALUES('UBBABLS1', 'Bambus Boxerbriefs', 139, 'S', 'Sort', 40);
-
---INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
---VALUES('UBBABLM1', 'Bambus Boxerbriefs', 139, 'M', 'Sort', 50);
-
---INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
---VALUES('UBBABLL1', 'Bambus Boxerbriefs', 139, 'L', 'Sort', 40);
-
---INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
---VALUES('UBBABLXL1', 'Bambus Boxerbriefs', 139, 'XL', 'Sort', 30);
-
---INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
---VALUES('UBBABLXXL1', 'Bambus Boxerbriefs', 139, '2XL', 'Sort', 20);
-
---INSERT INTO Product(ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
---VALUES('UBBABLXXXL1', 'Bambus Boxerbriefs', 139, '3XL', 'Sort', 20);
-
 EXEC usp_Insert_Product
 	@ProductNumber = 'UBBABLS1',
 	@ProductName = 'Bambus Boxerbriefs',
@@ -75,7 +56,7 @@ EXEC usp_Insert_Product
 GO
 
 
----- PurchaseOrder insert
+-- PurchaseOrder insert
 
 --INSERT INTO PurchaseOrder(PurchaseOrderDate, ExpectedDeliveryDate, DeliveryDate, OrderStatus)
 --VALUES('2025-12-01', '2025-12-24', NULL, 'Pending');
@@ -91,14 +72,43 @@ GO
 
 
 -- Customer Insert
-INSERT INTO CUSTOMER(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
-VALUES('John', 'Doe', 'JonhD@email.com', 12345678,  'Spurvevej 3', 'Spurveby', 2000);
+EXEC usp_Insert_Customer
+	@Firstname = 'John',
+	@LastName = 'Doe',
+	@Email = 'JohnD@email.com',
+	@PhoneNumber = 12345678,
+	@Address = 'Spurvevej 3',
+	@City = 'Spurveby',
+	@PostalCode = 2000
+GO
 
-INSERT INTO CUSTOMER(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
-VALUES('Per', 'Pedersen', 'PerP@email.com', 23456789,  'Fasanvej 25', 'Fasanby', 2200);
+EXEC usp_Insert_Customer
+	@Firstname = 'Per',
+	@LastName = 'Pedersen',
+	@Email = 'PerP@email.com',
+	@PhoneNumber = 23456789,
+	@Address = 'Fasanvej 25',
+	@City = 'Fasanby',
+	@PostalCode = 2200
+GO
 
-INSERT INTO CUSTOMER(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
-VALUES('Lars', 'Larsen', 'LarsL@email.com', 34567891,  'Ørnevej 38', 'Ørneby', 2400);
+EXEC usp_Insert_Customer
+	@Firstname = 'Lars',
+	@LastName = 'Larsen',
+	@Email = 'LarsL@email.com',
+	@PhoneNumber = 34567891,
+	@Address = 'Ørnevej 38',
+	@City = 'Ørneby',
+	@PostalCode = 2400
+GO
 
-INSERT INTO CUSTOMER(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
-VALUES('Jens', 'Jensen', 'JensJ@email.com', 45678912,  'Hajrevej 3', 'Hajreby', 2600);
+EXEC usp_Insert_Customer
+	@Firstname = 'Jens',
+	@LastName = 'Jensen',
+	@Email = 'JensJ@email.com',
+	@PhoneNumber = 45678912,
+	@Address = 'Hajrevej 3',
+	@City = 'Hajreby',
+	@PostalCode = 2600
+GO
+
