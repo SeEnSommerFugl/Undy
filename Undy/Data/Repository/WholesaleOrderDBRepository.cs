@@ -27,10 +27,15 @@ namespace Undy.Data.Repository
         // Map data record to entity 
         protected override WholesaleOrder Map(IDataRecord r) => new WholesaleOrder
         {
-            PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrder_ID")),
+            PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrderID")),
+            PurchaseOrderNumber = r.GetInt32(r.GetOrdinal("PurchaseOrderNumber")),
+            DisplayPurchaseOrderNumber = r.GetString(r.GetOrdinal("DisplayPurchaseOrderNumber")),
+            PurchaseOrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("PurchaseOrderDate"))),
             ExpectedDeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ExpectedDeliveryDate"))),
-            OrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("OrderDate"))),
-            DeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("DeliveryDate"))),
+            DeliveryDate = r.IsDBNull(r.GetOrdinal("DeliveryDate"))
+                            ? null
+            : DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("DeliveryDate"))),
+
             OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
         };
 
@@ -65,7 +70,42 @@ namespace Undy.Data.Repository
         // Get key from entity
         protected override Guid GetKey(WholesaleOrder e) => e.PurchaseOrderID;
 
+        public async Task ConfirmFullReceiveAsync(int purchaseOrderNumber)
+        {
+            using var con = await DB.OpenConnection();
+            using var cmd = new SqlCommand("usp_Update_PurchaseOrder", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
 
+            cmd.Parameters.Add("@PurchaseOrderNumber", SqlDbType.Int)
+               .Value = purchaseOrderNumber;
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        public async Task ConfirmPartialReceiveAsync(
+            int purchaseOrderNumber,
+            string productNumber,
+            int quantity)
+        {
+            using var con = await DB.OpenConnection();
+            using var cmd = new SqlCommand("usp_UpdatePartial_PurchaseOrder", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.Add("@PurchaseOrderNumber", SqlDbType.Int)
+                .Value = purchaseOrderNumber;
+
+            cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255)
+                .Value = productNumber;
+
+            cmd.Parameters.Add("@Quantity", SqlDbType.Int)
+                .Value = quantity;
+
+            await cmd.ExecuteNonQueryAsync();
+        }
     };
 }
 
