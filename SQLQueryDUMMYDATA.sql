@@ -161,3 +161,62 @@ EXEC usp_Insert_Customer
 	@PostalCode = 2600
 GO
 
+EXEC usp_Insert_Customer
+	@Firstname = 'Martin',
+    @LastName = 'Hansen',
+    @Email = 'MartinH@email.com',
+    @PhoneNumber = 56789123,
+    @Address = 'Skovvej 12',
+    @City = 'Skovby',
+    @PostalCode = 2700
+GO
+
+EXEC usp_insert_Customer
+	@FirstName = 'Mikkel',
+	@LastName = 'Nielsen',
+	@Email = 'MikkelN@email.com',
+	@PhoneNumber = 67891234,
+    @Address = 'Bakkevej 44',
+    @City = 'Bakkeby',
+    @PostalCode = 2800
+GO
+
+EXEC usp_Insert_Customer
+    @Firstname = 'Søren',
+    @LastName = 'Madsen',
+    @Email = 'SørenM@email.com',
+    @PhoneNumber = 78912345,
+    @Address = 'Engvej 7',
+    @City = 'Engby',
+    @PostalCode = 2900
+GO
+
+EXEC usp_Insert_Customer
+    @Firstname = 'Anders',
+    @LastName = 'Kristensen',
+    @Email = 'AndersK@email.com',
+    @PhoneNumber = 89123456,
+    @Address = 'Strandvej 55',
+    @City = 'Strandby',
+    @PostalCode = 2100
+GO
+
+EXEC usp_Insert_Customer
+    @Firstname = 'Karsten',
+    @LastName = 'Olsen',
+    @Email = 'KarstenO@email.com',
+    @PhoneNumber = 91234567,
+    @Address = 'Mosevej 9',
+    @City = 'Moseby',
+    @PostalCode = 2300
+GO
+
+EXEC usp_Insert_Customer
+    @Firstname = 'Thomas',
+    @LastName = 'Mortensen',
+    @Email = 'ThomasM@email.com',
+    @PhoneNumber = 12349876,
+    @Address = 'Klitvej 21',
+    @City = 'Klitby',
+    @PostalCode = 2500
+GO
