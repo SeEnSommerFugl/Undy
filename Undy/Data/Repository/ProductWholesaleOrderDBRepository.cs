@@ -8,11 +8,11 @@ using Microsoft.Data.SqlClient;
 using Undy.Models;
 
 namespace Undy.Data.Repository {
-    public class ProductWholesaleOrderDBRepository : BaseDBRepository<ProductWholesaleOrder, Guid>
+    public class ProductWholesaleOrderDBRepository : BaseDBRepository<ProductWholesaleOrderLine, Guid>
     {
 
         // View for selecting all
-        protected override string SqlSelectAll => "SELECT * FROM vw_PurchaseOrder";
+        protected override string SqlSelectAll => "SELECT * FROM vw_PurchaseOrders";
 
         // Stored procedure for getting by id
         protected override string SqlSelectById => "usp_SelectById_PurchaseOrder";
@@ -29,7 +29,7 @@ namespace Undy.Data.Repository {
         // Stored procedure for partial orders
         protected override string SqlPartialInsert => "usp_InsertPartial_PurchaseOrder";
 
-        protected override ProductWholesaleOrder Map(IDataRecord r) => new ProductWholesaleOrder
+        protected override ProductWholesaleOrderLine Map(IDataRecord r) => new ProductWholesaleOrderLine
         {
             PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrderID")),
             ProductID = r.GetGuid(r.GetOrdinal("ProductID")),
@@ -45,7 +45,7 @@ namespace Undy.Data.Repository {
         }
 
         // Parameter binding for insert
-        protected override void BindInsert(SqlCommand cmd, ProductWholesaleOrder e)
+        protected override void BindInsert(SqlCommand cmd, ProductWholesaleOrderLine e)
         {             
             cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
             cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
@@ -54,7 +54,7 @@ namespace Undy.Data.Repository {
             cmd.Parameters.Add("@QuantityReceived", SqlDbType.Int).Value = e.QuantityReceived;
         }
         // Parameter binding for update
-        protected override void BindUpdate(SqlCommand cmd, ProductWholesaleOrder e)
+        protected override void BindUpdate(SqlCommand cmd, ProductWholesaleOrderLine e)
         {
             cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
             cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
