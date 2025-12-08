@@ -161,3 +161,26 @@ EXEC usp_Insert_Customer
 	@PostalCode = 2600
 GO
 
+ALTER TABLE SalesOrder
+ADD CustomerID UNIQUEIDENTIFIER NOT NULL;
+
+ALTER TABLE SalesOrder
+ADD CONSTRAINT FK_SalesOrder_Customer
+FOREIGN KEY (CustomerID) 
+REFERENCES Customers(CustomerID);
+
+ALTER TABLE SalesOrder
+DROP COLUMN DisplaySalesOrderNumber;
+
+ALTER TABLE SalesOrder
+ADD DisplaySalesOrderNumber AS    
+	'SALG-' + RIGHT('000000000' + CAST(SalesOrderNumber AS NVARCHAR(10)), 10)
+    PERSISTED;
+
+ALTER TABLE PurchaseOrder
+DROP COLUMN DisplayPurchaseOrderNumber;
+
+ALTER TABLE PurchaseOrder
+ADD DisplayPurchaseOrderNumber AS    
+	'KØB-' + RIGHT('000000000' + CAST(PurchaseOrderNumber AS NVARCHAR(10)), 10)
+	PERSISTED;
