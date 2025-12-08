@@ -88,3 +88,17 @@ GO
 
 --INSERT INTO PurchaseOrder(PurchaseOrderDate, ExpectedDeliveryDate, DeliveryDate, OrderStatus)
 --VALUES('2026-03-01', '2026-03-24', NULL, 'Pending');
+
+
+-- Customer Insert
+INSERT INTO CUSTOMER(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
+VALUES('John', 'Doe', 'JonhD@email.com', 12345678,  'Spurvevej 3', 'Spurveby', 2000);
+
+INSERT INTO CUSTOMER(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
+VALUES('Per', 'Pedersen', 'PerP@email.com', 23456789,  'Fasanvej 25', 'Fasanby', 2200);
+
+INSERT INTO CUSTOMER(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
+VALUES('Lars', 'Larsen', 'LarsL@email.com', 34567891,  'Ørnevej 38', 'Ørneby', 2400);
+
+INSERT INTO CUSTOMER(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
+VALUES('Jens', 'Jensen', 'JensJ@email.com', 45678912,  'Hajrevej 3', 'Hajreby', 2600);
