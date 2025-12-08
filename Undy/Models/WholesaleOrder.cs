@@ -1,7 +1,6 @@
 ﻿namespace Undy.Models
 {
-    public class WholesaleOrder
-    {
+    public class WholesaleOrder {
         public Guid PurchaseOrderID { get; set; }
         public DateOnly ExpectedDeliveryDate { get; set; }
         public DateOnly OrderDate { get; set; }
