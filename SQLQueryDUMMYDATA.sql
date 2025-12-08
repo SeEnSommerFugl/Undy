@@ -122,11 +122,46 @@ EXEC usp_Insert_SalesOrder
 	@CustomerNumber = 1
 GO
 
+EXEC usp_Insert_SalesOrder
+	@OrderStatus = 'Sent',
+	@PaymentStatus = 'Paid',
+	@SalesDate = '2025-12-05',
+	@CustomerNumber = 2
+GO
+
+EXEC usp_Insert_SalesOrder
+	@OrderStatus = 'Being processed',
+	@PaymentStatus = 'Unpaid',
+	@SalesDate = '2025-12-05',
+	@CustomerNumber = 3
+GO
+
 -- Insert ProductSalesOrder
 EXEC usp_Insert_ProductSalesOrder
 	@SalesOrderNumber = 1,
 	@ProductNumber = 'UBBABLS1',
 	@Quantity = 2,
+	@UnitPrice = 139
+GO
+
+EXEC usp_Insert_ProductSalesOrder
+	@SalesOrderNumber = 2,
+	@ProductNumber = 'UBBABLS1',
+	@Quantity = 1,
+	@UnitPrice = 139
+GO
+
+EXEC usp_Insert_ProductSalesOrder
+	@SalesOrderNumber = 2,
+	@ProductNumber = 'UBBABLM1',
+	@Quantity = 1,
+	@UnitPrice = 139
+GO
+
+EXEC usp_Insert_ProductSalesOrder
+	@SalesOrderNumber = 3,
+	@ProductNumber = 'UBBABLXL1',
+	@Quantity = 4,
 	@UnitPrice = 139
 GO
 
