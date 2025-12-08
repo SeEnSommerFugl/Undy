@@ -220,6 +220,9 @@ EXEC usp_Insert_Customer
     @City = 'Klitby',
     @PostalCode = 2500
 GO
+
+
+-- ALTERS
 ALTER TABLE SalesOrder
 ADD CustomerID UNIQUEIDENTIFIER NOT NULL;
 
