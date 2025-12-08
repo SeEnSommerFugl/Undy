@@ -14,14 +14,14 @@ namespace Undy.ViewModels
     public class IncomingWholeSaleOrderViewModel : BaseViewModel
     {
         private readonly IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
-        private readonly IBaseRepository<ProductWholesaleOrderLine, Guid> _productWholesaleOrderRepo;
+        private readonly IBaseRepository<ProductWholesaleOrder, Guid> _productWholesaleOrderRepo;
 
         private WholesaleOrder _SelectedOrder;
         private bool _IsFullyReceived;
         private string _statusMessage;
 
 
-        public IncomingWholeSaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> purchaseOrderRepo, IBaseRepository<Product, Guid> productRepo, ProductWholesaleOrderDBRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo)
+        public IncomingWholeSaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> purchaseOrderRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo)
         {
             _wholesaleOrderRepo = purchaseOrderRepo;            
             _productWholesaleOrderRepo = productWholesaleOrderRepo;

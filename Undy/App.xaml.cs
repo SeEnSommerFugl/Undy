@@ -22,17 +22,18 @@ namespace Undy
             IBaseRepository<ReturnOrder, Guid> testReturnRepo = new ReturnOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> testSalesOrderRepo = new SalesOrderDBRepository();
             IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
+            IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo = new ProductWholesaleOrderDBRepository();
 
             //----- ViewModels ----- //
+            var startPageVM = new StartPageViewModel();
             var wholesaleOrderVM = new WholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
-            var incomingWholeSaleOrderVM = new IncomingWholeSaleOrderViewModel(wholesaleOrderRepo, productRepo);
+            var incomingWholeSaleOrderVM = new IncomingWholeSaleOrderViewModel(wholesaleOrderRepo, productRepo, productWholesaleOrderRepo);
             var pickListVM = new PickListViewModel(salesOrderRepo, productRepo);
             var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
-            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, productRepo);
-            var startPageVM = new StartPageViewModel();
+            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
 
             var mainVM = new MainViewModel(
                 startPageVM,
