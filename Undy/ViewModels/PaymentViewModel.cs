@@ -250,7 +250,7 @@ namespace Undy.ViewModels
             if (order == null) return;
 
             CurrentSalesOrderId = order.SalesOrderID;
-            OrderNumber = order.OrderNumber.ToString();
+            OrderNumber = order.SalesOrderNumber.ToString();
             TotalAmount = order.TotalPrice;   // sætter også PaymentAmount
             CurrentStatus = order.OrderStatus;
 

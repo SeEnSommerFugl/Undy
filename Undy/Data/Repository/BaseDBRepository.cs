@@ -89,11 +89,6 @@ namespace Undy.Data.Repository
             // NO commit/rollback here - caller manages transaction
             foreach (var entity in entitiesList)
             {
-                if (GetKey(entity) is Guid g && g == Guid.Empty)
-                {
-                    throw new InvalidOperationException("Entity key must be set before insert");
-                }
-
                 using var cmd = new SqlCommand(SqlInsert, con, transaction);
                 cmd.CommandType = CommandType.StoredProcedure;
 
