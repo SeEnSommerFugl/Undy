@@ -97,7 +97,7 @@ namespace Undy.ViewModels
             }
 
             var salesOrder = new SalesOrder {
-
+                SalesOrderID = Guid.NewGuid(),
                 CustomerNumber = CustomerNumber,
                 OrderStatus = "Afventer Behandling",
                 PaymentStatus = "Afventer Betaling",

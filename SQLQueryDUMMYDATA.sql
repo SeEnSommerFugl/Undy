@@ -145,21 +145,21 @@ EXEC usp_Insert_ProductSalesOrder
 GO
 
 EXEC usp_Insert_ProductSalesOrder
-	@SalesOrderNumber = 2,
+	@SalesOrderNumber = 14,
 	@ProductNumber = 'UBBABLS1',
 	@Quantity = 1,
 	@UnitPrice = 139
 GO
 
 EXEC usp_Insert_ProductSalesOrder
-	@SalesOrderNumber = 2,
+	@SalesOrderNumber = 15,
 	@ProductNumber = 'UBBABLM1',
 	@Quantity = 1,
 	@UnitPrice = 139
 GO
 
 EXEC usp_Insert_ProductSalesOrder
-	@SalesOrderNumber = 3,
+	@SalesOrderNumber = 16,
 	@ProductNumber = 'UBBABLXL1',
 	@Quantity = 4,
 	@UnitPrice = 139
