@@ -38,18 +38,17 @@ namespace Undy.ViewModels
             get => _currentSalesOrder;
             set
             {
-                _currentSalesOrder = value;
-                OnPropertyChanged();
+                if(SetProperty(ref _currentSalesOrder, value));
             }
         }
 
-        private string _customerName;
-        public string CustomerName
+        private int _customerNumber;
+        public int CustomerNumber
         {
-            get => _customerName;
+            get => _customerNumber;
             set
             {
-                if(SetProperty(ref _customerName, value));
+                if(SetProperty(ref _customerNumber, value));
             }
         }
 
@@ -91,13 +90,14 @@ namespace Undy.ViewModels
         }
 
         private async Task CreateSalesOrderAsync() {
-            if (SalesOrderLines.Count == 0 || string.IsNullOrWhiteSpace(CustomerName)) {
+            if (SalesOrderLines.Count == 0 || CustomerNumber <= 0) {
                 return;
             }
 
             var salesOrder = new SalesOrder {
-                OrderStatus = "Pending",
-                PaymentStatus = "Unpaid",
+                CustomerNumber = CustomerNumber,
+                OrderStatus = "Afventer Behandling",
+                PaymentStatus = "Afventer Betaling",
                 SalesDate = DateOnly.FromDateTime(DateTime.Now),
                 TotalPrice = SalesOrderLines.Sum(sl => sl.SubTotal)
             };

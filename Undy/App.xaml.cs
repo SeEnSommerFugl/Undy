@@ -47,7 +47,6 @@ namespace Undy
             var startPageVM = new StartPageViewModel();
             var wholesaleOrderVM = new WholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
             var incomingWholesaleOrderVM = new IncomingWholesaleOrderViewModel(wholesaleOrderRepo, productRepo, productWholesaleOrderRepo);
-            var pickListVM = new PickListViewModel(salesOrderRepo, productRepo);
             var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
@@ -58,7 +57,6 @@ namespace Undy
                 startPageVM,
                 wholesaleOrderVM,
                 incomingWholesaleOrderVM,
-                pickListVM,
                 salesOrderVM,
                 paymentVM,
                 testReturnOrderVM,

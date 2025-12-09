@@ -17,9 +17,6 @@
             <DataTemplate DataType="{x:Type vm:WholesaleOrderViewModel}">
                 <views:WholesaleOrderView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:PickListViewModel}">
-                <views:PickListView/>
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PaymentViewModel}">
                 <views:PaymentView/>
             </DataTemplate>

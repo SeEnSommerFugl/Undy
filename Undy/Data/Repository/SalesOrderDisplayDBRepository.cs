@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.Data.SqlClient;
+using System.Data;
 using Undy.Models;
 
 namespace Undy.Data.Repository
@@ -6,6 +7,7 @@ namespace Undy.Data.Repository
     public class SalesOrderDisplayDBRepository : BaseDBRepository<SalesOrderDisplay, Guid>
     {
         protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrders";
+        protected override string SqlUpdate => "usp_Update_SalesOrder";
 
         protected override SalesOrderDisplay Map(IDataRecord r)
         {
@@ -22,10 +24,13 @@ namespace Undy.Data.Repository
             };
         }
 
+        protected override void BindUpdate(SqlCommand cmd, SalesOrderDisplay e) {
+            cmd.Parameters.AddWithValue("@SalesOrderID", e.SalesOrderID);
+            cmd.Parameters.AddWithValue("@OrderStatus", e.OrderStatus);
+        }
+
         // Get key from entity
         protected override Guid GetKey(SalesOrderDisplay e) => e.SalesOrderID;
-
-
     };
 }
 

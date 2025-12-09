@@ -7,7 +7,6 @@ namespace Undy.ViewModels
         public Navigation Nav { get; } = new();
         private readonly WholesaleOrderViewModel _wholesaleOrderViewModel;
         private readonly IncomingWholesaleOrderViewModel _incomingWholesaleOrderViewModel;
-        private readonly PickListViewModel _pickListViewModel;
         private readonly SalesOrderViewModel _salesOrderViewModel;
         private readonly PaymentViewModel _paymentViewModel;
         private readonly TestReturnOrderViewModel _testReturnOrderViewModel;
@@ -17,14 +16,13 @@ namespace Undy.ViewModels
 
 
         public MainViewModel(StartPageViewModel startPageViewModel, WholesaleOrderViewModel wholesaleOrderViewModel,
-            IncomingWholesaleOrderViewModel incomingWholesaleOrderViewModel, PickListViewModel pickListViewModel, 
+            IncomingWholesaleOrderViewModel incomingWholesaleOrderViewModel, 
             SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, 
             TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, 
             TestWholesaleOrderViewModel testWholesaleOrderViewModel)
         {
             _wholesaleOrderViewModel = wholesaleOrderViewModel;
             _incomingWholesaleOrderViewModel = incomingWholesaleOrderViewModel;
-            _pickListViewModel = pickListViewModel;
             _salesOrderViewModel = salesOrderViewModel;
             _paymentViewModel = paymentViewModel;
             _testReturnOrderViewModel = testReturnOrderViewModel;
@@ -36,7 +34,6 @@ namespace Undy.ViewModels
                 ("StartPage", "Startside", _startPageViewModel),
                 ("WholesaleOrder", "Indkøb", _wholesaleOrderViewModel),
                 ("IncomingWholesaleOrder", "Vare modtagelse", _incomingWholesaleOrderViewModel),
-                ("PickLists", "Pluklister", _pickListViewModel),
                 ("SalesOrders", "Salgs ordrer", _salesOrderViewModel),
                 ("Payments", "Betalinger", _paymentViewModel),
                 ("TestReturnOrders", "Test returneringer", _testReturnOrderViewModel),

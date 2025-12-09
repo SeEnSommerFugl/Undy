@@ -19,6 +19,20 @@ namespace Undy.ViewModels
             _salesDisplayRepo = salesDisplayRepo;
             SaleView = CollectionViewSource.GetDefaultView(SalesDisplay);
             SaleView.SortDescriptions.Add(new SortDescription("SalesDate", ListSortDirection.Descending));
+
+            foreach(var salesOrder in SalesDisplay) {
+                salesOrder.PropertyChanged += salesOrder_PropertyChanged;
+            }
+        }
+
+        public List<String> OrderStatusOptions { get; } = new() { "Afventer Behandling", "Under Behandling", "Afsendt" };
+
+        private void salesOrder_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
+            if(sender is SalesOrderDisplay salesOrder) {
+                if(e.PropertyName == nameof(salesOrder.OrderStatus)) {
+                    _salesDisplayRepo.UpdateAsync(salesOrder);
+                }
+            }
         }
     }
 }

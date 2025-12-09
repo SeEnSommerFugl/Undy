@@ -65,7 +65,7 @@
                            Style="{DynamicResource TitleLeft}"/>
 
                 <TextBox Grid.Row="0" Grid.Column="2"
-                         Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"
+                         Text="{Binding CustomerNumber, UpdateSourceTrigger=PropertyChanged}"
                          Style="{DynamicResource InputRight}"/>
 
                 <!-- Product Choice -->
