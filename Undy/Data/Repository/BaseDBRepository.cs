@@ -95,10 +95,6 @@ namespace Undy.Data.Repository
                 BindInsert(cmd, entity);
 
                 var affected = await cmd.ExecuteNonQueryAsync();
-                if (affected != 1)
-                {
-                    throw new InvalidOperationException("Insert failed");
-                }
             }
 
             // Add to collection immediately (will be visible even if transaction fails - consider implications)

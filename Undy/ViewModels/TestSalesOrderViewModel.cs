@@ -98,8 +98,7 @@ namespace Undy.ViewModels
                 CustomerNumber = CustomerNumber,
                 OrderStatus = "Afventer Behandling",
                 PaymentStatus = "Afventer Betaling",
-                SalesDate = DateOnly.FromDateTime(DateTime.Now),
-                TotalPrice = SalesOrderLines.Sum(sl => sl.SubTotal)
+                SalesDate = DateOnly.FromDateTime(DateTime.Now)
             };
 
             var salesOrderLineProducts = SalesOrderLines.Select(sl => new ProductSalesOrder {

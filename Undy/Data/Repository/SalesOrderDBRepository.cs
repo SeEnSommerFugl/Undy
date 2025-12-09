@@ -52,7 +52,6 @@ namespace Undy.Data.Repository
         {
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 255).Value = e.OrderStatus;
             cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
-            cmd.Parameters.Add("@TotalPrice", SqlDbType.Decimal).Value = e.TotalPrice;
         }
 
         protected override Guid GetKey(SalesOrder e) => e.SalesOrderID;
