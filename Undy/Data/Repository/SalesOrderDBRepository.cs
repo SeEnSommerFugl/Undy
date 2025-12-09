@@ -24,8 +24,8 @@ namespace Undy.Data.Repository
         // Map data record to entity
         protected override SalesOrder Map(IDataRecord r) => new SalesOrder
         {
-            SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrder_ID")),
-            OrderNumber = r.GetInt32(r.GetOrdinal("OrderNumber")),
+            SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
+            OrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
             OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
             PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),
             SalesDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("SalesDate"))),

@@ -17,7 +17,7 @@ namespace Undy.ViewModels
 
         public SalesOrderViewModel(IBaseRepository<SalesOrderDisplay, Guid> salesDisplayRepo) {
             _salesDisplayRepo = salesDisplayRepo;
-            SaleView = CollectionViewSource.GetDefaultView(salesDisplayRepo);
+            SaleView = CollectionViewSource.GetDefaultView(SalesDisplay);
             SaleView.SortDescriptions.Add(new SortDescription("SalesDate", ListSortDirection.Descending));
         }
     }

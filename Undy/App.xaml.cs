@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Windows;
 using Undy.Data.Repository;
 using Undy.Models;
 using Undy.ViewModels;
@@ -58,6 +59,7 @@ namespace Undy
             //stockRepo.InitializeAsync(),
             wholesaleOrderRepo.InitializeAsync(),
             salesOrderRepo.InitializeAsync(),
+            salesOrderDisplayRepo.InitializeAsync(),
             //testReturnRepo.InitializeAsync(),
             //testPurchaseOrderRepo.InitializeAsync(),
             //testSalesOrderRepo.InitializeAsync(),
