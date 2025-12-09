@@ -17,10 +17,10 @@ namespace Undy.Data.Repository {
         protected override string SqlSelectById => "usp_SelectById_Product";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_Product";
+        protected override string SqlInsert => "usp_Insert_ProductSalesOrder";
 
         // Stored procedure for updating
-        protected override string SqlUpdate => "usp_Update_Product";
+        protected override string SqlUpdate => "usp_Update_ProductSalesOrder";
 
         // Stored procedure for deleting  
         protected override string SqlDeleteById => "usp_DeleteById_Product";

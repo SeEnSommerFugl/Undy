@@ -13,6 +13,7 @@ namespace Undy.ViewModels
     {
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
+        private readonly IBaseRepository<ProductSalesOrder, Guid> _productSalesOrderRepo;
         private readonly SalesOrderService _salesOrderService;
         private readonly ICollectionView _testSalesOrderView;
 
@@ -21,9 +22,10 @@ namespace Undy.ViewModels
         public ObservableCollection<SalesOrderLineViewModel> SalesOrderLines { get; } = new();
         public ICollectionView TestSalesOrderView => _testSalesOrderView;
 
-        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo) {
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo) {
             _salesOrderRepo = salesOrderRepo;
             _productRepo = productRepo;
+            _productSalesOrderRepo = productSalesOrderRepo;
             _salesOrderService = new SalesOrderService();
             _testSalesOrderView = CollectionViewSource.GetDefaultView(Products);
 
@@ -95,20 +97,29 @@ namespace Undy.ViewModels
             }
 
             var salesOrder = new SalesOrder {
+
                 CustomerNumber = CustomerNumber,
                 OrderStatus = "Afventer Behandling",
                 PaymentStatus = "Afventer Betaling",
                 SalesDate = DateOnly.FromDateTime(DateTime.Now)
             };
+            await _salesOrderRepo.AddAsync(salesOrder);
 
-            var salesOrderLineProducts = SalesOrderLines.Select(sl => new ProductSalesOrder {
+            var SalesOrderLineList = new List<ProductSalesOrder>();
+            var salesOrderLineProducts = SalesOrderLines.Select(sl => new ProductSalesOrder
+            {
                 SalesOrderID = salesOrder.SalesOrderID,
-                ProductID = sl.Product.ProductID,
+                ProductNumber = sl.Product.ProductNumber,
                 UnitPrice = sl.UnitPrice,
                 Quantity = sl.Quantity,
-            }).ToList();
+            });
 
-            await _salesOrderService.CreateSalesOrderWithProducts(salesOrder,  salesOrderLineProducts);
+            SalesOrderLineList.AddRange(salesOrderLineProducts);
+            await _productSalesOrderRepo.AddRangeAsync2(salesOrderLineProducts);
+            //.ToList();
+
+
+            //await _salesOrderService.CreateSalesOrderWithProducts(salesOrder,  salesOrderLineProducts);
         }
     }
 }

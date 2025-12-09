@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Transactions;
 
 namespace Undy.Data.Repository
 {
@@ -11,5 +12,6 @@ namespace Undy.Data.Repository
         Task UpdateAsync(T entity);
         Task DeleteAsync(TKey id);
         Task UpdateRangeAsync(IEnumerable<T> entities);
+        Task AddRangeAsync2(IEnumerable<T> entities);
     }
 }
