@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows;
+using System.Windows.Markup;
 using Undy.Data.Repository;
 using Undy.Models;
 using Undy.ViewModels;
@@ -15,6 +16,23 @@ namespace Undy
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // ----- Culture Info ----- //
+            var culture = new CultureInfo("da-DK");
+
+            // For the current thread
+            Thread.CurrentThread.CurrentCulture = culture;
+            Thread.CurrentThread.CurrentUICulture = culture;
+
+            // For any threads created later
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+            // Tell WPF bindings to use the same culture (important for decimal comma etc.)
+            FrameworkElement.LanguageProperty.OverrideMetadata(
+                typeof(FrameworkElement),
+                new FrameworkPropertyMetadata(
+                    XmlLanguage.GetLanguage(culture.IetfLanguageTag)));
 
             // ----- Shared Instances ----- //
             IBaseRepository<Product, Guid> productRepo = new ProductDBRepository();
