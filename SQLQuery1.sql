@@ -615,7 +615,9 @@ GO
 
 -- Update SalesOrder
 CREATE OR ALTER PROCEDURE usp_Update_SalesOrder 
-	@SalesOrderNumber INT 
+	@SalesOrderNumber INT,
+	@OrderStatus NVARCHAR(255),
+	@PaymentStatus NVARCHAR(255)
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -672,8 +674,8 @@ BEGIN
 	UPDATE SalesOrder
 	SET 
 		TotalPrice = @TotalPrice,
-		OrderStatus = 'Afsluttet',
-		PaymentStatus = 'Betalt'
+		OrderStatus = @OrderStatus,
+		PaymentStatus = @PaymentStatus
 	WHERE SalesOrderID = @SalesOrderID;
 END;
 GO
