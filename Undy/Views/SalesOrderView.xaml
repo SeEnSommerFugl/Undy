@@ -8,10 +8,23 @@
              d:DesignWidth="1980" d:DesignHeight="1048">
     <Grid>
         <Border Style="{DynamicResource Card}">
-            <DataGrid Style="{DynamicResource DataGrid.Table}" ItemsSource="{Binding SaleView}" MaxHeight="1000">
+            <DataGrid Style="{DynamicResource DataGrid.Table}" ItemsSource="{Binding SaleView}" MaxHeight="1000" IsReadOnly="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Ordrenummer" Binding="{Binding OrderNumber}" Width="*" />
-                    <DataGridTextColumn Header="Ordrestatus" Binding="{Binding OrderStatus}" Width="*" />
+                    <DataGridTemplateColumn Header="Ordrestatus" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding OrderStatus}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <ComboBox SelectedItem="{Binding OrderStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          ItemsSource="{Binding DataContext.OrderStatusOptions, RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Betalingsstatus" Binding="{Binding PaymentStatus}" Width="*" />
                     <DataGridTextColumn Header="Salgsdato" Binding="{Binding SalesDate, StringFormat=\{0:dd-MM-yyyy\}}" Width="*" />
                     <DataGridTextColumn Header="Pris" Binding="{Binding TotalPrice, StringFormat=\{0:C\}}" Width="*" />

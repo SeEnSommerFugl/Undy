@@ -38,8 +38,7 @@ namespace Undy.ViewModels
             get => _currentSalesOrder;
             set
             {
-                _currentSalesOrder = value;
-                OnPropertyChanged();
+                if(SetProperty(ref _currentSalesOrder, value));
             }
         }
 
