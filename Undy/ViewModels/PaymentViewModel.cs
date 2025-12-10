@@ -245,7 +245,7 @@ namespace Undy.ViewModels
 
         // ----- Loader -----
 
-        public void LoadFromSalesOrder(SalesOrder order)
+        public void LoadFromSalesOrder(SalesOrderDisplay order)
         {
             if (order == null) return;
 

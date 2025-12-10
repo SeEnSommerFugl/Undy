@@ -1,23 +1,25 @@
 ﻿<UserControl x:Class="Undy.Views.PaymentView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             MaxWidth="1920" MaxHeight="1080"
-             Background="White">
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:local="clr-namespace:Undy.Views"
+            mc:Ignorable="d" 
+            d:DesignWidth="1980" d:DesignHeight="1048">
 
-    <Border Style="{DynamicResource Card}" Margin="40">
+    <Border Style="{DynamicResource Card}">
         <Grid Margin="40">
-            <!-- Rækker: titel, undertitel, ordre-header, main, statusbesked -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Titel -->
                 <RowDefinition Height="Auto"/>
                 <!-- Undertitel -->
-                <RowDefinition Height="Auto"/>
-                <!-- Ordre-header -->
                 <RowDefinition Height="*"/>
-                <!-- Main content -->
+                <!-- Liste -->
                 <RowDefinition Height="Auto"/>
-                <!-- Status besked -->
+                <!-- Knap -->
+                <RowDefinition Height="Auto"/>
+                <!-- Status -->
             </Grid.RowDefinitions>
 
             <!-- Titel -->
@@ -34,174 +36,31 @@
                        Margin="0,10,0,20"
                        Foreground="Red"/>
 
-            <!-- ORDRE-HEADER -->
-            <Grid Grid.Row="2"
-                  Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <!-- venstre blok -->
-                    <ColumnDefinition Width="40"/>
-                    <!-- mellemrum -->
-                    <ColumnDefinition Width="2*"/>
-                    <!-- højre blok (Totalbeløb) -->
-                </Grid.ColumnDefinitions>
+            <!-- Liste med ubetalte ordrer -->
+            <ListView Grid.Row="2"
+                      ItemsSource="{Binding UnpaidOrdersView}"
+                      SelectedItem="{Binding SelectedOrder}"
+                      Margin="0,0,0,10">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Ordrenummer"
+                                        DisplayMemberBinding="{Binding SalesOrderNumber}" />
+                        <GridViewColumn Header="Kundenavn"
+                                        DisplayMemberBinding="{Binding CustomerName}" />
+                        <GridViewColumn Header="Samlet beløb"
+                                        DisplayMemberBinding="{Binding TotalPrice}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
 
-                <!-- VENSTRE: Ordre nr + Kunde -->
-                <Grid Grid.Column="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Ordre nr. -->
-                    <StackPanel Grid.Column="0"
-                                Orientation="Vertical"
-                                HorizontalAlignment="Right">
-                        <TextBlock Text="Ordre nr."
-                                   Style="{DynamicResource TitleLeft}"/>
-                        <TextBlock Text="{Binding DisplayOrderNumber}"
-                                   FontSize="18"
-                                   FontWeight="Bold"/>
-                    </StackPanel>
-
-                    <!-- Kunde -->
-                    <StackPanel Grid.Column="1"
-                                Orientation="Vertical"
-                                HorizontalAlignment="Right">
-                        <TextBlock Text="Kunde"
-                                   Style="{DynamicResource TitleLeft}"/>
-                        <TextBlock Text="{Binding DisplayCustomerName}"
-                                   FontSize="18"
-                                   FontWeight="Bold"/>
-                    </StackPanel>
-                </Grid>
-
-                <!-- HØJRE: Totalbeløb -->
-                <StackPanel Grid.Column="2"
-                            Orientation="Vertical"
-                            HorizontalAlignment="Right">
-                    <TextBlock Text="Totalbeløb"
-                               Style="{DynamicResource TitleLeft}"/>
-                    <TextBlock Text="{Binding DisplayTotalAmount}"
-                               FontSize="18"
-                               FontWeight="Bold"/>
-                </StackPanel>
-            </Grid>
-
-            <!-- MAIN CONTENT -->
-            <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="40"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- EN samlet top-linje hen over hele main-området -->
-                <Border Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        BorderBrush="#FFE0E0E0"
-                        BorderThickness="0,1,0,0"
-                        Margin="0,0,0,0"/>
-
-                <!-- VENSTRE: Ordrelinjer -->
-                <Border Grid.Column="0"
-                        Padding="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <!-- label -->
-                            <RowDefinition Height="*" />
-                            <!-- DataGrid -->
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Grid.Row="0"
-                                   Text="Ordrelinjer"
-                                   Style="{DynamicResource TitleLeft}"
-                                   Margin="0,0,0,10"/>
-
-                        <DataGrid Grid.Row="1"
-                                  ItemsSource="{Binding SalesOrderLines}"
-                                  AutoGenerateColumns="False"
-                                  HeadersVisibility="Column"
-                                  IsReadOnly="True"
-                                  CanUserAddRows="False"
-                                  VerticalAlignment="Stretch">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Produkt"
-                                                    Binding="{Binding Product.Name}"
-                                                    Width="*"/>
-                                <DataGridTextColumn Header="Antal"
-                                                    Binding="{Binding Quantity}"
-                                                    Width="80"/>
-                                <DataGridTextColumn Header="Pris"
-                                                    Binding="{Binding UnitPrice}"
-                                                    Width="100"/>
-                                <DataGridTextColumn Header="I alt"
-                                                    Binding="{Binding SubTotal}"
-                                                    Width="100"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Grid>
-                </Border>
-
-                <!-- HØJRE: Beløb + Ordrestatus + knap -->
-                <Border Grid.Column="2"
-                        Padding="10">
-                    <Grid Margin="0,40,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <!-- Beløb -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Ordrestatus -->
-                            <RowDefinition Height="*"/>
-                            <!-- Spacer -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Knap -->
-                        </Grid.RowDefinitions>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Beløb -->
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                                   Text="Beløb"
-                                   Style="{DynamicResource TitleLeft}"/>
-
-                        <TextBox Grid.Row="0" Grid.Column="2"
-                                 Text="{Binding DisplayPaymentAmount, Mode=OneWay}"
-                                 IsReadOnly="True"
-                                 Style="{DynamicResource InputRight}"
-                                 HorizontalAlignment="Stretch"
-                                 Margin="0,0,0,8"
-                                 MinWidth="220"/>
-
-                        <!-- Ordrestatus -->
-                        <TextBlock Grid.Row="1" Grid.Column="0"
-                                   Text="Ordrestatus"
-                                   Style="{DynamicResource TitleLeft}"/>
-
-                        <ComboBox Grid.Row="1" Grid.Column="2"
-                                  ItemsSource="{Binding StatusOptions}"
-                                  SelectedItem="{Binding SelectedStatus}"
-                                  HorizontalAlignment="Stretch"
-                                  Margin="0,0,0,16"
-                                  MinWidth="220"
-                                  Height="40"/>
-
-                        <!-- Behandl ordre knap nederst -->
-                        <Button Grid.Row="3" Grid.ColumnSpan="3"
-                                Content="Bekræft afsendelse"
-                                Style="{DynamicResource ButtonBase}"
-                                Command="{Binding ConfirmPaymentCommand}"
-                                HorizontalAlignment="Stretch"
-                                Margin="0,10,0,0"
-                                MinWidth="220"/>
-                    </Grid>
-                </Border>
-            </Grid>
+            <!-- Knap til at registrere betaling -->
+            <Button Grid.Row="3"
+                    Content="Registrer betaling"
+                    Command="{Binding ConfirmPaymentCommand}"
+                    Style="{DynamicResource ButtonBase}"
+                    HorizontalAlignment="Right"
+                    Width="200"
+                    Margin="0,10,0,0"/>
 
             <!-- Status besked -->
             <TextBlock Grid.Row="4"
@@ -209,7 +68,7 @@
                        Foreground="Red"
                        HorizontalAlignment="Center"
                        Margin="0,20,0,0"
-                       FontSize="20"
+                       FontSize="16"
                        FontWeight="Bold"/>
         </Grid>
     </Border>

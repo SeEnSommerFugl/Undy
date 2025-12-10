@@ -7,6 +7,16 @@
              mc:Ignorable="d" 
              d:DesignWidth="1280" d:DesignHeight="720">
 
+    <UserControl.Resources>
+        <Style x:Key="SortableHeader"
+           TargetType="GridViewColumnHeader"
+           BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+            <EventSetter Event="Click" Handler="GridViewColumnHeader_Click" />
+        </Style>
+    </UserControl.Resources>
+
+
+
     <!-- Style for page -->
     <Border Style="{DynamicResource Card}"
             Margin="40">
@@ -35,13 +45,14 @@
                        HorizontalAlignment="Center"
                        Foreground="{DynamicResource Brush.Text}"/>
 
-            <!-- read-only Listview -->
-            <ListView Grid.Row="2"
+            <!-- ListView med salgsordrer (read-only) -->
+            <ListView x:Name="SalesListView"
+                      Grid.Row="2"
           Style="{DynamicResource ListView.Table}"
           ItemsSource="{Binding SaleView}"
           MaxHeight="1000">
                 <ListView.View>
-                    <GridView>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource SortableHeader}">
 
                         <!-- Order number -->
                         <GridViewColumn Header="Ordrenummer"

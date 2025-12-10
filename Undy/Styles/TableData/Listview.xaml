@@ -75,31 +75,22 @@
     </Style>
 
 
-    <!-- GRIDVIEW COLUMN HEADER STYLE -->
+    <!-- GRIDVIEW COLUMN HEADER STYLE  -->
     <Style TargetType="GridViewColumnHeader">
         <Setter Property="Background" Value="{StaticResource Brush.TableHeader}" />
         <Setter Property="Foreground" Value="{StaticResource Brush.Text}" />
         <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="Height" Value="50" />
         <Setter Property="FontSize" Value="18" />
         <Setter Property="Padding" Value="8,10" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="BorderBrush" Value="{StaticResource Brush.TableHeaderBorder}" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
-
-        <!-- Prevent column resizing -->
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="GridViewColumnHeader">
-                    <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                        <ContentPresenter />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
     </Style>
+
+
+
+
+
 
 
 </ResourceDictionary>

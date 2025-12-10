@@ -14,7 +14,7 @@ namespace Undy.Data.Repository
             return new SalesOrderDisplay
             {
                 SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
-                OrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
+                SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
                 OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
                 PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),
                 SalesDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("SalesDate"))),

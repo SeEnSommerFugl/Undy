@@ -4,7 +4,7 @@
              MaxWidth="1920" MaxHeight="1080"
              Background="White">
 
-    <Border Style="{DynamicResource Card}" Margin="40">
+    <Border Style="{DynamicResource Card}">
         <Grid Margin="40">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
