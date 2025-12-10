@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <!-- ========= BASISSTYLE FOR ALLE DATAGRIDS ========= -->
     <Style x:Key="DataGridBase" TargetType="DataGrid">
         <Style.Resources>
             <Style TargetType="TextBlock">
@@ -30,6 +31,7 @@
         <Setter Property="EnableRowVirtualization" Value="True"/>
         <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
 
+        <!-- Header-style (default centreret) -->
         <Setter Property="ColumnHeaderStyle">
             <Setter.Value>
                 <Style TargetType="DataGridColumnHeader">
@@ -38,6 +40,7 @@
             </Setter.Value>
         </Setter>
 
+        <!-- Række-style (selection farve osv.) -->
         <Setter Property="RowStyle">
             <Setter.Value>
                 <Style TargetType="DataGridRow">
@@ -53,6 +56,7 @@
             </Setter.Value>
         </Setter>
 
+        <!-- Celle-style (centreret indhold, ingen kant ved fokus) -->
         <Setter Property="CellStyle">
             <Setter.Value>
                 <Style TargetType="DataGridCell">
@@ -76,6 +80,7 @@
         </Setter>
     </Style>
 
+    <!-- ========= SMART HEADER TIL DATAGRIDS ========= -->
     <Style x:Key="DataGridHeader.Smart" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="#223044"/>
         <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
@@ -100,28 +105,19 @@
         </Setter>
     </Style>
 
-    <Style x:Key="DataGrid.Table" TargetType="DataGrid" BasedOn="{StaticResource DataGridBase}">
+    <!-- ========= STANDARD TABELSTYLE (BRUGES SOM BASE) ========= -->
+    <Style x:Key="DataGrid.Table"
+           TargetType="DataGrid"
+           BasedOn="{StaticResource DataGridBase}">
         <Setter Property="RowHeight" Value="36"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="ColumnHeaderHeight" Value="36"/>
         <Setter Property="FontSize" Value="16"/>
+        <!-- Her er den simple, lovlige reference til header-stylen -->
         <Setter Property="ColumnHeaderStyle" Value="{StaticResource DataGridHeader.Smart}"/>
         <Setter Property="MaxHeight" Value="520"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
-    </Style>
-
-    <Style x:Key="MoneyTextColor" TargetType="TextBlock" BasedOn="{StaticResource TextBlockRight}">
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsPositive}" Value="True">
-                <Setter Property="Foreground" Value="#3DDC84"/>
-            </DataTrigger>
-            <DataTrigger Binding="{Binding IsNegative}" Value="True">
-                <Setter Property="Foreground" Value="#FF6B6B"/>
-            </DataTrigger>
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="DataGridCellPill" TargetType="DataGridCell">
@@ -145,7 +141,9 @@
         </Setter>
     </Style>
 
-    <Style x:Key="DataGridCellMoney" TargetType="DataGridCell" BasedOn="{StaticResource DataGridCellPill}">
+    <Style x:Key="DataGridCellMoney"
+           TargetType="DataGridCell"
+           BasedOn="{StaticResource DataGridCellPill}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding IsPositive}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Amount.Positive.Bg}"/>
@@ -158,9 +156,37 @@
         </Style.Triggers>
     </Style>
 
+    <!-- ========== SALES ORDER CELLS ========== -->
+
+    <!-- Læse-tilstand: viser ordrestatus som tekst -->
+    <DataTemplate x:Key="CellTemplate.SalesOrderStatus">
+        <TextBlock Text="{Binding OrderStatus}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+    </DataTemplate>
+
+    <!-- Rediger-tilstand: ComboBox med statusvalg -->
+    <DataTemplate x:Key="CellEditingTemplate.SalesOrderStatus">
+        <ComboBox SelectedItem="{Binding OrderStatus, UpdateSourceTrigger=PropertyChanged}"
+                  ItemsSource="{Binding DataContext.OrderStatusOptions,
+                                        RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Width="150"/>
+    </DataTemplate>
+
     <!-- REUSABLE CELL TEMPLATE -->
     <DataTemplate x:Key="CellTemplate.MoneyDifference">
-        <TextBlock Text="{Binding Difference, StringFormat={}{0:N2} kr.}" FontWeight="SemiBold"/>
+        <TextBlock Text="{Binding Difference, StringFormat={}{0:N2} kr.}"
+                   FontWeight="SemiBold"/>
     </DataTemplate>
+
+    <!-- ========= SPECIFIK STYLE TIL SALES ORDER GRID ========= -->
+    <Style x:Key="DataGrid.SalesOrder"
+           TargetType="DataGrid"
+           BasedOn="{StaticResource DataGrid.Table}">
+        <Setter Property="IsReadOnly" Value="False"/>
+        <Setter Property="MaxHeight" Value="1000"/>
+    </Style>
 
 </ResourceDictionary>

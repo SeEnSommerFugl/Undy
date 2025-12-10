@@ -99,8 +99,8 @@ namespace Undy.ViewModels
             var salesOrder = new SalesOrder {
                 SalesOrderID = Guid.NewGuid(),
                 CustomerNumber = CustomerNumber,
-                OrderStatus = "Afventer Behandling",
-                PaymentStatus = "Afventer Betaling",
+                OrderStatus = "Afventer",
+                PaymentStatus = "Afventer",
                 SalesDate = DateOnly.FromDateTime(DateTime.Now)
             };
             await _salesOrderRepo.AddAsync(salesOrder);
