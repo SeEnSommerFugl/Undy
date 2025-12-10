@@ -50,8 +50,8 @@ namespace Undy
             var startPageVM = new StartPageViewModel();
             var wholesaleOrderVM = new WholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
             var incomingWholesaleOrderVM = new IncomingWholesaleOrderViewModel(wholesaleOrderRepo, productRepo, productWholesaleOrderRepo);
-            var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo);
-            var paymentVM = new PaymentViewModel(customerSalesOrderDisplayRepo);
+            var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo, productSalesOrderRepo);
+            var paymentVM = new PaymentViewModel(salesOrderRepo, customerSalesOrderDisplayRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, productRepo, productSalesOrderRepo, customerRepo);
             var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
