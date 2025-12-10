@@ -43,6 +43,21 @@ CREATE TABLE ProductWholesaleOrder(
 		REFERENCES [Product](ProductID)
 );
 
+-- Customers Table
+CREATE TABLE Customers(
+	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	CustomerNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
+	DisplayCustomerNumber AS 'KUND-' + RIGHT('000000000' + CAST(CustomerNumber AS NVARCHAR(10)), 10) PERSISTED,
+	FirstName NVARCHAR(255) NOT NULL,
+	LastName NVARCHAR(255) NOT NULL,
+	Email NVARCHAR(255) NOT NULL UNIQUE,
+	PhoneNumber INT NOT NULL UNIQUE,
+	[Address] NVARCHAR(255) NOT NULL,
+	City NVARCHAR(100) NOT NULL,
+	PostalCode INT NOT NULL,
+	-- Country NVARCHAR(100) NOT NULL -- Hvis der er tid Out of scope for nu, evt flag i view?
+);
+
 -- SalesOrder Table
 CREATE TABLE SalesOrder (
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
@@ -81,21 +96,6 @@ CREATE TABLE ReturnOrder(
 	CONSTRAINT FK_SalesOrder_ReturnOrder
 		FOREIGN KEY(SalesOrderID)
 		REFERENCES SalesOrder(SalesOrderID)
-);
-
--- Customers Table
-CREATE TABLE Customers(
-	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-	CustomerNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
-	DisplayCustomerNumber AS 'KUND-' + RIGHT('000000000' + CAST(CustomerNumber AS NVARCHAR(10)), 10) PERSISTED,
-	FirstName NVARCHAR(255) NOT NULL,
-	LastName NVARCHAR(255) NOT NULL,
-	Email NVARCHAR(255) NOT NULL UNIQUE,
-	PhoneNumber INT NOT NULL UNIQUE,
-	[Address] NVARCHAR(255) NOT NULL,
-	City NVARCHAR(100) NOT NULL,
-	PostalCode INT NOT NULL,
-	-- Country NVARCHAR(100) NOT NULL -- Hvis der er tid Out of scope for nu, evt flag i view?
 );
 GO
 
