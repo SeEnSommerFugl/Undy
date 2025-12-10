@@ -28,12 +28,12 @@ namespace Undy.ViewModels
             }
         }
 
-        // Info om valgt ordre (valgfrit at vise i UI)
+        // Info om valgt ordre 
         public string OrderNumber { get; private set; }
         public string CustomerName { get; private set; }
         public decimal TotalAmount { get; private set; }
 
-        // Statusbesked (binder til TextBlock nederst)
+        // Statusbesked 
         private string _statusMessage;
         public string StatusMessage
         {
@@ -47,7 +47,7 @@ namespace Undy.ViewModels
 
         public ICommand ConfirmPaymentCommand { get; }
 
-        // HOVED-ctor med repos (bruges fra DI / hvor du vil styre det selv)
+        
         public PaymentViewModel(
             IBaseRepository<SalesOrder, Guid> salesOrderRepo,
             IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo)
@@ -63,11 +63,16 @@ namespace Undy.ViewModels
             );
         }
 
-        // Parameterløs ctor – praktisk hvis du bare gør "new PaymentViewModel()" et sted
+       
         public PaymentViewModel()
             : this(new SalesOrderDBRepository(),
                    new CustomerSalesOrderDisplayDBRepository())
         {
+        }
+
+        public PaymentViewModel(IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo)
+        {
+            _customerSalesOrderDisplayRepo = customerSalesOrderDisplayRepo;
         }
 
         // Loader alle ubetalte ordrer til listen
@@ -76,7 +81,8 @@ namespace Undy.ViewModels
             UnpaidOrders.Clear();
             StatusMessage = string.Empty;
 
-            var all = await _customerSalesOrderDisplayRepo.GetAllAsync();
+            // var all = await _customerSalesOrderDisplayRepo.GetAllAsync();
+            var all = _customerSalesOrderDisplayRepo.Items;
 
             foreach (var order in all)
             {
@@ -138,11 +144,11 @@ namespace Undy.ViewModels
 
             await _salesOrderRepo.UpdateAsync(order);
 
-            // Opdater UI-modellen
+           
             SelectedOrder.PaymentStatus = "Betalt";
             SelectedOrder.IsSelectedForPayment = false;
 
-            // Fjern ordren fra listen, da den nu er betalt
+           
             UnpaidOrders.Remove(SelectedOrder);
             SelectedOrder = null;
 
