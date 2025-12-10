@@ -36,7 +36,7 @@ namespace Undy.Data.Repository
         // Parameter binding for id
         protected override void BindId(SqlCommand cmd, Guid id)
         {
-            cmd.Parameters.Add("@SalesOrder_ID", SqlDbType.UniqueIdentifier).Value = id;
+            cmd.Parameters.Add("@SalesOrderID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
         // Parameter binding for insert
