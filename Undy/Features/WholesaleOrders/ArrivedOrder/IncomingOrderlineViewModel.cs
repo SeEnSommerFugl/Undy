@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Undy.Features.Base;
-
-namespace Undy.Features.WholesaleOrders.ArrivedOrder
+﻿namespace Undy.Features.WholesaleOrders.ArrivedOrder
 {
     public class IncomingOrderLineViewModel : BaseViewModel
     {

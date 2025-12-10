@@ -1,15 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Shapes;
-using Undy.Data.Repository;
-using Undy.Models;
-using Undy.Features.Helpers;
-using Undy.Features.Base;
-using Undy.Features.SalesOrders;
-
-namespace Undy.Features.SalesOrders.Demo
+﻿namespace Undy.Features.SalesOrders.Demo
 {
     public class TestSalesOrderViewModel : BaseViewModel
     {

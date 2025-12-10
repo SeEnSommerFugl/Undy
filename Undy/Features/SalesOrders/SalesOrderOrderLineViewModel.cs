@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Undy.Models;
-using Undy.Features.Base;
-
-namespace Undy.Features.SalesOrders {
+﻿namespace Undy.Features.SalesOrders {
     public class SalesOrderLineViewModel : BaseViewModel {
         public Product Product { get; }
         public int Quantity { get; }

@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Undy.Models;
-using Undy.Features.Base;
-
-namespace Undy.Data.Repository
+﻿namespace Undy.Data.Repository
 {
     class CustomerDBRepository : BaseDBRepository<Customer, Guid> {
         protected override string SqlSelectAll => "SELECT * FROM vw_Customers";

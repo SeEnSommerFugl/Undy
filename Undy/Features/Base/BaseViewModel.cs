@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
-namespace Undy.Features.Base
+﻿namespace Undy.Features.Base
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {

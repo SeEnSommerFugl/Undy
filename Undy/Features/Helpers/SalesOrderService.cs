@@ -1,11 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Undy.Data;
-using Undy.Data.Repository;
-using Undy.Models;
-using Undy.Features.Base;
-using Undy.Features.Links;
-using Undy.Features.SalesOrders;
-namespace Undy.Features.Helpers
+﻿namespace Undy.Features.Helpers
 {
     public class SalesOrderService
     {

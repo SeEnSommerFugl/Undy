@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Undy.Data.Repository;
-using Undy.Models;
-using Undy.Features.Base;
-using Undy.Features.Helpers;
-using Undy.Features.SalesOrders;
-
-namespace Undy.Features.Payment
+﻿namespace Undy.Features.Payment
 {
     public class PaymentViewModel : BaseViewModel
     {

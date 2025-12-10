@@ -1,7 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-
-namespace Undy.Features.Base
+﻿namespace Undy.Features.Base
 {
     internal class DB
     {

@@ -1,9 +1,4 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-using Undy.Models;
-using Undy.Features.Base;
-
-namespace Undy.Features.WholesaleOrders
+﻿namespace Undy.Features.WholesaleOrders
 {
     public class WholesaleOrderDBRepository : BaseDBRepository<WholesaleOrder, Guid>
     {

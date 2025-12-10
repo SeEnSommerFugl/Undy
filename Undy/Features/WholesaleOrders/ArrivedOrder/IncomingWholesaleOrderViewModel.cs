@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Data;
-using Undy.Data.Repository;
-using Undy.Models;
-using Undy.Features.Base;
-using Undy.Features.Helpers;
-
-namespace Undy.Features.WholesaleOrders.ArrivedOrder
+﻿namespace Undy.Features.WholesaleOrders.ArrivedOrder
 {
     public class IncomingWholesaleOrderViewModel : BaseViewModel
     {

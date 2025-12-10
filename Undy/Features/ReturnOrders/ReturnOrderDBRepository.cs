@@ -1,9 +1,4 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-using Undy.Models;
-using Undy.Features.Base;
-
-namespace Undy.Features.ReturnOrders
+﻿namespace Undy.Features.ReturnOrders
 {
     public class ReturnOrderDBRepository : BaseDBRepository<ReturnOrder, Guid>
     {

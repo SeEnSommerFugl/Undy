@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Undy.Models
+﻿namespace Undy.Models
 {
     public class SalesOrderDisplay : INotifyPropertyChanged
     {

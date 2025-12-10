@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using Undy.Models;
-using Undy.Features.Base;
-
-namespace Undy.Features.Links {
+﻿namespace Undy.Features.Links {
     public class ProductSalesOrderDBRepository : BaseDBRepository<ProductSalesOrder, Guid>
     {
         // View for selecting all

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Windows.Data;
-using System.Windows.Markup;
-
-namespace Undy.Features.Helpers
+﻿namespace Undy.Features.Helpers
 {
     /// <summary>
     /// Clean binding markup extension for GridViewColumns.
