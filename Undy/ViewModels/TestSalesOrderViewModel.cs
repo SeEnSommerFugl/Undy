@@ -51,16 +51,6 @@ namespace Undy.ViewModels
             }
         }
 
-        private int _customerNumber;
-        public int CustomerNumber
-        {
-            get => _customerNumber;
-            set
-            {
-                if(SetProperty(ref _customerNumber, value));
-            }
-        }
-
         private Product _selectedProduct;
         public Product SelectedProduct {
             get => _selectedProduct;
