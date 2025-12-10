@@ -57,57 +57,57 @@ EXEC usp_Insert_Product
 GO
 
 
--- PurchaseOrder insert
+-- WholesaleOrder insert
 
-EXEC usp_Insert_PurchaseOrder
-	@PurchaseOrderDate = '2025-12-01',
+EXEC usp_Insert_WholesaleOrder
+	@WholesaleOrderDate = '2025-12-01',
 	@ExpectedDeliveryDate = '2025-12-24',
 	@OrderStatus = 'Pending'
 GO
 
-EXEC usp_Insert_PurchaseOrder
-	@PurchaseOrderDate = '2026-01-01',
+EXEC usp_Insert_WholesaleOrder
+	@WholesaleOrderDate = '2026-01-01',
 	@ExpectedDeliveryDate = '2026-01-24',
 	@OrderStatus = 'Pending'
 GO
 
-EXEC usp_Insert_PurchaseOrder
-	@PurchaseOrderDate = '2026-02-01',
+EXEC usp_Insert_WholesaleOrder
+	@WholesaleOrderDate = '2026-02-01',
 	@ExpectedDeliveryDate = '2026-02-24',
 	@OrderStatus = 'Pending'
 GO
 
-EXEC usp_Insert_PurchaseOrder
-	@PurchaseOrderDate = '2026-03-01',
+EXEC usp_Insert_WholesaleOrder
+	@WholesaleOrderDate = '2026-03-01',
 	@ExpectedDeliveryDate = '2026-03-24',
 	@OrderStatus = 'Pending'
 GO
 
--- Insert ProductPurchaseOrder
+-- Insert ProductWholesaleOrder
 
-EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderNumber = 1,
+EXEC usp_Insert_ProductWholesaleOrder
+	@WholesaleOrderNumber = 1,
 	@ProductNumber = 'UBBABLS1',
 	@Quantity = 50,
 	@UnitPrice = 139
 GO
 
-EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderNumber = 2,
+EXEC usp_Insert_ProductWholesaleOrder
+	@WholesaleOrderNumber = 2,
 	@ProductNumber = 'UBBABLM1',
 	@Quantity = 60,
 	@UnitPrice = 139
 GO
 
-EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderNumber = 3,
+EXEC usp_Insert_ProductWholesaleOrder
+	@WholesaleOrderNumber = 3,
 	@ProductNumber = 'UBBABLL1',
 	@Quantity = 50,
 	@UnitPrice = 139
 GO
 
-EXEC usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderNumber = 4,
+EXEC usp_Insert_ProductWholesaleOrder
+	@WholesaleOrderNumber = 4,
 	@ProductNumber = 'UBBABLXL1',
 	@Quantity = 40,
 	@UnitPrice = 139
@@ -284,12 +284,12 @@ ADD DisplaySalesOrderNumber AS
 	'SALG-' + RIGHT('000000000' + CAST(SalesOrderNumber AS NVARCHAR(10)), 10)
     PERSISTED;
 
-ALTER TABLE PurchaseOrder
-DROP COLUMN DisplayPurchaseOrderNumber;
+ALTER TABLE WholesaleOrder
+DROP COLUMN DisplayWholesaleOrderNumber;
 
-ALTER TABLE PurchaseOrder
-ADD DisplayPurchaseOrderNumber AS    
-	'KØB-' + RIGHT('000000000' + CAST(PurchaseOrderNumber AS NVARCHAR(10)), 10)
+ALTER TABLE WholesaleOrder
+ADD DisplayWholesaleOrderNumber AS    
+	'KØB-' + RIGHT('000000000' + CAST(WholesaleOrderNumber AS NVARCHAR(10)), 10)
 	PERSISTED;
 
 

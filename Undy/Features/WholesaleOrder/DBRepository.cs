@@ -7,30 +7,30 @@ namespace Undy.Data.Repository
     public class WholesaleOrderDBRepository : BaseDBRepository<WholesaleOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "SELECT * FROM vw_PurchaseOrders";
+        protected override string SqlSelectAll => "SELECT * FROM vw_WholesaleOrders";
 
         // Stored procedure for getting by id
-        protected override string SqlSelectById => "usp_SelectById_PurchaseOrder";
+        protected override string SqlSelectById => "usp_SelectById_WholesaleOrder";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_PurchaseOrder";
+        protected override string SqlInsert => "usp_Insert_WholesaleOrder";
 
         // Stored procedure for updating
-        protected override string SqlUpdate => "usp_Update_PurchaseOrder";
+        protected override string SqlUpdate => "usp_Update_WholesaleOrder";
 
         // Stored procedure for deleting
-        protected override string SqlDeleteById => "usp_DeleteById_PurchaseOrder";
+        protected override string SqlDeleteById => "usp_DeleteById_WholesaleOrder";
 
         // Stored procedure for partial orders
-        protected override string SqlPartialInsert => "usp_InsertPartial_PurchaseOrder";
+        protected override string SqlPartialInsert => "usp_InsertPartial_WholesaleOrder";
 
         // Map data record to entity 
         protected override WholesaleOrder Map(IDataRecord r) => new WholesaleOrder
         {
-            PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrderID")),
-            PurchaseOrderNumber = r.GetInt32(r.GetOrdinal("PurchaseOrderNumber")),
-            DisplayPurchaseOrderNumber = r.GetString(r.GetOrdinal("DisplayPurchaseOrderNumber")),
-            PurchaseOrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("PurchaseOrderDate"))),
+            WholesaleOrderID = r.GetGuid(r.GetOrdinal("WholesaleOrderID")),
+            WholesaleOrderNumber = r.GetInt32(r.GetOrdinal("WholesaleOrderNumber")),
+            DisplayWholesaleOrderNumber = r.GetString(r.GetOrdinal("DisplayWholesaleOrderNumber")),
+            WholesaleOrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("WholesaleOrderDate"))),
             ExpectedDeliveryDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ExpectedDeliveryDate"))),
             DeliveryDate = r.IsDBNull(r.GetOrdinal("DeliveryDate"))
                             ? null
@@ -42,13 +42,13 @@ namespace Undy.Data.Repository
         // Parameter binding for id
         protected override void BindId(SqlCommand cmd, Guid id)
         {
-            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = id;
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
         // Parameter binding for insert
         protected override void BindInsert(SqlCommand cmd, WholesaleOrder e)
         {
-            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
             cmd.Parameters.Add("@ExpectedDeliveryDate", SqlDbType.Date).Value = e.ExpectedDeliveryDate;
             cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
             cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
@@ -59,7 +59,7 @@ namespace Undy.Data.Repository
         // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, WholesaleOrder e)
         {
-            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
             cmd.Parameters.Add("@ExpectedDeliveryDate", SqlDbType.Date).Value = e.ExpectedDeliveryDate;
             cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
             cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
@@ -68,35 +68,35 @@ namespace Undy.Data.Repository
         }
 
         // Get key from entity
-        protected override Guid GetKey(WholesaleOrder e) => e.PurchaseOrderID;
+        protected override Guid GetKey(WholesaleOrder e) => e.WholesaleOrderID;
 
-        public async Task ConfirmFullReceiveAsync(int purchaseOrderNumber)
+        public async Task ConfirmFullReceiveAsync(int wholesaleOrderNumber)
         {
             using var con = await DB.OpenConnection();
-            using var cmd = new SqlCommand("usp_Update_PurchaseOrder", con)
+            using var cmd = new SqlCommand("usp_Update_WholesaleOrder", con)
             {
                 CommandType = CommandType.StoredProcedure
             };
 
-            cmd.Parameters.Add("@PurchaseOrderNumber", SqlDbType.Int)
-               .Value = purchaseOrderNumber;
+            cmd.Parameters.Add("@WholesaleOrderNumber", SqlDbType.Int)
+               .Value = wholesaleOrderNumber;
 
             await cmd.ExecuteNonQueryAsync();
         }
 
         public async Task ConfirmPartialReceiveAsync(
-            int purchaseOrderNumber,
+            int wholesaleOrderNumber,
             string productNumber,
             int quantity)
         {
             using var con = await DB.OpenConnection();
-            using var cmd = new SqlCommand("usp_UpdatePartial_PurchaseOrder", con)
+            using var cmd = new SqlCommand("usp_UpdatePartial_WholesaleOrder", con)
             {
                 CommandType = CommandType.StoredProcedure
             };
 
-            cmd.Parameters.Add("@PurchaseOrderNumber", SqlDbType.Int)
-                .Value = purchaseOrderNumber;
+            cmd.Parameters.Add("@WholesaleOrderNumber", SqlDbType.Int)
+                .Value = wholesaleOrderNumber;
 
             cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255)
                 .Value = productNumber;

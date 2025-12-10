@@ -8,7 +8,7 @@ namespace Undy.ViewModels
 {
     public class IncomingOrderLineViewModel : BaseViewModel
     {
-        public Guid PurchaseOrderID { get; set; }
+        public Guid WholesaleOrderID { get; set; }
         public Guid ProductID { get; set; }
 
         public string ProductNumber { get; set; }   

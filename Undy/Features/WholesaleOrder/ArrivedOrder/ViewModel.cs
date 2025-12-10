@@ -20,11 +20,11 @@ namespace Undy.ViewModels
         private string _statusMessage;
 
         public IncomingWholesaleOrderViewModel(
-            IBaseRepository<WholesaleOrder, Guid> purchaseOrderRepo,
+            IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo,
             IBaseRepository<Product, Guid> productRepo,
             IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo)
         {
-            _wholesaleOrderRepo = purchaseOrderRepo;
+            _wholesaleOrderRepo = wholesaleOrderRepo;
             _productRepo = productRepo;
             _productWholesaleOrderRepo = productWholesaleOrderRepo;
 
@@ -106,7 +106,7 @@ namespace Undy.ViewModels
 
                 // find alle linjer for den valgte ordre
                 var orderLines = _productWholesaleOrderRepo.Items
-                    .Where(l => l.PurchaseOrderID == SelectedOrder.PurchaseOrderID);
+                    .Where(l => l.WholesaleOrderID == SelectedOrder.WholesaleOrderID);
 
                 foreach (var line in orderLines)
                 {
@@ -116,7 +116,7 @@ namespace Undy.ViewModels
 
                     Lines.Add(new IncomingOrderLineViewModel
                     {
-                        PurchaseOrderID = line.PurchaseOrderID,
+                        WholesaleOrderID = line.WholesaleOrderID,
                         ProductID = line.ProductID,
                         ProductNumber = product?.ProductNumber ?? string.Empty,
                         ProductName = product?.ProductName ?? string.Empty,
@@ -161,7 +161,7 @@ namespace Undy.ViewModels
                 if (IsFullyReceived)
                 {
                     // fuld modtagelse
-                    await concreteRepo.ConfirmFullReceiveAsync(SelectedOrder.PurchaseOrderNumber);
+                    await concreteRepo.ConfirmFullReceiveAsync(SelectedOrder.WholesaleOrderNumber);
                 }
                 else
                 {
@@ -176,7 +176,7 @@ namespace Undy.ViewModels
                         }
 
                         await concreteRepo.ConfirmPartialReceiveAsync(
-                            SelectedOrder.PurchaseOrderNumber,
+                            SelectedOrder.WholesaleOrderNumber,
                             line.ProductNumber,
                             line.ReceivedQuantity);
                     }

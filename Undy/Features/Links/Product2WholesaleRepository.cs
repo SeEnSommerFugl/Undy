@@ -12,26 +12,26 @@ namespace Undy.Data.Repository {
     {
 
         // View for selecting all
-        protected override string SqlSelectAll => "SELECT * FROM vw_PurchaseOrders";
+        protected override string SqlSelectAll => "SELECT * FROM vw_WholesaleOrders";
 
         // Stored procedure for getting by id
-        protected override string SqlSelectById => "usp_SelectById_PurchaseOrder";
+        protected override string SqlSelectById => "usp_SelectById_WholesaleOrder";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_PurchaseOrder";
+        protected override string SqlInsert => "usp_Insert_WholesaleOrder";
 
         // Stored procedure for updating
-        protected override string SqlUpdate => "usp_Update_PurchaseOrder";
+        protected override string SqlUpdate => "usp_Update_WholesaleOrder";
 
         // Stored procedure for deleting
-        protected override string SqlDeleteById => "usp_DeleteById_PurchaseOrder";
+        protected override string SqlDeleteById => "usp_DeleteById_WholesaleOrder";
 
         // Stored procedure for partial orders
-        protected override string SqlPartialInsert => "usp_InsertPartial_PurchaseOrder";
+        protected override string SqlPartialInsert => "usp_InsertPartial_WholesaleOrder";
 
         protected override ProductWholesaleOrder Map(IDataRecord r) => new ProductWholesaleOrder
         {
-            PurchaseOrderID = r.GetGuid(r.GetOrdinal("PurchaseOrderID")),
+            WholesaleOrderID = r.GetGuid(r.GetOrdinal("WholesaleOrderID")),
             ProductID = r.GetGuid(r.GetOrdinal("ProductID")),
             Quantity = r.GetInt32(r.GetOrdinal("Quantity")),
             UnitPrice = r.GetDecimal(r.GetOrdinal("UnitPrice")),
@@ -41,14 +41,14 @@ namespace Undy.Data.Repository {
         // Parameter binding for id
         protected override void BindId(SqlCommand cmd, Guid id)
         {
-            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = id;
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
         // Parameter binding for insert
         protected override void BindInsert(SqlCommand cmd, ProductWholesaleOrder e)
         {             
-            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
-            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
+            cmd.Parameters.Add("@ProductID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
             cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
             cmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal).Value = e.UnitPrice;
             cmd.Parameters.Add("@QuantityReceived", SqlDbType.Int).Value = e.QuantityReceived;
@@ -56,14 +56,14 @@ namespace Undy.Data.Repository {
         // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, ProductWholesaleOrder e)
         {
-            cmd.Parameters.Add("@PurchaseOrder_ID", SqlDbType.UniqueIdentifier).Value = e.PurchaseOrderID;
-            cmd.Parameters.Add("@Product_ID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
+            cmd.Parameters.Add("@ProductID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
             cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
             cmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal).Value = e.UnitPrice;
             cmd.Parameters.Add("@QuantityReceived", SqlDbType.Int).Value = e.QuantityReceived;
         }
 
-        protected override Guid GetKey(ProductWholesaleOrder e) => e.PurchaseOrderID;
+        protected override Guid GetKey(ProductWholesaleOrder e) => e.WholesaleOrderID;
         
 
         }
