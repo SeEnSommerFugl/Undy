@@ -45,13 +45,21 @@
                        HorizontalAlignment="Center"
                        Foreground="{DynamicResource Brush.Text}"/>
 
-            <!-- ListView med salgsordrer (read-only) -->
-            <ListView x:Name="SalesListView"
-                      Grid.Row="2"
-          Style="{DynamicResource ListView.Table}"
-          ItemsSource="{Binding SaleView}"
-          MaxHeight="1000">
-                <ListView.View>
+            <!-- Main content row: list + details grid -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- ListView with sales orders (read-only) -->
+                <ListView x:Name="SalesListView"
+                          Grid.Column="0"
+                          Style="{DynamicResource ListView.Table}"
+                          ItemsSource="{Binding SaleView}"
+                          MaxHeight="1000"
+                          MouseDoubleClick="SalesListView_MouseDoubleClick">
+<ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource SortableHeader}">
 
                         <!-- Order number -->
@@ -67,13 +75,20 @@
                             DisplayMemberBinding="{h:Bind PaymentStatus}" />
 
                         <!-- Sales Date -->
-                        <GridViewColumn Header="Salgsdato"
-                            DisplayMemberBinding="{h:Bind SalesDate:dd-MM-yyyy}" />
+                        <GridViewColumn Header="Dato"
+                            DisplayMemberBinding="{h:Bind SalesDate}" />
 
-                        <!-- Shipped Date -->
-                        <GridViewColumn Header="Afsendt"
-                            DisplayMemberBinding="{h:Bind SalesDate:dd-MM-yyyy}" />
-                        <!-- DisplayMemberBinding="{h:Bind ShippedDate:dd-MM-yyyy}" /> -->
+                        <!-- Product Name -->
+                        <GridViewColumn Header="Produktnavn"
+                            DisplayMemberBinding="{h:Bind ProductName}" />
+
+                        <!-- Quantity -->
+                        <GridViewColumn Header="Antal"
+                            DisplayMemberBinding="{h:Bind Quantity}" />
+
+                        <!-- Total Price -->
+                        <GridViewColumn Header="Total Pris"
+                            DisplayMemberBinding="{h:Bind TotalPrice:C}" />
 
                         <!-- Customer name -->
                         <GridViewColumn Header="Kundenavn"
@@ -92,7 +107,16 @@
                     </GridView>
                 </ListView.View>
 
-            </ListView>
+                </ListView>
+
+                <!-- DataGrid with selected order details -->
+                <DataGrid Grid.Column="1"
+                          Margin="20,0,0,0"
+                          Style="{DynamicResource DataGrid.Table}"
+                          ItemsSource="{Binding SelectedOrderDetails}"
+                          AutoGenerateColumns="True"
+                          IsReadOnly="True" />
+            </Grid>
 
         </Grid>
     </Border>
