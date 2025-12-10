@@ -64,9 +64,10 @@
                            Text="KundeID"
                            Style="{DynamicResource TitleLeft}"/>
 
-                <TextBox Grid.Row="0" Grid.Column="2"
-                         Text="{Binding CustomerNumber, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{DynamicResource InputRight}"/>
+                <ComboBox Grid.Row="0" Grid.Column="2"
+                          ItemsSource="{Binding SortedCustomers}"
+                          SelectedItem="{Binding SelectedCustomer}"
+                          DisplayMemberPath="CustomerNumber"/>
 
                 <!-- Product Choice -->
                 <TextBlock Grid.Row="1" Grid.Column="0"

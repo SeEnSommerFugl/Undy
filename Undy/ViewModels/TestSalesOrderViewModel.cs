@@ -14,24 +14,31 @@ namespace Undy.ViewModels
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly IBaseRepository<ProductSalesOrder, Guid> _productSalesOrderRepo;
+        private readonly IBaseRepository<Customer, Guid> _customerRepo;
         private readonly SalesOrderService _salesOrderService;
         private readonly ICollectionView _testSalesOrderView;
 
 
         public ObservableCollection<Product> Products => _productRepo.Items;
+        public ObservableCollection<Customer> Customers => _customerRepo.Items;
         public ObservableCollection<SalesOrderLineViewModel> SalesOrderLines { get; } = new();
         public ICollectionView TestSalesOrderView => _testSalesOrderView;
+        public ICollectionView SortedCustomers { get; }
 
-        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo) {
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo, IBaseRepository<Customer, Guid> customerRepo) {
             _salesOrderRepo = salesOrderRepo;
             _productRepo = productRepo;
             _productSalesOrderRepo = productSalesOrderRepo;
+            _customerRepo = customerRepo;
             _salesOrderService = new SalesOrderService();
             _testSalesOrderView = CollectionViewSource.GetDefaultView(Products);
 
             ConfirmCommand = new RelayCommand(async _ => await CreateSalesOrderAsync());
             AddProductCommand = new RelayCommand(_ => AddProduct());
             RemoveSalesOrderLineCommand = new RelayCommand(salesOrderLine => RemoveSalesOrderLine(salesOrderLine as SalesOrderLineViewModel));
+
+            SortedCustomers = CollectionViewSource.GetDefaultView(_customerRepo.Items);
+            SortedCustomers.SortDescriptions.Add(new SortDescription(nameof(Customer.CustomerNumber), ListSortDirection.Ascending));
         }
 
         private SalesOrder _currentSalesOrder;
@@ -59,6 +66,14 @@ namespace Undy.ViewModels
             get => _selectedProduct;
             set {
                 if(SetProperty(ref _selectedProduct, value));
+            }
+        }
+
+        private Customer _selectedCustomer;
+        public Customer SelectedCustomer {
+            get => _selectedCustomer;
+            set {
+                if(SetProperty(ref _selectedCustomer, value));
             }
         }
 
@@ -92,13 +107,13 @@ namespace Undy.ViewModels
         }
 
         private async Task CreateSalesOrderAsync() {
-            if (SalesOrderLines.Count == 0 || CustomerNumber <= 0) {
+            if (SalesOrderLines.Count == 0 || SelectedCustomer == null) {
                 return;
             }
 
             var salesOrder = new SalesOrder {
                 SalesOrderID = Guid.NewGuid(),
-                CustomerNumber = CustomerNumber,
+                CustomerID = SelectedCustomer.CustomerID,
                 OrderStatus = "Afventer",
                 PaymentStatus = "Afventer",
                 SalesDate = DateOnly.FromDateTime(DateTime.Now)
