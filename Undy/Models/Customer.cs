@@ -4,6 +4,8 @@
     {
         public Guid CustomerID { get; set; }
         public int CustomerNumber { get; set; }
+        public string DisplayCustomerNumber { get; set; }
+        public string FullName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -12,5 +14,6 @@
         public string City { get; set; }
         public int PostalCode { get; set; }
 
+        public string DisplayFullCustomerInfo => $"{DisplayCustomerNumber} - {FullName}";
     }
 }

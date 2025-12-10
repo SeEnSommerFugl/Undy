@@ -15,6 +15,8 @@ namespace Undy.Data.Repository
             return new Customer {
                 CustomerID = r.GetGuid(r.GetOrdinal("CustomerID")),
                 CustomerNumber = r.GetInt32(r.GetOrdinal("CustomerNumber")),
+                DisplayCustomerNumber = r.GetString(r.GetOrdinal("DisplayCustomerNumber")),
+                FullName = r.GetString(r.GetOrdinal("FullName")),
                 FirstName = r.GetString(r.GetOrdinal("FirstName")),
                 LastName = r.GetString(r.GetOrdinal("LastName")),
                 Email = r.GetString(r.GetOrdinal("Email")),

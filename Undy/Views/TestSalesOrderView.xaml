@@ -67,7 +67,7 @@
                 <ComboBox Grid.Row="0" Grid.Column="2"
                           ItemsSource="{Binding SortedCustomers}"
                           SelectedItem="{Binding SelectedCustomer}"
-                          DisplayMemberPath="CustomerNumber"/>
+                          DisplayMemberPath="DisplayFullCustomerInfo"/>
 
                 <!-- Product Choice -->
                 <TextBlock Grid.Row="1" Grid.Column="0"
