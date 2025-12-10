@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Undy.Views"
              mc:Ignorable="d" 
              d:DesignWidth="1652" d:DesignHeight="1048">
+    
     <Grid ShowGridLines="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
