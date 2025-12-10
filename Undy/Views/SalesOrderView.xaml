@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignWidth="1280" d:DesignHeight="720">
 
-    <!-- Ydre kort-container (samme stil som dine andre views) -->
+    <!-- Style for page -->
     <Border Style="{DynamicResource Card}"
             Margin="40">
 
@@ -21,12 +21,12 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Titel -->
+            <!-- Title -->
             <TextBlock Grid.Row="0"
                        Text="Salgsordrer"
                        Style="{DynamicResource H2}"/>
 
-            <!-- Undertekst -->
+            <!-- Subheader -->
             <TextBlock Grid.Row="1"
                        Text="Oversigt over salgsordrer."
                        FontSize="16"
@@ -35,7 +35,7 @@
                        HorizontalAlignment="Center"
                        Foreground="{DynamicResource Brush.Text}"/>
 
-            <!-- ListView med salgsordrer (read-only) -->
+            <!-- read-only Listview -->
             <ListView Grid.Row="2"
           Style="{DynamicResource ListView.Table}"
           ItemsSource="{Binding SaleView}"
@@ -43,33 +43,39 @@
                 <ListView.View>
                     <GridView>
 
-                        <!-- Ordrenummer -->
+                        <!-- Order number -->
                         <GridViewColumn Header="Ordrenummer"
                             DisplayMemberBinding="{h:Bind OrderNumber}" />
 
-                        <!-- Ordrestatus -->
-                        <!-- Skift OrderStatus til det property-navn du faktisk bruger (fx Status / SalesOrderStatus) -->
+                        <!-- Order status -->
                         <GridViewColumn Header="Ordrestatus"
                             DisplayMemberBinding="{h:Bind OrderStatus}" />
 
-                        <!-- Betalingsstatus -->
+                        <!-- Payment Status -->
                         <GridViewColumn Header="Betalingsstatus"
                             DisplayMemberBinding="{h:Bind PaymentStatus}" />
 
-                        <!-- Salgsdato -->
+                        <!-- Sales Date -->
                         <GridViewColumn Header="Salgsdato"
                             DisplayMemberBinding="{h:Bind SalesDate:dd-MM-yyyy}" />
 
-                        <!-- Produkt -->
-                        <GridViewColumn Header="Produkt"
+                        <!-- Shipped Date -->
+                        <GridViewColumn Header="Afsendt"
+                            DisplayMemberBinding="{h:Bind SalesDate:dd-MM-yyyy}" />
+                        <!-- DisplayMemberBinding="{h:Bind ShippedDate:dd-MM-yyyy}" /> -->
+
+                        <!-- Customer name -->
+                        <GridViewColumn Header="Kundenavn"
                             DisplayMemberBinding="{h:Bind ProductName}" />
+                        <!-- DisplayMemberBinding="{h:Bind CustomerName}" /> -->
 
-                        <!-- Antal -->
-                        <GridViewColumn Header="Antal"
+                        <!-- City -->
+                        <GridViewColumn Header="By"
                             DisplayMemberBinding="{h:Bind Quantity}" />
+                        <!-- DisplayMemberBinding="{h:Bind City}" /> -->
 
-                        <!-- Pris -->
-                        <GridViewColumn Header="Pris"
+                        <!-- Total Order price -->
+                        <GridViewColumn Header="Total Pris"
                             DisplayMemberBinding="{h:Bind TotalPrice:C}" />
 
                     </GridView>
