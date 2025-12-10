@@ -43,6 +43,7 @@ namespace Undy
             IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
             IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo = new ProductWholesaleOrderDBRepository();
             IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo = new ProductSalesOrderDBRepository();
+            IBaseRepository<Customer, Guid> customerRepo = new CustomerDBRepository();
 
             //----- ViewModels ----- //
             var startPageVM = new StartPageViewModel();
@@ -51,7 +52,7 @@ namespace Undy
             var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo, productSalesOrderRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
-            var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, productRepo, productSalesOrderRepo);
+            var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, productRepo, productSalesOrderRepo, customerRepo);
             var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
 
             var mainVM = new MainViewModel(
@@ -77,6 +78,7 @@ namespace Undy
             wholesaleOrderRepo.InitializeAsync(),
             salesOrderRepo.InitializeAsync(),
             salesOrderDisplayRepo.InitializeAsync(),
+            customerRepo.InitializeAsync(),
             //productSalesOrderRepo.InitializeAsync(),
             //testReturnRepo.InitializeAsync(),
             //testPurchaseOrderRepo.InitializeAsync(),
