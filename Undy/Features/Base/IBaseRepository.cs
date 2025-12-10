@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Transactions;
 
-namespace Undy.Data.Repository
+namespace Undy.Features.Base
 {
     public interface IBaseRepository<T, TKey> where T : class where TKey : notnull
     {

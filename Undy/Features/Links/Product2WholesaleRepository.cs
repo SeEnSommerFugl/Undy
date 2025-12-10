@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Undy.Models;
+using Undy.Features.Base;
 
-namespace Undy.Data.Repository {
+namespace Undy.Features.Links {
     public class ProductWholesaleOrderDBRepository : BaseDBRepository<ProductWholesaleOrder, Guid>
     {
 

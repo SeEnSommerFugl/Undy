@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Data;
 using Microsoft.Data.SqlClient;
 using Undy.Models;
+using Undy.Features.Base;
 
-
-namespace Undy.Data.Repository
+namespace Undy.Features.ReturnOrders
 {
-    public class TestReturnOrderDBRepository : BaseDBRepository<ReturnOrder, Guid>
+    public class ReturnOrderDBRepository : BaseDBRepository<ReturnOrder, Guid>
     {
         // View for selecting all
         protected override string SqlSelectAll => "SELECT * FROM vw_ReturnOrder";
@@ -61,5 +55,5 @@ namespace Undy.Data.Repository
 
         // Get key from entity
         protected override Guid GetKey(ReturnOrder e) => e.ReturnOrderID;
-    }
+    };
 }

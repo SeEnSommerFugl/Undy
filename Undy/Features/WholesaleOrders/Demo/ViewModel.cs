@@ -1,11 +1,12 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
-using Undy.ViewModels.Helpers;
+using Undy.Features.Helpers;
 using System.Windows.Input;
 using Undy.Data.Repository;
 using Undy.Models;
+using Undy.Features.Base;
 
-namespace Undy.ViewModels
+namespace Undy.Features.WholesaleOrders.Demo
 {
     public class TestWholesaleOrderViewModel : BaseViewModel
     {

@@ -3,8 +3,22 @@ using System.Windows;
 using System.Windows.Markup;
 using Undy.Data.Repository;
 using Undy.Models;
-using Undy.ViewModels;
 using Undy.Views;
+using Undy.Features.Base;
+using Undy.Features.Helpers;
+using Undy.Features.Links;
+using Undy.Features.Main;
+using Undy.Features.Payment;
+using Undy.Features.Products;
+using Undy.Features.ReturnOrders;
+using Undy.Features.ReturnOrders.Demo;
+using Undy.Features.SalesOrders;
+using Undy.Features.SalesOrders.Demo;
+using Undy.Features.StartPage;
+using Undy.Features.WholesaleOrders;
+using Undy.Features.WholesaleOrders.ArrivedOrder;
+using Undy.Features.WholesaleOrders.Demo;
+
 
 namespace Undy
 {

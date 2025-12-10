@@ -1,8 +1,9 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
 using Undy.Models;
+using Undy.Features.Base;
 
-namespace Undy.Data.Repository
+namespace Undy.Features.SalesOrders
 {
     public class SalesOrderDBRepository : BaseDBRepository<SalesOrder, Guid>
     {

@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Undy.Data.Repository;
 using Undy.Models;
-using Undy.ViewModels.Helpers;
+using Undy.Features.Helpers;
 
-namespace Undy.ViewModels
+namespace Undy.Features.Helpers
 {
     public sealed class RelayCommand : ICommand
     {

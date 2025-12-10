@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Undy.Features.Base;
 
-namespace Undy.ViewModels
+namespace Undy.Features.WholesaleOrders.ArrivedOrder
 {
     public class IncomingOrderLineViewModel : BaseViewModel
     {

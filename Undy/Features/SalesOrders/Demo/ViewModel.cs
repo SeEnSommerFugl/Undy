@@ -5,9 +5,11 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using Undy.Data.Repository;
 using Undy.Models;
-using Undy.ViewModels.Helpers;
+using Undy.Features.Helpers;
+using Undy.Features.Base;
+using Undy.Features.SalesOrders;
 
-namespace Undy.ViewModels
+namespace Undy.Features.SalesOrders.Demo
 {
     public class TestSalesOrderViewModel : BaseViewModel
     {

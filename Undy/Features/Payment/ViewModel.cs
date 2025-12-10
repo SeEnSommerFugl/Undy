@@ -4,8 +4,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Undy.Data.Repository;
 using Undy.Models;
+using Undy.Features.Base;
+using Undy.Features.Helpers;
+using Undy.Features.SalesOrders;
 
-namespace Undy.ViewModels
+namespace Undy.Features.Payment
 {
     public class PaymentViewModel : BaseViewModel
     {

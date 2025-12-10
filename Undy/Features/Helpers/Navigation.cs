@@ -2,8 +2,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Undy.Features.Base;
 
-namespace Undy.ViewModels.Helpers
+namespace Undy.Features.Helpers
 {
     public sealed class Navigation : INotifyPropertyChanged
     {

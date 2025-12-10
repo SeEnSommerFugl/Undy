@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Undy.Models;
+using Undy.Features.Base;
 
-namespace Undy.ViewModels {
+namespace Undy.Features.SalesOrders {
     public class SalesOrderLineViewModel : BaseViewModel {
         public Product Product { get; }
         public int Quantity { get; }

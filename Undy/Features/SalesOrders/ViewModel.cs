@@ -7,9 +7,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Undy.Data.Repository;
 using Undy.Models;
-using Undy.ViewModels.Helpers;
+using Undy.Features.Helpers;
+using Undy.Features.Base;
 
-namespace Undy.ViewModels
+namespace Undy.Features.SalesOrders
 {
     public class SalesOrderViewModel : BaseViewModel
     {

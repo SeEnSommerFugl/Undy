@@ -4,7 +4,7 @@ using System.Windows.Automation;
 using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
 
-namespace Undy.Data.Repository
+namespace Undy.Features.Base
 {
     public abstract class BaseDBRepository<T, TKey> : IBaseRepository<T, TKey> where T : class where TKey : notnull
     {

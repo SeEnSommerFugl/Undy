@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Undy.Models;
+using Undy.Features.Base;
 
 namespace Undy.Data.Repository
 {

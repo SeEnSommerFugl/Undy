@@ -3,9 +3,10 @@ using System.ComponentModel;
 using System.Windows.Data;
 using Undy.Data.Repository;
 using Undy.Models;
-using Undy.ViewModels.Helpers;
+using Undy.Features.Helpers;
+using Undy.Features.Base;
 
-namespace Undy.ViewModels
+namespace Undy.Features.WholesaleOrders
 {
     public class WholesaleOrderViewModel : BaseViewModel
     {

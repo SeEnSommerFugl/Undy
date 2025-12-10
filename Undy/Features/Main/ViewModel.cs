@@ -1,6 +1,19 @@
-﻿using Undy.ViewModels.Helpers;
+﻿using Undy.Features.Helpers;
+using Undy.Features.Base;
+using Undy.Features.Links;
+using Undy.Features.Payment;
+using Undy.Features.Products;
+using Undy.Features.ReturnOrders;
+using Undy.Features.ReturnOrders.Demo;
+using Undy.Features.SalesOrders;
+using Undy.Features.SalesOrders.Demo;
+using Undy.Features.StartPage;
+using Undy.Features.WholesaleOrders;
+using Undy.Features.WholesaleOrders.ArrivedOrder;
+using Undy.Features.WholesaleOrders.Demo;
+using Undy.Models;
 
-namespace Undy.ViewModels
+namespace Undy.Features.Main
 {
     public class MainViewModel : BaseViewModel
     {
