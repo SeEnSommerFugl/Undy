@@ -7,7 +7,7 @@ GO
 
 -- Product Table
 CREATE TABLE [Product](
-	ProductID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+	ProductID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	ProductNumber NVARCHAR(255) NOT NULL UNIQUE,
 	ProductName NVARCHAR(255) NOT NULL,
 	Price DECIMAL(10,2) NOT NULL,
@@ -16,36 +16,36 @@ CREATE TABLE [Product](
 	NumberInStock INT DEFAULT 0 NOT NULL
 );
 
--- PurchaseOrder Table
-CREATE TABLE PurchaseOrder(
-	PurchaseOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-	PurchaseOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
-	DisplayPurchaseOrderNumber AS 'KØB-' + RIGHT('000000000' + CAST(PurchaseOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
-	PurchaseOrderDate DATE NOT NULL,
+-- WholesaleOrder Table
+CREATE TABLE WholesaleOrder(
+	WholesaleOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	WholesaleOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
+	DisplayWholesaleOrderNumber AS 'KØB-' + RIGHT('000000000' + CAST(WholesaleOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
+	WholesaleOrderDate DATE NOT NULL,
 	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
 	OrderStatus NVARCHAR(255) NOT NULL
 );
 
--- ProductPurchaseOrder
-CREATE TABLE ProductPurchaseOrder(
-	PurchaseOrderID UNIQUEIDENTIFIER NOT NULL,
+-- ProductWholesaleOrder
+CREATE TABLE ProductWholesaleOrder(
+	WholesaleOrderID UNIQUEIDENTIFIER NOT NULL,
 	ProductID UNIQUEIDENTIFIER NOT NULL,
 	Quantity INT NOT NULL,
 	UnitPrice DECIMAL(10,2) NOT NULL,
 	QuantityReceived INT NOT NULL DEFAULT 0,
-	CONSTRAINT PK_ProductPurchaseOrder PRIMARY KEY(PurchaseOrderID, ProductID),
-	CONSTRAINT FK_PurchaseOrder_ProductPurchaseOrder
-		FOREIGN KEY(PurchaseOrderID)
-		REFERENCES PurchaseOrder(PurchaseOrderID),
-	CONSTRAINT FK_Product_ProductPurchaseOrder
+	CONSTRAINT PK_ProductWholesaleOrder PRIMARY KEY(WholesaleOrderID, ProductID),
+	CONSTRAINT FK_WholesaleOrder_ProductWholesaleOrder
+		FOREIGN KEY(WholesaleOrderID)
+		REFERENCES WholesaleOrder(WholesaleOrderID),
+	CONSTRAINT FK_Product_ProductWholesaleOrder
 		FOREIGN KEY(ProductID)
 		REFERENCES [Product](ProductID)
 );
 
 -- SalesOrder Table
 CREATE TABLE SalesOrder (
-	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	CustomerID UNIQUEIDENTIFIER NOT NULL,
 	SalesOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
 	DisplaySalesOrderNumber AS 'SALG-' + RIGHT('000000000' + CAST(SalesOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
@@ -75,7 +75,7 @@ CREATE TABLE ProductSalesOrder (
 
 -- ReturnOrder Table
 CREATE TABLE ReturnOrder(
-	ReturnOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+	ReturnOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	ReturnOrderDate DATE NOT NULL,
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL,
 	CONSTRAINT FK_SalesOrder_ReturnOrder
@@ -85,7 +85,7 @@ CREATE TABLE ReturnOrder(
 
 -- Customers Table
 CREATE TABLE Customers(
-	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	CustomerNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
 	DisplayCustomerNumber AS 'KUND-' + RIGHT('000000000' + CAST(CustomerNumber AS NVARCHAR(10)), 10) PERSISTED,
 	FirstName NVARCHAR(255) NOT NULL,
@@ -134,9 +134,9 @@ BEGIN
 END;
 GO
 
--- Insert PurchaseOrder
-CREATE OR ALTER PROCEDURE usp_Insert_PurchaseOrder
-	@PurchaseOrderDate DATE,
+-- Insert WholesaleOrder
+CREATE OR ALTER PROCEDURE usp_Insert_WholesaleOrder
+	@WholesaleOrderDate DATE,
 	@ExpectedDeliveryDate DATE,
 	@OrderStatus NVARCHAR(255)
 AS
@@ -144,20 +144,20 @@ BEGIN
 	SET NOCOUNT ON;
 	
 	-- Validate expected delivery is after order date
-	IF @ExpectedDeliveryDate < @PurchaseOrderDate
+	IF @ExpectedDeliveryDate < @WholesaleOrderDate
 	BEGIN
-		RAISERROR('Expected delivery date cannot be before purchase order date', 16, 1);
+		RAISERROR('Expected delivery date cannot be before wholesale order date', 16, 1);
 		RETURN;
 	END
 	
-	INSERT INTO PurchaseOrder(PurchaseOrderDate, ExpectedDeliveryDate, OrderStatus)
-	VALUES(@PurchaseOrderDate, @ExpectedDeliveryDate, @OrderStatus);
+	INSERT INTO WholesaleOrder(WholesaleOrderDate, ExpectedDeliveryDate, OrderStatus)
+	VALUES(@WholesaleOrderDate, @ExpectedDeliveryDate, @OrderStatus);
 END;
 GO
 
--- Insert ProductPurchaseOrder
-CREATE OR ALTER  PROCEDURE usp_Insert_ProductPurchaseOrder
-	@PurchaseOrderNumber INT,
+-- Insert ProductWholesaleOrder
+CREATE OR ALTER  PROCEDURE usp_Insert_ProductWholesaleOrder
+	@WholesaleOrderNumber INT,
 	@ProductNumber NVARCHAR(255),
 	@Quantity INT,
 	@UnitPrice DECIMAL(10,2)
@@ -165,16 +165,16 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	DECLARE @PurchaseOrderID UNIQUEIDENTIFIER;
+	DECLARE @WholesaleOrderID UNIQUEIDENTIFIER;
 	
-	SELECT @PurchaseOrderID = PurchaseOrderID
-	FROM PurchaseOrder
-	WHERE PurchaseOrderNumber = @PurchaseOrderNumber;
+	SELECT @WholesaleOrderID = WholesaleOrderID
+	FROM WholesaleOrder
+	WHERE WholesaleOrderNumber = @WholesaleOrderNumber;
 	
-	-- Validate PurchaseOrder exists
-	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
+	-- Validate WholesaleOrder exists
+	IF NOT EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
 	BEGIN
-		RAISERROR('Purchase Order does not exist', 16, 1);
+		RAISERROR('Wholesale Order does not exist', 16, 1);
 		RETURN;
 	END
 	
@@ -192,11 +192,11 @@ BEGIN
 		RETURN;
 	END
 	
-	-- Check if this product is already in the purchase order
-	IF EXISTS(SELECT 1 FROM ProductPurchaseOrder 
-	          WHERE PurchaseOrderID = @PurchaseOrderID AND ProductID = @ProductID)
+	-- Check if this product is already in the Wholesale order
+	IF EXISTS(SELECT 1 FROM ProductWholesaleOrder 
+	          WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID)
 	BEGIN
-		RAISERROR('Product %s is already in this purchase order', 16, 1, @ProductNumber);
+		RAISERROR('Product %s is already in this Wholesale order', 16, 1, @ProductNumber);
 		RETURN;
 	END
 	
@@ -213,8 +213,8 @@ BEGIN
 		RETURN;
 	END
 
-	INSERT INTO ProductPurchaseOrder(PurchaseOrderID, ProductID, Quantity, UnitPrice, QuantityReceived)
-	VALUES(@PurchaseOrderID, @ProductID, @Quantity, @UnitPrice, 0);
+	INSERT INTO ProductWholesaleOrder(WholesaleOrderID, ProductID, Quantity, UnitPrice, QuantityReceived)
+	VALUES(@WholesaleOrderID, @ProductID, @Quantity, @UnitPrice, 0);
 END;
 GO
 
@@ -396,13 +396,13 @@ SELECT
 FROM [Product];
 GO
 
--- View PurchaseOrders
-CREATE OR ALTER VIEW vw_PurchaseOrders AS
+-- View WholesaleOrders
+CREATE OR ALTER VIEW vw_WholesaleOrders AS
 SELECT 
-	po.PurchaseOrderID,
-	po.PurchaseOrderNumber,
-	po.DisplayPurchaseOrderNumber,
-	po.PurchaseOrderDate, 
+	po.WholesaleOrderID,
+	po.WholesaleOrderNumber,
+	po.DisplayWholesaleOrderNumber,
+	po.WholesaleOrderDate, 
 	po.ExpectedDeliveryDate, 
 	po.DeliveryDate, 
 	po.OrderStatus, 
@@ -415,8 +415,8 @@ SELECT
 	ppo.UnitPrice,
 	ppo.QuantityReceived,
 	(ppo.Quantity * ppo.UnitPrice) AS LineTotal
-FROM PurchaseOrder po
-JOIN ProductPurchaseOrder ppo ON po.PurchaseOrderID = ppo.PurchaseOrderID
+FROM WholesaleOrder po
+JOIN ProductWholesaleOrder ppo ON po.WholesaleOrderID = ppo.WholesaleOrderID
 JOIN [Product] p ON ppo.ProductID = p.ProductID;
 GO
 
@@ -476,30 +476,30 @@ GO
 -- UPDATE STORED PROCEDURES
 -- ============================================================================
 
--- Update PurchaseOrder
-CREATE OR ALTER PROCEDURE usp_Update_PurchaseOrder 
-	@PurchaseOrderNumber INT 
+-- Update WholesaleOrder
+CREATE OR ALTER PROCEDURE usp_Update_WholesaleOrder 
+	@WholesaleOrderNumber INT 
 AS
 BEGIN
 	SET NOCOUNT ON;
 
-	DECLARE @PurchaseOrderID UNIQUEIDENTIFIER;
+	DECLARE @WholesaleOrderID UNIQUEIDENTIFIER;
 	
-	SELECT @PurchaseOrderID = PurchaseOrderID
-	FROM PurchaseOrder
-	WHERE PurchaseOrderNumber = @PurchaseOrderNumber;
+	SELECT @WholesaleOrderID = WholesaleOrderID
+	FROM WholesaleOrder
+	WHERE WholesaleOrderNumber = @WholesaleOrderNumber;
 	
-	-- Validate purchase order exists
-	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
+	-- Validate Wholesale order exists
+	IF NOT EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
 	BEGIN
-		RAISERROR('Purchase order does not exist', 16, 1);
+		RAISERROR('Wholesale order does not exist', 16, 1);
 		RETURN;
 	END
 
 	-- Check if order is already received
-	IF EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID AND OrderStatus = 'Modtaget')
+	IF EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID AND OrderStatus = 'Modtaget')
 	BEGIN
-		RAISERROR('This purchase order has already been fully received', 16, 1);
+		RAISERROR('This Wholesale order has already been fully received', 16, 1);
 		RETURN;
 	END
 
@@ -507,42 +507,42 @@ BEGIN
 	UPDATE p
 	SET p.NumberInStock = p.NumberInStock + ppo.Quantity
 	FROM [Product] p
-	JOIN ProductPurchaseOrder ppo ON p.ProductID = ppo.ProductID
-	WHERE ppo.PurchaseOrderID = @PurchaseOrderID;
+	JOIN ProductWholesaleOrder ppo ON p.ProductID = ppo.ProductID
+	WHERE ppo.WholesaleOrderID = @WholesaleOrderID;
 
 	-- Update order status and delivery date
-	UPDATE PurchaseOrder
+	UPDATE WholesaleOrder
 	SET
 		DeliveryDate = GETDATE(),
 		OrderStatus = 'Modtaget'
-	WHERE PurchaseOrderID = @PurchaseOrderID;
+	WHERE WholesaleOrderID = @WholesaleOrderID;
 	
 	-- Update all products as fully received
-	UPDATE ProductPurchaseOrder
+	UPDATE ProductWholesaleOrder
 	SET QuantityReceived = Quantity
-	WHERE PurchaseOrderID = @PurchaseOrderID;
+	WHERE WholesaleOrderID = @WholesaleOrderID;
 END;
 GO
 
--- Update Partial PurchaseOrder
-CREATE OR ALTER PROCEDURE usp_UpdatePartial_PurchaseOrder 
-	@PurchaseOrderNumber INT, 
+-- Update Partial WholesaleOrder
+CREATE OR ALTER PROCEDURE usp_UpdatePartial_WholesaleOrder 
+	@WholesaleOrderNumber INT, 
 	@ProductNumber NVARCHAR(255),
 	@Quantity INT
 AS
 BEGIN
 	SET NOCOUNT ON;
 
-	DECLARE @PurchaseOrderID UNIQUEIDENTIFIER;
+	DECLARE @WholesaleOrderID UNIQUEIDENTIFIER;
 	
-	SELECT @PurchaseOrderID = PurchaseOrderID
-	FROM PurchaseOrder
-	WHERE PurchaseOrderNumber = @PurchaseOrderNumber;
+	SELECT @WholesaleOrderID = WholesaleOrderID
+	FROM WholesaleOrder
+	WHERE WholesaleOrderNumber = @WholesaleOrderNumber;
 	
-	-- Validate purchase order exists
-	IF NOT EXISTS(SELECT 1 FROM PurchaseOrder WHERE PurchaseOrderID = @PurchaseOrderID)
+	-- Validate Wholesale order exists
+	IF NOT EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
 	BEGIN
-		RAISERROR('Purchase order does not exist', 16, 1);
+		RAISERROR('Wholesale order does not exist', 16, 1);
 		RETURN;
 	END
 
@@ -559,11 +559,11 @@ BEGIN
 		RETURN;
 	END
 
-	-- Validate product exists in purchase order
-	IF NOT EXISTS(SELECT 1 FROM ProductPurchaseOrder 
-	              WHERE PurchaseOrderID = @PurchaseOrderID AND ProductID = @ProductID)
+	-- Validate product exists in Wholesale order
+	IF NOT EXISTS(SELECT 1 FROM ProductWholesaleOrder 
+	              WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID)
 	BEGIN
-		RAISERROR('Product %s is not in this purchase order', 16, 1, @ProductNumber);
+		RAISERROR('Product %s is not in this Wholesale order', 16, 1, @ProductNumber);
 		RETURN;
 	END
 
@@ -574,8 +574,8 @@ BEGIN
 	SELECT 
 		@ReceivedQuantity = ISNULL(QuantityReceived, 0),
 		@OrderedQuantity = Quantity
-	FROM ProductPurchaseOrder
-	WHERE PurchaseOrderID = @PurchaseOrderID AND ProductID = @ProductID;
+	FROM ProductWholesaleOrder
+	WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
 
 
 	-- Update stock based on received quantity
@@ -583,32 +583,32 @@ BEGIN
 	SET NumberInStock = NumberInStock + @Quantity
 	WHERE ProductID = @ProductID;
 
-	-- Update quantity received in purchase order
-	UPDATE ProductPurchaseOrder
+	-- Update quantity received in Wholesale order
+	UPDATE ProductWholesaleOrder
 	SET QuantityReceived = QuantityReceived + @Quantity
-	WHERE PurchaseOrderID = @PurchaseOrderID AND ProductID = @ProductID;
+	WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
 
 	-- Check if all products are fully received
 	DECLARE @PendingItems INT;
 	
 	SELECT @PendingItems = COUNT(*)
-	FROM ProductPurchaseOrder
-	WHERE PurchaseOrderID = @PurchaseOrderID
+	FROM ProductWholesaleOrder
+	WHERE WholesaleOrderID = @WholesaleOrderID
 	AND QuantityReceived < Quantity;
 
 	-- Update order status based on completion
 	IF @PendingItems = 0
 	BEGIN
-		UPDATE PurchaseOrder
+		UPDATE WholesaleOrder
 		SET OrderStatus = 'Modtaget', 
 		    DeliveryDate = GETDATE()
-		WHERE PurchaseOrderID = @PurchaseOrderID;
+		WHERE WholesaleOrderID = @WholesaleOrderID;
 	END
 	ELSE
 	BEGIN
-		UPDATE PurchaseOrder
+		UPDATE WholesaleOrder
 		SET OrderStatus = 'Delvist Modtaget'
-		WHERE PurchaseOrderID = @PurchaseOrderID;
+		WHERE WholesaleOrderID = @WholesaleOrderID;
 	END
 END;
 GO
