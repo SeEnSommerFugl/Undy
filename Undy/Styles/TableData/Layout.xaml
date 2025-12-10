@@ -106,7 +106,7 @@
     </Style>
 
     <!-- Kun tekstfarve på beløb: grøn/rød som i EconomyView -->
-    <Style x:Key="MoneyTextColor" TargetType="TextBlock" BasedOn="{StaticResource TextBlockRight}">
+    <Style x:Key="MoneyTextColor" TargetType="TextBlock">
         <!-- Default (neutral) -->
         <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>

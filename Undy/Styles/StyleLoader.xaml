@@ -2,16 +2,26 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
+        <!-- 1: Farver & base -->
         <ResourceDictionary Source="/Styles/Base/Palette.xaml"/>
         <ResourceDictionary Source="/Styles/Base/Typography.xaml"/>
+        <ResourceDictionary Source="/Styles/Base/StylesForm.xaml"/>
+
+        <!-- 2: Behaviours -->
         <ResourceDictionary Source="/Styles/Behaviours/Visibility.xaml"/>
+
+        <!-- 3: Controls (som andre ting bygger på) -->
+        <ResourceDictionary Source="/Styles/Controls/Inputs.xaml"/>
         <ResourceDictionary Source="/Styles/Controls/Buttons.xaml"/>
         <ResourceDictionary Source="/Styles/Controls/Cards.xaml"/>
         <ResourceDictionary Source="/Styles/Controls/Chips.xaml"/>
-        <ResourceDictionary Source="/Styles/Controls/Inputs.xaml"/>
         <ResourceDictionary Source="/Styles/Controls/Navigation.xaml"/>
-        <ResourceDictionary Source="/Styles/Datagrids/Interactions.xaml"/>
-        <ResourceDictionary Source="/Styles/Datagrids/Layout.xaml"/>
+
+        <!-- 4: Datagrids/Listview: base først, så “extensions” -->
+        <ResourceDictionary Source="/Styles/TableData/DataGrid.xaml"/>
+        <ResourceDictionary Source="/Styles/TableData/Interactions.xaml"/>
+        <ResourceDictionary Source="/Styles/TableData/Listview.xaml"/>
+        <ResourceDictionary Source="/Styles/TableData/Layout.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

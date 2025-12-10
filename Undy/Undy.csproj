@@ -34,4 +34,10 @@
     <Resource Include="Styles\Images\shopping-cartBlue.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ViewModels\Helpers\BindExtension.cs">
+      <Generator>MSBuild:Compile</Generator>
+    </Compile>
+  </ItemGroup>
+
 </Project>

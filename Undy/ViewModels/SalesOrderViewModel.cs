@@ -25,7 +25,7 @@ namespace Undy.ViewModels
             }
         }
 
-        public List<String> OrderStatusOptions { get; } = new() { "Afventer Behandling", "Under Behandling", "Afsendt" };
+        public List<String> OrderStatusOptions { get; } = new() { "Afventer", "Under Behandling", "Afsendt" };
 
         private void salesOrder_PropertyChanged(object? sender, PropertyChangedEventArgs e) {
             if(sender is SalesOrderDisplay salesOrder) {
