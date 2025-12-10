@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ViewModels\Helpers\BindExtension.cs">
+    <Compile Update="Features\Helpers\BindExtension.cs">
       <Generator>MSBuild:Compile</Generator>
     </Compile>
   </ItemGroup>

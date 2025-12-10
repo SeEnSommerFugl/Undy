@@ -2,6 +2,10 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
+
+using Undy.Models;
+using Undy.ViewModels;
 
 namespace Undy.Views
 {
@@ -21,24 +25,30 @@ namespace Undy.Views
         // Handles click on GridView column headers to sort the ListView
         private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            // Ensure the click originated from a GridViewColumnHeader
+            // Ensure the click came from a GridViewColumnHeader
             if (e.OriginalSource is not GridViewColumnHeader header ||
                 header.Column is null)
+            {
                 return;
+            }
 
-            // Get the CollectionView of the ListView's ItemsSource
+            // Get CollectionView from the ListView source
             var view = CollectionViewSource.GetDefaultView(SalesListView.ItemsSource);
             if (view == null)
+            {
                 return;
+            }
 
-            // Extract the property name from DisplayMemberBinding
+            // Get property name from binding
             var binding = header.Column.DisplayMemberBinding as Binding;
             var sortProperty = binding?.Path?.Path;
 
             if (string.IsNullOrEmpty(sortProperty))
+            {
                 return;
+            }
 
-            // Toggle sort direction if the same column is clicked again
+            // Toggle direction if same column is clicked again
             if (_lastSortProperty == sortProperty)
             {
                 _lastSortDirection =
@@ -48,15 +58,33 @@ namespace Undy.Views
             }
             else
             {
-                // New column clicked: reset to ascending order
                 _lastSortProperty = sortProperty;
                 _lastSortDirection = ListSortDirection.Ascending;
             }
 
-            // Apply the sorting
+            // Apply sorting
             view.SortDescriptions.Clear();
             view.SortDescriptions.Add(
                 new SortDescription(sortProperty, _lastSortDirection));
+        }
+
+        // Handles double click on a sales order
+        private void SalesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            // Get view model
+            if (DataContext is not SalesOrderViewModel viewModel)
+            {
+                return;
+            }
+
+            // Get selected order
+            if (SalesListView.SelectedItem is not SalesOrderDisplay selectedOrder)
+            {
+                return;
+            }
+
+            // Load order details into DataGrid
+            viewModel.LoadOrderDetails(selectedOrder);
         }
     }
 }
