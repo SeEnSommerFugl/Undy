@@ -1,15 +1,21 @@
 ﻿using System.Windows.Controls;
+using Undy.ViewModels;   
 
 namespace Undy.Views
 {
-    /// <summary>
-    /// Interaction logic for PaymentView.xaml
-    /// </summary>
     public partial class PaymentView : UserControl
     {
         public PaymentView()
         {
             InitializeComponent();
+
+            Loaded += async (_, __) =>
+            {
+                if (DataContext is PaymentViewModel vm)
+                {
+                    await vm.LoadUnpaidOrdersAsync();
+                }
+            };
         }
     }
 }

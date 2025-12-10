@@ -44,13 +44,14 @@ namespace Undy
             IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo = new ProductWholesaleOrderDBRepository();
             IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo = new ProductSalesOrderDBRepository();
             IBaseRepository<Customer, Guid> customerRepo = new CustomerDBRepository();
+            IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo = new CustomerSalesOrderDisplayDBRepository();
 
             //----- ViewModels ----- //
             var startPageVM = new StartPageViewModel();
             var wholesaleOrderVM = new WholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
             var incomingWholesaleOrderVM = new IncomingWholesaleOrderViewModel(wholesaleOrderRepo, productRepo, productWholesaleOrderRepo);
             var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo);
-            var paymentVM = new PaymentViewModel(salesOrderRepo);
+            var paymentVM = new PaymentViewModel(customerSalesOrderDisplayRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, productRepo, productSalesOrderRepo, customerRepo);
             var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo);

@@ -18,8 +18,8 @@
 
 
     <!-- Style for page -->
-    <Border Style="{DynamicResource Card}"
-            Margin="40">
+    <Border Style="{DynamicResource Card}">
+
 
         <Grid Margin="40">
             <Grid.RowDefinitions>

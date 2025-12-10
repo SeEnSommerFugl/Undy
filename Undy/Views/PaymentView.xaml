@@ -1,14 +1,10 @@
 ﻿<UserControl x:Class="Undy.Views.PaymentView"
-            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-            xmlns:local="clr-namespace:Undy.Views"
-            mc:Ignorable="d" 
-            d:DesignWidth="1980" d:DesignHeight="1048">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="White">
 
     <Border Style="{DynamicResource Card}">
-        <Grid Margin="40">
+        <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Titel -->
@@ -25,35 +21,70 @@
             <!-- Titel -->
             <TextBlock Grid.Row="0"
                        Text="Betalinger"
-                       Style="{DynamicResource H1}"
+                       Style="{DynamicResource H2}"
                        HorizontalAlignment="Center"/>
 
             <!-- Undertitel -->
             <TextBlock Grid.Row="1"
-                       Text="Gennemgå ordreoplysninger og behandl ordren."
-                       Style="{DynamicResource H2}"
+                       Text="Se ordrer der er afsendt, men endnu ikke betalt."
+                       Style="{DynamicResource H3}"
                        HorizontalAlignment="Center"
                        Margin="0,10,0,20"
                        Foreground="Red"/>
 
-            <!-- Liste med ubetalte ordrer -->
+            <!-- LISTE MED ORDRER -->
             <ListView Grid.Row="2"
-                      ItemsSource="{Binding UnpaidOrdersView}"
+                      ItemsSource="{Binding UnpaidOrders}"
                       SelectedItem="{Binding SelectedOrder}"
                       Margin="0,0,0,10">
+
+                <!-- Header-styling -->
+                <ListView.Resources>
+                    <Style TargetType="GridViewColumnHeader">
+                        <Setter Property="Foreground" Value="#333"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Padding" Value="4"/>
+                    </Style>
+                </ListView.Resources>
+
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Ordrenummer"
+
+                        <!-- Ordrenummer -->
+                        <GridViewColumn Header="Ordrenummer" Width="120"
                                         DisplayMemberBinding="{Binding SalesOrderNumber}" />
-                        <GridViewColumn Header="Kundenavn"
+
+                        <!-- Kundenavn -->
+                        <GridViewColumn Header="Kundenavn" Width="200"
                                         DisplayMemberBinding="{Binding CustomerName}" />
-                        <GridViewColumn Header="Samlet beløb"
-                                        DisplayMemberBinding="{Binding TotalPrice}" />
+
+                        <!-- Samlet beløb -->
+                        <GridViewColumn Header="Samlet beløb" Width="140">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TotalPrice}"
+                                               TextAlignment="Center"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <!-- Checkbox til betaling -->
+                        <GridViewColumn Header="Betales" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox HorizontalAlignment="Center"
+                                              IsChecked="{Binding IsSelectedForPayment, Mode=TwoWay}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
                     </GridView>
                 </ListView.View>
             </ListView>
 
-            <!-- Knap til at registrere betaling -->
+            <!-- Knap nederst til højre -->
             <Button Grid.Row="3"
                     Content="Registrer betaling"
                     Command="{Binding ConfirmPaymentCommand}"
@@ -67,9 +98,10 @@
                        Text="{Binding StatusMessage}"
                        Foreground="Red"
                        HorizontalAlignment="Center"
-                       Margin="0,20,0,0"
+                       Margin="0,15,0,0"
                        FontSize="16"
                        FontWeight="Bold"/>
+
         </Grid>
     </Border>
 </UserControl>
