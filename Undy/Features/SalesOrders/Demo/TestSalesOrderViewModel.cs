@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.SalesOrders.Demo
+﻿namespace Undy.Features.ViewModel
 {
     public class TestSalesOrderViewModel : BaseViewModel
     {
@@ -16,7 +16,8 @@
         public ICollectionView TestSalesOrderView => _testSalesOrderView;
         public ICollectionView SortedCustomers { get; }
 
-        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo, IBaseRepository<Customer, Guid> customerRepo) {
+        public TestSalesOrderViewModel(IBaseRepository<SalesOrder, Guid> salesOrderRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo, IBaseRepository<Customer, Guid> customerRepo)
+        {
             _salesOrderRepo = salesOrderRepo;
             _productRepo = productRepo;
             _productSalesOrderRepo = productSalesOrderRepo;
@@ -38,23 +39,27 @@
             get => _currentSalesOrder;
             set
             {
-                if(SetProperty(ref _currentSalesOrder, value));
+                if (SetProperty(ref _currentSalesOrder, value)) ;
             }
         }
 
         private Product _selectedProduct;
-        public Product SelectedProduct {
+        public Product SelectedProduct
+        {
             get => _selectedProduct;
-            set {
-                if(SetProperty(ref _selectedProduct, value));
+            set
+            {
+                if (SetProperty(ref _selectedProduct, value)) ;
             }
         }
 
         private Customer _selectedCustomer;
-        public Customer SelectedCustomer {
+        public Customer SelectedCustomer
+        {
             get => _selectedCustomer;
-            set {
-                if(SetProperty(ref _selectedCustomer, value));
+            set
+            {
+                if (SetProperty(ref _selectedCustomer, value)) ;
             }
         }
 
@@ -64,7 +69,7 @@
             get => _quantity;
             set
             {
-                if(SetProperty(ref _quantity, value));
+                if (SetProperty(ref _quantity, value)) ;
             }
         }
 
@@ -73,26 +78,33 @@
         public ICommand RemoveSalesOrderLineCommand { get; }
         public ICommand AddProductCommand { get; }
 
-        private void AddProduct() {
-            if (SelectedProduct == null || Quantity <= 0) {
+        private void AddProduct()
+        {
+            if (SelectedProduct == null || Quantity <= 0)
+            {
                 return;
             }
 
             SalesOrderLines.Add(new SalesOrderLineViewModel(SelectedProduct, Quantity));
         }
 
-        private void RemoveSalesOrderLine(SalesOrderLineViewModel salesOrderLine) {
-            if(salesOrderLine != null) {
+        private void RemoveSalesOrderLine(SalesOrderLineViewModel salesOrderLine)
+        {
+            if (salesOrderLine != null)
+            {
                 SalesOrderLines.Remove(salesOrderLine);
             }
         }
 
-        private async Task CreateSalesOrderAsync() {
-            if (SalesOrderLines.Count == 0 || SelectedCustomer == null) {
+        private async Task CreateSalesOrderAsync()
+        {
+            if (SalesOrderLines.Count == 0 || SelectedCustomer == null)
+            {
                 return;
             }
 
-            var salesOrder = new SalesOrder {
+            var salesOrder = new SalesOrder
+            {
                 SalesOrderID = Guid.NewGuid(),
                 CustomerID = SelectedCustomer.CustomerID,
                 OrderStatus = "Afventer",

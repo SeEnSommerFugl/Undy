@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:h="clr-namespace:Undy.ViewModels.Helpers"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Undy.Views"
+             xmlns:h="clr-namespace:Undy.Features.Helpers"
              mc:Ignorable="d" 
              d:DesignWidth="1280" d:DesignHeight="720">
 
@@ -59,54 +60,51 @@
                           ItemsSource="{Binding SaleView}"
                           MaxHeight="1000"
                           MouseDoubleClick="SalesListView_MouseDoubleClick">
-<ListView.View>
-                    <GridView ColumnHeaderContainerStyle="{StaticResource SortableHeader}">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource SortableHeader}">
 
-                        <!-- Order number -->
-                        <GridViewColumn Header="Ordrenummer"
-                            DisplayMemberBinding="{h:Bind OrderNumber}" />
+                            <!-- Order number -->
+                            <GridViewColumn Header="Ordrenummer"
+                                DisplayMemberBinding="{Binding OrderNumber}" />
 
-                        <!-- Order status -->
-                        <GridViewColumn Header="Ordrestatus"
-                            DisplayMemberBinding="{h:Bind OrderStatus}" />
+                            <!-- Order status -->
+                            <GridViewColumn Header="Ordrestatus"
+                                DisplayMemberBinding="{Binding OrderStatus}" />
 
-                        <!-- Payment Status -->
-                        <GridViewColumn Header="Betalingsstatus"
-                            DisplayMemberBinding="{h:Bind PaymentStatus}" />
+                            <!-- Payment Status -->
+                            <GridViewColumn Header="Betalingsstatus"
+                                DisplayMemberBinding="{Binding PaymentStatus}" />
 
-                        <!-- Sales Date -->
-                        <GridViewColumn Header="Dato"
-                            DisplayMemberBinding="{h:Bind SalesDate}" />
+                            <!-- Sales Date -->
+                            <GridViewColumn Header="Dato"
+                                DisplayMemberBinding="{Binding SalesDate}" />
 
-                        <!-- Product Name -->
-                        <GridViewColumn Header="Produktnavn"
-                            DisplayMemberBinding="{h:Bind ProductName}" />
+                            <!-- Product Name -->
+                            <GridViewColumn Header="Produktnavn"
+                                DisplayMemberBinding="{Binding ProductName}" />
 
-                        <!-- Quantity -->
-                        <GridViewColumn Header="Antal"
-                            DisplayMemberBinding="{h:Bind Quantity}" />
+                            <!-- Quantity -->
+                            <GridViewColumn Header="Antal"
+                                DisplayMemberBinding="{Binding Quantity}" />
 
-                        <!-- Total Price -->
-                        <GridViewColumn Header="Total Pris"
-                            DisplayMemberBinding="{h:Bind TotalPrice:C}" />
+                            <!-- Total Price -->
+                            <GridViewColumn Header="Total Pris"
+                                DisplayMemberBinding="{Binding TotalPrice, StringFormat=C}" />
 
-                        <!-- Customer name -->
-                        <GridViewColumn Header="Kundenavn"
-                            DisplayMemberBinding="{h:Bind ProductName}" />
-                        <!-- DisplayMemberBinding="{h:Bind CustomerName}" /> -->
+                            <!-- Customer name -->
+                            <GridViewColumn Header="Kundenavn"
+                                DisplayMemberBinding="{Binding CustomerName}" />
 
-                        <!-- City -->
-                        <GridViewColumn Header="By"
-                            DisplayMemberBinding="{h:Bind Quantity}" />
-                        <!-- DisplayMemberBinding="{h:Bind City}" /> -->
+                            <!-- City -->
+                            <GridViewColumn Header="By"
+                                DisplayMemberBinding="{Binding City}" />
 
-                        <!-- Total Order price -->
-                        <GridViewColumn Header="Total Pris"
-                            DisplayMemberBinding="{h:Bind TotalPrice:C}" />
+                            <!-- Total Order price -->
+                            <GridViewColumn Header="Total Pris"
+                                DisplayMemberBinding="{Binding TotalPrice, StringFormat=C}" />
 
-                    </GridView>
-                </ListView.View>
-
+                        </GridView>
+                    </ListView.View>
                 </ListView>
 
                 <!-- DataGrid with selected order details -->

@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.Payment
+﻿namespace Undy.Features.ViewModel
 {
     public class PaymentViewModel : BaseViewModel
     {
@@ -40,7 +40,7 @@
 
         public ICommand ConfirmPaymentCommand { get; }
 
-        
+
         public PaymentViewModel(
             IBaseRepository<SalesOrder, Guid> salesOrderRepo,
             IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo)
@@ -56,7 +56,7 @@
             );
         }
 
-       
+
         public PaymentViewModel()
             : this(new SalesOrderDBRepository(),
                    new CustomerSalesOrderDisplayDBRepository())
@@ -137,11 +137,11 @@
 
             await _salesOrderRepo.UpdateAsync(order);
 
-           
+
             SelectedOrder.PaymentStatus = "Betalt";
             SelectedOrder.IsSelectedForPayment = false;
 
-           
+
             UnpaidOrders.Remove(SelectedOrder);
             SelectedOrder = null;
 

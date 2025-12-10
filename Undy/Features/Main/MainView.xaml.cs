@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using Undy.ViewModels;
-
-namespace Undy.Views
+﻿namespace Undy.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

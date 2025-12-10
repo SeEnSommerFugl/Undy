@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.WholesaleOrders.Demo
+﻿namespace Undy.Features.ViewModel
 {
     public class TestWholesaleOrderViewModel : BaseViewModel
     {

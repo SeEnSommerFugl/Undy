@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.Base
+﻿namespace Undy.Features.Repository
 {
     public abstract class BaseDBRepository<T, TKey> : IBaseRepository<T, TKey> where T : class where TKey : notnull
     {

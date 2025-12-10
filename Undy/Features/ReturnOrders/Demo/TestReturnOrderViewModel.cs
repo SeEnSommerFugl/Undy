@@ -1,12 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using Undy.Features.Helpers;
-using System.Windows.Input;
-using Undy.Data.Repository;
-using Undy.Models;
-using Undy.Features.Base;
-
-namespace Undy.Features.ReturnOrders
+﻿namespace Undy.Features.ViewModel
 {
     public class TestReturnOrderViewModel : BaseViewModel
     {
@@ -18,7 +10,7 @@ namespace Undy.Features.ReturnOrders
             get => _orderNumber;
             set
             {
-                if (SetProperty(ref _orderNumber, value));
+                if (SetProperty(ref _orderNumber, value)) ;
             }
         }
 
@@ -28,7 +20,7 @@ namespace Undy.Features.ReturnOrders
             get => _email;
             set
             {
-                if (SetProperty(ref _email, value));
+                if (SetProperty(ref _email, value)) ;
 
 
             }
@@ -37,7 +29,7 @@ namespace Undy.Features.ReturnOrders
         public string? Reason
         {
             get => _reason;
-            set 
+            set
             {
                 if (SetProperty(ref _reason, value)) ;
             }
@@ -50,19 +42,19 @@ namespace Undy.Features.ReturnOrders
             set => SetProperty(ref _statusMessage, value);
         }
 
-        public ICommand ConfirmCommand {  get; }
+        public ICommand ConfirmCommand { get; }
 
         public TestReturnOrderViewModel(IBaseRepository<ReturnOrder, Guid> tempReturnRepo)
         {
             _tempReturnRepo = tempReturnRepo;
-            
+
             ConfirmCommand = new RelayCommand(ConfirmAction, CanConfirm);
         }
 
         private bool CanConfirm(object? parameter)
         {
-            return !string.IsNullOrWhiteSpace(OrderNumber) && 
-                   !string.IsNullOrWhiteSpace(Email) && 
+            return !string.IsNullOrWhiteSpace(OrderNumber) &&
+                   !string.IsNullOrWhiteSpace(Email) &&
                    !string.IsNullOrWhiteSpace(Reason);
         }
 
@@ -80,7 +72,7 @@ namespace Undy.Features.ReturnOrders
             {
                 ReturnOrderID = Guid.NewGuid(),
                 ReturnOrderDate = DateOnly.FromDateTime(DateTime.Now),
-                SalesOrderID = Guid.Parse(OrderNumber) 
+                SalesOrderID = Guid.Parse(OrderNumber)
             };
             //_tempReturnRepo.Add(newReturnOrder);
             // Yderligere logik, såsom at underrette brugeren, kan tilføjes her.

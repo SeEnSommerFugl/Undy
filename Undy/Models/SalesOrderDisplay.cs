@@ -9,10 +9,13 @@
         public DateOnly SalesDate { get; set; }
         public decimal TotalPrice { get; set; }
         private string _orderStatus;
-        public string OrderStatus {
+        public string OrderStatus
+        {
             get => _orderStatus;
-            set {
-                if (_orderStatus != value) {
+            set
+            {
+                if (_orderStatus != value)
+                {
                     _orderStatus = value;
                     OnPropertyChanged(nameof(OrderStatus));
                 }

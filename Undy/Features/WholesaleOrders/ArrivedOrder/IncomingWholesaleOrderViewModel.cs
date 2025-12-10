@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.WholesaleOrders.ArrivedOrder
+﻿namespace Undy.Features.ViewModel
 {
     public class IncomingWholesaleOrderViewModel : BaseViewModel
     {

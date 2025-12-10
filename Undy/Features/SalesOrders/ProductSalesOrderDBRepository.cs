@@ -1,4 +1,5 @@
-﻿namespace Undy.Features.Links {
+﻿namespace Undy.Features.Repository
+{
     public class ProductSalesOrderDBRepository : BaseDBRepository<ProductSalesOrder, Guid>
     {
         // View for selecting all
@@ -38,7 +39,7 @@
             cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255).Value = e.ProductNumber;
             cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
             cmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal).Value = e.UnitPrice;
-            
+
         }
         // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, ProductSalesOrder e)

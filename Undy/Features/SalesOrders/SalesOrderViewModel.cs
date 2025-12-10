@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.SalesOrders
+﻿namespace Undy.Features.ViewModel
 {
     public class SalesOrderViewModel : BaseViewModel
     {

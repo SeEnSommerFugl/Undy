@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.Products
+﻿namespace Undy.Features.Repository
 {
     public class ProductDBRepository : BaseDBRepository<Product, Guid>
     {

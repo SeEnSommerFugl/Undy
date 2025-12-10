@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.StartPage
+﻿namespace Undy.Features.ViewModel
 {
     public class StartPageViewModel : BaseViewModel
     {

@@ -1,10 +1,13 @@
 ﻿namespace Undy.Data.Repository
 {
-    class CustomerDBRepository : BaseDBRepository<Customer, Guid> {
+    class CustomerDBRepository : BaseDBRepository<Customer, Guid>
+    {
         protected override string SqlSelectAll => "SELECT * FROM vw_Customers";
 
-        protected override Customer Map(IDataRecord r) {
-            return new Customer {
+        protected override Customer Map(IDataRecord r)
+        {
+            return new Customer
+            {
                 CustomerID = r.GetGuid(r.GetOrdinal("CustomerID")),
                 CustomerNumber = r.GetInt32(r.GetOrdinal("CustomerNumber")),
                 DisplayCustomerNumber = r.GetString(r.GetOrdinal("DisplayCustomerNumber")),

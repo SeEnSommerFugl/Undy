@@ -1,13 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-
-using Undy.Models;
-using Undy.ViewModels;
-
-namespace Undy.Views
+﻿namespace Undy.Views
 {
     public partial class SalesOrderView : UserControl
     {

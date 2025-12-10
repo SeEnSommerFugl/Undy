@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.SalesOrders
+﻿namespace Undy.Features.Repository
 {
     public class SalesOrderDisplayDBRepository : BaseDBRepository<SalesOrderDisplay, Guid>
     {
@@ -20,7 +20,8 @@
             };
         }
 
-        protected override void BindUpdate(SqlCommand cmd, SalesOrderDisplay e) {
+        protected override void BindUpdate(SqlCommand cmd, SalesOrderDisplay e)
+        {
             cmd.Parameters.AddWithValue("@SalesOrderID", e.SalesOrderID);
             cmd.Parameters.AddWithValue("@OrderStatus", e.OrderStatus);
         }

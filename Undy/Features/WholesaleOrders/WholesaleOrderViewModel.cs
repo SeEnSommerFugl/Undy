@@ -1,11 +1,11 @@
-﻿namespace Undy.Features.WholesaleOrders
+﻿namespace Undy.Features.ViewModel
 {
     public class WholesaleOrderViewModel : BaseViewModel
     {
 
         private IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
         private IBaseRepository<Product, Guid> _productRepo;
-        
+
         private readonly ICollectionView _wholesaleView;
         public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
         //public ObservableCollection<Stock> ProductCatalogue => _productCatalogueRepo.Items;

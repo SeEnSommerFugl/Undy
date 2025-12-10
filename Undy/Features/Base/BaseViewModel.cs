@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.Base
+﻿namespace Undy.Features.ViewModel
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {

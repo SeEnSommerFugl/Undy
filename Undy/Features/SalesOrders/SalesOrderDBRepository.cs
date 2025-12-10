@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.SalesOrders
+﻿namespace Undy.Features.Repository
 {
     public class SalesOrderDBRepository : BaseDBRepository<SalesOrder, Guid>
     {

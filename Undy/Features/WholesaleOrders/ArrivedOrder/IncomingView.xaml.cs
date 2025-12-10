@@ -1,7 +1,4 @@
-﻿using System.Windows.Controls;
-using Undy.ViewModels;
-
-namespace Undy.Views
+﻿namespace Undy.Views
 {
     public partial class IncomingWholesaleOrderView : UserControl
     {

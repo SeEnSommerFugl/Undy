@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.Main
+﻿namespace Undy.Features.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
@@ -14,9 +14,9 @@
 
 
         public MainViewModel(StartPageViewModel startPageViewModel, WholesaleOrderViewModel wholesaleOrderViewModel,
-            IncomingWholesaleOrderViewModel incomingWholesaleOrderViewModel, 
-            SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel, 
-            TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel, 
+            IncomingWholesaleOrderViewModel incomingWholesaleOrderViewModel,
+            SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel,
+            TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel,
             TestWholesaleOrderViewModel testWholesaleOrderViewModel)
         {
             _wholesaleOrderViewModel = wholesaleOrderViewModel;

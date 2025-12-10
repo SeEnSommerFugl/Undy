@@ -1,4 +1,5 @@
-﻿namespace Undy.Features.Links {
+﻿namespace Undy.Features.Repository
+{
     public class ProductWholesaleOrderDBRepository : BaseDBRepository<ProductWholesaleOrder, Guid>
     {
 
@@ -37,7 +38,7 @@
 
         // Parameter binding for insert
         protected override void BindInsert(SqlCommand cmd, ProductWholesaleOrder e)
-        {             
+        {
             cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
             cmd.Parameters.Add("@ProductID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
             cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
@@ -55,8 +56,8 @@
         }
 
         protected override Guid GetKey(ProductWholesaleOrder e) => e.WholesaleOrderID;
-        
 
-        }
+
     }
+}
 

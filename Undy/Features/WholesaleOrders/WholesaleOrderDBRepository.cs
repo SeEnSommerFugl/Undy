@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.WholesaleOrders
+﻿namespace Undy.Features.Repository
 {
     public class WholesaleOrderDBRepository : BaseDBRepository<WholesaleOrder, Guid>
     {
@@ -49,7 +49,7 @@
             cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
             cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 50).Value = e.OrderStatus;
-            
+
         }
 
         // Parameter binding for update
@@ -60,7 +60,7 @@
             cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
             cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 50).Value = e.OrderStatus;
-            
+
         }
 
         // Get key from entity
