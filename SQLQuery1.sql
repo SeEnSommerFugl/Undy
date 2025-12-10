@@ -105,6 +105,7 @@ GO
 
 -- Insert Product
 CREATE OR ALTER PROCEDURE usp_Insert_Product
+	@ProductID UNIQUEIDENTIFIER,
 	@ProductNumber NVARCHAR(255),
 	@ProductName NVARCHAR(255),
 	@Price DECIMAL(10,2),
@@ -129,13 +130,14 @@ BEGIN
 		RETURN;
 	END
 	
-	INSERT INTO [Product](ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
-	VALUES(@ProductNumber, @ProductName, @Price, @Size, @Colour, @NumberInStock);
+	INSERT INTO [Product](ProductID, ProductNumber, ProductName, Price, Size, Colour, NumberInStock)
+	VALUES(@ProductID, @ProductNumber, @ProductName, @Price, @Size, @Colour, @NumberInStock);
 END;
 GO
 
 -- Insert WholesaleOrder
 CREATE OR ALTER PROCEDURE usp_Insert_WholesaleOrder
+	@WholesaleOrderID UNIQUEIDENTIFIER,
 	@WholesaleOrderDate DATE,
 	@ExpectedDeliveryDate DATE,
 	@OrderStatus NVARCHAR(255)
@@ -150,8 +152,8 @@ BEGIN
 		RETURN;
 	END
 	
-	INSERT INTO WholesaleOrder(WholesaleOrderDate, ExpectedDeliveryDate, OrderStatus)
-	VALUES(@WholesaleOrderDate, @ExpectedDeliveryDate, @OrderStatus);
+	INSERT INTO WholesaleOrder(WholesaleOrderID, WholesaleOrderDate, ExpectedDeliveryDate, OrderStatus)
+	VALUES(@WholesaleOrderID, @WholesaleOrderDate, @ExpectedDeliveryDate, @OrderStatus);
 END;
 GO
 
