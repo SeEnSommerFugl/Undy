@@ -19,9 +19,9 @@
             {
                 if (SetProperty(ref _receivedQuantity, value))
                     OnPropertyChanged(nameof(Difference));
-                }
             }
         }
+        
 
         
         public int Difference => OrderedQuantity - (AlreadyReceived + ReceivedQuantity);
