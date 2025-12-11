@@ -68,7 +68,6 @@
             await Task.WhenAll(
             //startPageRepo.InitializeAsync(),
             productRepo.InitializeAsync(),
-            //stockRepo.InitializeAsync(),
             wholesaleOrderRepo.InitializeAsync(),
             salesOrderRepo.InitializeAsync(),
             salesOrderDisplayRepo.InitializeAsync(),

@@ -103,9 +103,11 @@
                 return;
             }
 
+            var newsalesOrderID = Guid.NewGuid();
+
             var salesOrder = new SalesOrder
             {
-                SalesOrderID = Guid.NewGuid(),
+                SalesOrderID = newsalesOrderID,
                 CustomerID = SelectedCustomer.CustomerID,
                 OrderStatus = "Afventer",
                 PaymentStatus = "Afventer",
@@ -116,7 +118,7 @@
             var SalesOrderLineList = new List<ProductSalesOrder>();
             var salesOrderLineProducts = SalesOrderLines.Select(sl => new ProductSalesOrder
             {
-                SalesOrderID = salesOrder.SalesOrderID,
+                SalesOrderID = newsalesOrderID,
                 ProductNumber = sl.Product.ProductNumber,
                 UnitPrice = sl.UnitPrice,
                 Quantity = sl.Quantity,
