@@ -43,13 +43,8 @@
                             Width="Auto" />
 
                 <DataGridTextColumn Header="Antal på lager"
-                            Binding="{Binding InStock}"
+                            Binding="{Binding NumberInStock}"
                             Width="Auto" />
-                
-                <DataGridTextColumn Header="Status"
-                            Binding="{Binding Status}"
-                            Width="Auto" />
-
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

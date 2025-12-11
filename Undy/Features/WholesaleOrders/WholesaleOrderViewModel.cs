@@ -2,14 +2,11 @@
 {
     public class WholesaleOrderViewModel : BaseViewModel
     {
-
-        private IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
-        private IBaseRepository<Product, Guid> _productRepo;
-
+        private readonly IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
+        private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly ICollectionView _wholesaleView;
-        public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
-        //public ObservableCollection<Stock> ProductCatalogue => _productCatalogueRepo.Items;
 
+        public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
         public ICollectionView WholesaleView => _wholesaleView;
 
         public WholesaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo, IBaseRepository<Product, Guid> productRepo)
