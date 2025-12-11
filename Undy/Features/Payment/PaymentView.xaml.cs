@@ -10,7 +10,7 @@
             {
                 if (DataContext is PaymentViewModel vm)
                 {
-                    await vm.LoadUnpaidOrdersAsync();
+                    await vm.LoadOrdersAsync();
                 }
             };
         }
