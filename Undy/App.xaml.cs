@@ -27,7 +27,6 @@
                     XmlLanguage.GetLanguage(culture.IetfLanguageTag)));
 
             // ----- Shared Instances ----- //
-            IBaseRepository<Product, Guid> productRepo = new ProductDBRepository();
             IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo = new WholesaleOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> salesOrderRepo = new SalesOrderDBRepository();
             IBaseRepository<ReturnOrder, Guid> testReturnRepo = new ReturnOrderDBRepository();
@@ -37,6 +36,7 @@
             IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo = new ProductSalesOrderDBRepository();
             IBaseRepository<Customer, Guid> customerRepo = new CustomerDBRepository();
             IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo = new CustomerSalesOrderDisplayDBRepository();
+            IBaseRepository<Product, Guid> productRepo = new ProductDBRepository();
 
             //----- ViewModels ----- //
             var startPageVM = new StartPageViewModel();
@@ -47,6 +47,7 @@
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, productRepo, productSalesOrderRepo, customerRepo);
             var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
+            var productVM = new ProductViewModel(productRepo);
 
             var mainVM = new MainViewModel(
                 startPageVM,
@@ -56,8 +57,8 @@
                 paymentVM,
                 testReturnOrderVM,
                 testSalesOrderVM,
-                testWholesaleOrderVM
-
+                testWholesaleOrderVM,
+                productVM
             );
 
             // ----- Main Window ----- //

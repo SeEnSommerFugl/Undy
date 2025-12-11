@@ -11,13 +11,14 @@
         private readonly TestSalesOrderViewModel _testSalesOrderViewModel;
         private readonly TestWholesaleOrderViewModel _testWholesaleOrderViewModel;
         private readonly StartPageViewModel _startPageViewModel;
+        private readonly ProductViewModel _productViewModel;
 
 
         public MainViewModel(StartPageViewModel startPageViewModel, WholesaleOrderViewModel wholesaleOrderViewModel,
             IncomingWholesaleOrderViewModel incomingWholesaleOrderViewModel,
             SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel,
             TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel,
-            TestWholesaleOrderViewModel testWholesaleOrderViewModel)
+            TestWholesaleOrderViewModel testWholesaleOrderViewModel, ProductViewModel productViewModel)
         {
             _wholesaleOrderViewModel = wholesaleOrderViewModel;
             _incomingWholesaleOrderViewModel = incomingWholesaleOrderViewModel;
@@ -27,9 +28,11 @@
             _testSalesOrderViewModel = testSalesOrderViewModel;
             _testWholesaleOrderViewModel = testWholesaleOrderViewModel;
             _startPageViewModel = startPageViewModel;
+            _productViewModel = productViewModel;
 
             Nav.AddRange(
                 ("StartPage", "Startside", _startPageViewModel),
+                ("Products", "Produkter", _productViewModel),
                 ("WholesaleOrder", "Indkøb", _wholesaleOrderViewModel),
                 ("IncomingWholesaleOrder", "Vare modtagelse", _incomingWholesaleOrderViewModel),
                 ("SalesOrders", "Salgs ordrer", _salesOrderViewModel),

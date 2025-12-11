@@ -9,7 +9,5 @@
         public string Size { get; set; }
         public string Colour { get; set; }
         public int NumberInStock { get; set; }
-
-
     }
 }
