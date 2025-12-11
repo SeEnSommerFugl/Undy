@@ -50,7 +50,32 @@
         public bool IsFullyReceived
         {
             get => _isFullyReceived;
-            set => SetProperty(ref _isFullyReceived, value);
+            set
+            {
+                if (SetProperty(ref _isFullyReceived, value))
+                {
+                    if (_isFullyReceived)
+                    {
+                        
+                        foreach (var line in Lines)
+                        {
+                            var remaining = line.OrderedQuantity - line.AlreadyReceived;
+                            if (remaining < 0)
+                                remaining = 0;
+
+                            line.ReceivedQuantity = remaining;
+                        }
+                    }
+                    else
+                    {
+                       
+                        foreach (var line in Lines)
+                        {
+                            line.ReceivedQuantity = 0;
+                        }
+                    }
+                }
+            }
         }
 
         public string StatusMessage
@@ -118,7 +143,8 @@
                 }
 
                 // er alle linjer allerede fuldt modtaget?
-                IsFullyReceived = Lines.All(l => l.OrderedQuantity <= l.AlreadyReceived);
+                var allAlreadyReceived = Lines.All(l => l.OrderedQuantity <= l.AlreadyReceived);
+                IsFullyReceived = allAlreadyReceived;
 
                 StatusMessage = string.Empty;
             }
@@ -156,13 +182,13 @@
                 }
                 else
                 {
-                    // delvis modtagelse – kun linjer med ReceivedQuantity > 0
+                    // delvis modtagelse 
                     foreach (var line in Lines.Where(l => l.ReceivedQuantity > 0))
                     {
                         var maxRemaining = line.OrderedQuantity - line.AlreadyReceived;
                         if (line.ReceivedQuantity > maxRemaining)
                         {
-                            // simpelt værn mod at modtage flere end der er tilbage
+                            
                             continue;
                         }
 

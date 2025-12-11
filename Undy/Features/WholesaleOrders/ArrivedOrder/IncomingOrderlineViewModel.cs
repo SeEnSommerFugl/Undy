@@ -5,8 +5,8 @@
         public Guid WholesaleOrderID { get; set; }
         public Guid ProductID { get; set; }
 
-        public string ProductNumber { get; set; }
-        public string ProductName { get; set; }
+        public string ProductNumber { get; set; } = string.Empty;
+        public string ProductName { get; set; } = string.Empty;
 
         public int OrderedQuantity { get; set; }
         public int AlreadyReceived { get; set; }
@@ -19,9 +19,11 @@
             {
                 if (SetProperty(ref _receivedQuantity, value))
                     OnPropertyChanged(nameof(Difference));
+                }
             }
         }
 
+        
         public int Difference => OrderedQuantity - (AlreadyReceived + ReceivedQuantity);
     }
 }

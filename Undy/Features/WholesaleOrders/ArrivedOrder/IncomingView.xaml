@@ -4,7 +4,7 @@
              Background="White">
 
     <Border Style="{DynamicResource Card}">
-        <Grid Margin="40">
+        <Grid>
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -40,24 +40,37 @@
                                Style="{DynamicResource TitleLeft}"
                                Margin="0,0,0,10"/>
 
-                    <DataGrid ItemsSource="{Binding WholesaleOrders}"
-                              SelectedItem="{Binding SelectedOrder}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <!-- midlertidigt: brug ordrenummer som “Leverandør”-kolonne -->
-                            <DataGridTextColumn Header="Ordrenr."
-                                                Binding="{Binding DisplayPurchaseOrderNumber}"
-                                                Width="*"/>
-                            <DataGridTextColumn Header="Dato"
-                                                Binding="{Binding PurchaseOrderDate}"
+                    <ListView ItemsSource="{Binding WholesaleOrders}"
+                              SelectedItem="{Binding SelectedOrder}">
+                        <ListView.Resources>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Foreground" Value="#333"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Padding" Value="4"/>
+                            </Style>
+                        </ListView.Resources>
+
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Ordrenr."
+                                                DisplayMemberBinding="{Binding DisplayPurchaseOrderNumber}"
                                                 Width="120"/>
-                            <DataGridTextColumn Header="Status"
-                                                Binding="{Binding OrderStatus}"
+
+                                <GridViewColumn Header="Dato"
+                                                DisplayMemberBinding="{Binding PurchaseOrderDate}"
                                                 Width="120"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+
+                                <GridViewColumn Header="Status"
+                                                DisplayMemberBinding="{Binding OrderStatus}"
+                                                Width="120"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                 </StackPanel>
+
+                <!-- (midterkolonne – tom eller brug den til separator) -->
 
                 <!-- LINJER (højre) -->
                 <Grid Grid.Column="2">
@@ -67,36 +80,76 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
+                    <!-- Fuldt modtaget -->
                     <CheckBox Grid.Row="0"
                               Content="Fuldt modtaget"
-                              IsChecked="{Binding IsFullyReceived}"
+                              IsChecked="{Binding IsFullyReceived, Mode=TwoWay}"
                               Margin="0,0,0,10"/>
 
+                    <!-- DataGrid for linjer -->
                     <DataGrid Grid.Row="1"
                               ItemsSource="{Binding Lines}"
-                              AutoGenerateColumns="False">
+                              AutoGenerateColumns="False"
+                              HeadersVisibility="Column"
+                              AlternationCount="2"
+                              GridLinesVisibility="Horizontal"
+                              RowBackground="White"
+                              AlternatingRowBackground="#FFF5F5F5"
+                              HorizontalGridLinesBrush="#FFE0E0E0"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="False"
+                              Margin="0,0,0,10">
+
+                        <DataGrid.Resources>
+                            <!-- Style til talceller -->
+                            <Style x:Key="NumericCellStyle" TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGrid.Resources>
+
                         <DataGrid.Columns>
+                            <!-- Produkt -->
                             <DataGridTextColumn Header="Produkt"
                                                 Binding="{Binding ProductName}"
                                                 Width="*"/>
+
+                            <!-- Modtaget (til venstre, låses når Fuldt modtaget = true) -->
+                            <DataGridTemplateColumn Header="Modtaget"
+                                                    Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding ReceivedQuantity}"
+                                                   HorizontalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding ReceivedQuantity, UpdateSourceTrigger=PropertyChanged}"
+                                                 HorizontalContentAlignment="Center"
+                                                 IsReadOnly="{Binding DataContext.IsFullyReceived,
+                                                                      RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Bestilt (kun læsning) -->
                             <DataGridTextColumn Header="Bestilt"
                                                 Binding="{Binding OrderedQuantity}"
                                                 Width="80"
+                                                ElementStyle="{StaticResource NumericCellStyle}"
                                                 IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Modtaget"
-                                                Width="80">
-                                <DataGridTextColumn.Binding>
-                                    <Binding Path="ReceivedQuantity"
-                                             UpdateSourceTrigger="PropertyChanged"/>
-                                </DataGridTextColumn.Binding>
-                            </DataGridTextColumn>
+
+                            <!-- Difference (kun læsning) -->
                             <DataGridTextColumn Header="Difference"
                                                 Binding="{Binding Difference}"
                                                 Width="80"
+                                                ElementStyle="{StaticResource NumericCellStyle}"
                                                 IsReadOnly="True"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
+                    <!-- Bekræft knap -->
                     <Button Grid.Row="2"
                             Content="Bekræft modtagelse"
                             Command="{Binding ConfirmOrderCommand}"
