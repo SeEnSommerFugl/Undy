@@ -222,6 +222,7 @@ GO
 
 -- Insert SalesOrder
 CREATE OR ALTER PROCEDURE usp_Insert_SalesOrder
+	@SalesOrderID UNIQUEIDENTIFIER,
 	@OrderStatus NVARCHAR(255),
 	@PaymentStatus NVARCHAR(255),
 	@SalesDate DATE,
@@ -237,8 +238,8 @@ BEGIN
 	FROM Customers
 	WHERE CustomerNumber = @CustomerNumber;
 	
-	INSERT INTO SalesOrder(OrderStatus, PaymentStatus, SalesDate,CustomerID)
-	VALUES(@OrderStatus, @PaymentStatus, @SalesDate, @CustomerID);
+	INSERT INTO SalesOrder(SalesOrderID, OrderStatus, PaymentStatus, SalesDate,CustomerID)
+	VALUES(@SalesOrderID, @OrderStatus, @PaymentStatus, @SalesDate, @CustomerID);
 END;
 GO
 
@@ -315,6 +316,7 @@ GO
 
 -- Insert ReturnOrder
 CREATE OR ALTER PROCEDURE usp_Insert_ReturnOrder
+	@ReturnOrderID UNIQUEIDENTIFIER,
 	@ReturnOrderDate DATE,
 	@SalesOrderNumber INT
 AS
@@ -342,13 +344,14 @@ BEGIN
 		RETURN;
 	END
 	
-	INSERT INTO ReturnOrder(ReturnOrderDate, SalesOrderID)
-	VALUES(@ReturnOrderDate, @SalesOrderID);
+	INSERT INTO ReturnOrder(ReturnOrderID, ReturnOrderDate, SalesOrderID)
+	VALUES(@ReturnOrderID, @ReturnOrderDate, @SalesOrderID);
 END;
 GO
 
 -- Insert Customer
 CREATE OR ALTER PROCEDURE usp_Insert_Customer
+	@CustomerID UNIQUEIDENTIFIER,
 	@FirstName NVARCHAR(255),
 	@LastName NVARCHAR(255),
 	@Email NVARCHAR(255),
@@ -375,8 +378,8 @@ BEGIN
 	END
 	
 	-- Insert customer
-	INSERT INTO Customers(FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
-	VALUES(@FirstName, @LastName, @Email, @PhoneNumber, @Address, @City, @PostalCode);
+	INSERT INTO Customers(CustomerID, FirstName, LastName, Email, PhoneNumber, [Address], City, PostalCode)
+	VALUES(@CustomerID, @FirstName, @LastName, @Email, @PhoneNumber, @Address, @City, @PostalCode);
 END;
 GO
 
@@ -473,6 +476,26 @@ SELECT
 	FirstName + ' ' + LastName AS FullName
 FROM Customers;
 GO
+
+-- View to see, which salesOrders belongs to which customer
+CREATE OR ALTER VIEW vw_CustomerSalesOrders AS
+SELECT 
+	c.CustomerID,
+	c.CustomerNumber,
+	c.DisplayCustomerNumber,
+	c.FirstName,
+	c.LastName,
+	c.FirstName + ' ' + c.LastName AS FullName,
+	so.SalesOrderID,
+	so.SalesOrderNumber,
+	so.DisplaySalesOrderNumber,
+	so.OrderStatus,
+	so.PaymentStatus,
+	so.SalesDate,
+	so.TotalPrice
+	FROM Customers c
+	JOIN SalesOrder so ON c.CustomerID = so.CustomerID;
+	GO
 
 -- ============================================================================
 -- UPDATE STORED PROCEDURES
