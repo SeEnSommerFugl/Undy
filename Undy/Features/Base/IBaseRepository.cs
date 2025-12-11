@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.Repository
+﻿namespace Undy.Data.Repository
 {
     public interface IBaseRepository<T, TKey> where T : class where TKey : notnull
     {

@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.Database
+﻿namespace Undy.Data.Database
 {
     internal class DB
     {

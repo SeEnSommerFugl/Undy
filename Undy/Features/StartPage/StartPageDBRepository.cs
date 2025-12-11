@@ -1,4 +1,4 @@
-﻿namespace Undy.Features.StartPage
+﻿namespace Undy.Data.StartPage
 {
     internal class StartPageDBRepository
     {

@@ -21,9 +21,8 @@ global using Undy.Data.Repository;
 
 
 // ===== SQL ===== //
-global using Undy.Features.Database;
+global using Undy.Data.Database;
 global using Undy.Features.Helpers;
-global using Undy.Features.Repository;
 global using Undy.Features.ViewModel;
 global using Undy.Models;
 

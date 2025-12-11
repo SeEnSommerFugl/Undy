@@ -6,7 +6,9 @@
         private readonly IBaseRepository<CustomerSalesOrderDisplay, Guid> _customerSalesOrderDisplayRepo;
 
         // Liste med ordrer der kan betales
-        public ObservableCollection<CustomerSalesOrderDisplay> UnpaidOrders { get; }
+        public ObservableCollection<CustomerSalesOrderDisplay> CustomerSalesOrders => _customerSalesOrderDisplayRepo.Items;
+        public ObservableCollection<SalesOrder> SalesOrders => _salesOrderRepo.Items;
+        private readonly ICollectionView _unpaidOrdersView;
 
         private CustomerSalesOrderDisplay _selectedOrder;
         public CustomerSalesOrderDisplay SelectedOrder
@@ -21,6 +23,17 @@
             }
         }
 
+        //private CustomerSalesOrderDisplay _selectedOrder;
+        //public CustomerSalesOrderDisplay SelectedOrder
+        //{
+        //    get => _selectedOrder;
+        //    set
+        //    {
+        //        if (SetProperty(ref _selectedOrder, value)) ;
+        //    }
+        //}
+
+
         // Info om valgt ordre 
         public string OrderNumber { get; private set; }
         public string CustomerName { get; private set; }
@@ -33,10 +46,10 @@
             get => _statusMessage;
             set
             {
-                _statusMessage = value;
-                OnPropertyChanged();
+                if (SetProperty(ref _statusMessage, value)) ;
             }
         }
+
 
         public ICommand ConfirmPaymentCommand { get; }
 
@@ -48,24 +61,12 @@
             _salesOrderRepo = salesOrderRepo;
             _customerSalesOrderDisplayRepo = customerSalesOrderDisplayRepo;
 
-            UnpaidOrders = new ObservableCollection<CustomerSalesOrderDisplay>();
+            _unpaidOrdersView = CollectionViewSource.GetDefaultView(CustomerSalesOrders);
 
             ConfirmPaymentCommand = new RelayCommand(
                 async _ => await ConfirmPaymentAsync(),
                 _ => SelectedOrder != null && SelectedOrder.IsSelectedForPayment
             );
-        }
-
-
-        public PaymentViewModel()
-            : this(new SalesOrderDBRepository(),
-                   new CustomerSalesOrderDisplayDBRepository())
-        {
-        }
-
-        public PaymentViewModel(IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo)
-        {
-            _customerSalesOrderDisplayRepo = customerSalesOrderDisplayRepo;
         }
 
         // Loader alle ubetalte ordrer til listen
