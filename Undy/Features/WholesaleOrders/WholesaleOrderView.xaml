@@ -60,11 +60,11 @@
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Grid.Column="0"
-                               Text="{Binding ItemName}"
+                               Text="{Binding ProductName}"
                                Margin="5,0"/>
 
                                 <TextBlock Grid.Column="1"
-                               Text="{Binding ItemNumber}"
+                               Text="{Binding ProductNumber}"
                                Margin="5,0"
                                HorizontalAlignment="Right"/>
                             </Grid>
@@ -113,10 +113,10 @@
                     <DataGridTextColumn Header="Ankomst på lager" Width="160"
                                         Binding="{Binding WholesaleOrderDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
                     <DataGridTextColumn Header="Varenummer" 
-                                        Binding="{Binding ItemNumber}" 
+                                        Binding="{Binding ProductNumber}" 
                                         Width="160"/>
                     <DataGridTextColumn Header="Vare navn" 
-                                        Binding="{Binding ItemName}" 
+                                        Binding="{Binding ProductName}" 
                                         Width="160"/>
                     <DataGridTextColumn Header="Antal" 
                                         Binding="{Binding Quantity}" 
