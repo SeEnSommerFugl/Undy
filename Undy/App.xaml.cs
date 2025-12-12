@@ -62,24 +62,22 @@
                 productVM
             );
 
+
             // ----- Main Window ----- //
             var mainWindow = new MainWindow(mainVM);
             mainWindow.Show();
 
-            await Task.WhenAll(
-            //startPageRepo.InitializeAsync(),
-            productRepo.InitializeAsync(),
-            wholesaleOrderRepo.InitializeAsync(),
-            salesOrderRepo.InitializeAsync(),
-            salesOrderDisplayRepo.InitializeAsync(),
-            wholesaleOrderDisplayRepo.InitializeAsync(),
-            customerRepo.InitializeAsync(),
-            //productSalesOrderRepo.InitializeAsync(),
-            //testReturnRepo.InitializeAsync(),
-            //testPurchaseOrderRepo.InitializeAsync(),
-            //testSalesOrderRepo.InitializeAsync(),
-            Task.CompletedTask
-            );
+            //await startPageRepo.InitializeAsync();
+            await productRepo.InitializeAsync();
+            await wholesaleOrderRepo.InitializeAsync();
+            await salesOrderRepo.InitializeAsync();
+            await salesOrderDisplayRepo.InitializeAsync();
+            await wholesaleOrderDisplayRepo.InitializeAsync();
+            await customerRepo.InitializeAsync();
+            //await productSalesOrderRepo.InitializAsync();
+            //await testReturnRepo.InitializeAsync();
+            //await testPurchaseOrderRepo.InitializeAsync();
+            //await testSalesOrderRepo.InitializeAsync();
 
         }
     }
