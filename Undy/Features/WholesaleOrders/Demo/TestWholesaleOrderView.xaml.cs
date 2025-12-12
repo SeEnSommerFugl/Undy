@@ -1,4 +1,6 @@
-﻿namespace Undy.Views
+﻿using System.Windows.Controls;
+
+namespace Undy.Views
 {
     /// <summary>
     /// Interaction logic for TestWholesaleOrderView.xaml

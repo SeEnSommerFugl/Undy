@@ -1,12 +1,124 @@
 ﻿<UserControl x:Class="Undy.Views.TestWholesaleOrderView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Undy.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             MaxWidth="1920" MaxHeight="1080"
+             Background="White">
+
+    <Border Style="{DynamicResource Card}">
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       Text="Opret Indkøbsordre (Test)"
+                       Style="{DynamicResource H2}"/>
+
+            <!-- Subtitle -->
+            <TextBlock Grid.Row="1"
+                       Text="Vælg forventet leveringsdato, vælg produkt og angiv antal."
+                       Style="{DynamicResource H3}"
+                       HorizontalAlignment="Center"
+                       Foreground="Red"/>
+
+            <!-- Fields -->
+            <Grid Grid.Row="2"
+                  Margin="0,30"
+                  HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <!-- Fast label-bredde så felterne flugter som i TestSalesOrder -->
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+
+                <!-- Expected Delivery Date -->
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Forventet leveringsdato"
+                           Style="{DynamicResource TitleLeft}"
+                           TextWrapping="Wrap"
+                           TextTrimming="None"/>
+
+                <DatePicker Grid.Row="0" Grid.Column="2"
+                            Width="450"
+                            HorizontalAlignment="Left"
+                            SelectedDate="{Binding ExpectedDeliveryDate, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- Product -->
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Text="Produkt"
+                           Style="{DynamicResource TitleLeft}"/>
+
+                <ComboBox Grid.Row="1" Grid.Column="2"
+                          Width="450"
+                          HorizontalAlignment="Left"
+                          ItemsSource="{Binding Products}"
+                          SelectedItem="{Binding SelectedProduct}"
+                          Style="{StaticResource ProductMultiColumnComboBoxStyle}" />
+
+                <!-- Quantity -->
+                <TextBlock Grid.Row="2" Grid.Column="0"
+                           Text="Antal"
+                           Style="{DynamicResource TitleLeft}"/>
+
+                <TextBox Grid.Row="2" Grid.Column="2"
+                         Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{DynamicResource InputRight}"
+                         HorizontalAlignment="Left"/>
+
+                <!-- Add Product -->
+                <Button Grid.Row="3" Grid.ColumnSpan="3"
+                        Content="Tilføj Produkt"
+                        Style="{DynamicResource ButtonBase}"
+                        Command="{Binding AddProductCommand}"
+                        HorizontalAlignment="Center"/>
+            </Grid>
+
+            <!-- ListView -->
+            <StackPanel Grid.Row="3"
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Center">
+
+                <ListView ItemsSource="{Binding WholesaleOrderLines}" Height="300" Width="700">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding ProductName}" Width="180"/>
+                                <TextBlock Text="{Binding Quantity}" Width="60"/>
+                                <TextBlock Text="{Binding UnitPrice}" Width="90"/>
+
+                                <Button Content="X"
+                                        Command="{Binding DataContext.RemoveWholesaleOrderLineCommand,
+                                                  RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+
+            <!-- Confirm -->
+            <Button Grid.Row="4"
+                    Content="Bekræft ordre"
+                    Command="{Binding ConfirmCommand}"
+                    Style="{DynamicResource ButtonBase}"
+                    HorizontalAlignment="Center"
+                    Margin="0,10,0,0"/>
+        </Grid>
+    </Border>
 </UserControl>
