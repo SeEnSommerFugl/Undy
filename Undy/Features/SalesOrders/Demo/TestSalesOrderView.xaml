@@ -126,6 +126,7 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Product.ProductName}" Width="150"/>
+                                <TextBlock Text="{Binding Product.Size}" Width="50"/>
                                 <TextBlock Text="{Binding Quantity}" Width="50"/>
                                 <TextBlock Text="{Binding UnitPrice}" Width="80"/>
                                 <Button Content="X"
