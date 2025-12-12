@@ -2,21 +2,23 @@
 {
     public class WholesaleOrderViewModel : BaseViewModel
     {
-        private readonly IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
+        private readonly IBaseRepository<WholesaleOrderDisplay, Guid> _wholesaleOrderDisplayRepo;
+        private readonly IBaseRepository<ProductWholesaleOrder, Guid> _productWholesaleOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly ICollectionView _wholesaleView;
 
-        public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
+        public ObservableCollection<WholesaleOrderDisplay> WholesaleOrders => _wholesaleOrderDisplayRepo.Items;
         public ICollectionView WholesaleView => _wholesaleView;
 
-        public WholesaleOrderViewModel(IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo, IBaseRepository<Product, Guid> productRepo)
+        public WholesaleOrderViewModel(IBaseRepository<WholesaleOrderDisplay, Guid> wholesaleOrderDisplayRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo)
         {
-            _wholesaleOrderRepo = wholesaleOrderRepo;
+            _wholesaleOrderDisplayRepo = wholesaleOrderDisplayRepo;
+            _productWholesaleOrderRepo = productWholesaleOrderRepo;
             _productRepo = productRepo;
 
 
             _wholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
-            _wholesaleView.SortDescriptions.Add(new SortDescription(nameof(WholesaleOrder.OrderDate), ListSortDirection.Descending));
+            _wholesaleView.SortDescriptions.Add(new SortDescription(nameof(WholesaleOrder.WholesaleOrderDate), ListSortDirection.Descending));
 
         }
 

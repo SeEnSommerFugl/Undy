@@ -46,7 +46,7 @@
         {
             cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
             cmd.Parameters.Add("@ExpectedDeliveryDate", SqlDbType.Date).Value = e.ExpectedDeliveryDate;
-            cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
+            cmd.Parameters.Add("@WholesaleOrderDate", SqlDbType.Date).Value = e.WholesaleOrderDate;
             cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 50).Value = e.OrderStatus;
 
@@ -57,7 +57,7 @@
         {
             cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
             cmd.Parameters.Add("@ExpectedDeliveryDate", SqlDbType.Date).Value = e.ExpectedDeliveryDate;
-            cmd.Parameters.Add("@OrderDate", SqlDbType.Date).Value = e.OrderDate;
+            cmd.Parameters.Add("@WholesaleOrderDate", SqlDbType.Date).Value = e.WholesaleOrderDate;
             cmd.Parameters.Add("@DeliveryDate", SqlDbType.Date).Value = e.DeliveryDate;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 50).Value = e.OrderStatus;
 
