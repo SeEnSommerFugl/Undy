@@ -55,11 +55,11 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Ordrenr."
-                                                DisplayMemberBinding="{Binding DisplayPurchaseOrderNumber}"
+                                                DisplayMemberBinding="{Binding DisplayWholesaleOrderNumber}"
                                                 Width="120"/>
 
                                 <GridViewColumn Header="Dato"
-                                                DisplayMemberBinding="{Binding PurchaseOrderDate}"
+                                                DisplayMemberBinding="{Binding WholesaleOrderDate}"
                                                 Width="120"/>
 
                                 <GridViewColumn Header="Status"

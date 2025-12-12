@@ -35,7 +35,7 @@
         // Parameter binding for insert
         protected override void BindInsert(SqlCommand cmd, ProductSalesOrder e)
         {
-            cmd.Parameters.Add("@SalesOrderNumber", SqlDbType.Int).Value = e.SalesOrderNumber;
+            cmd.Parameters.Add(@"SalesOrderID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
             cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255).Value = e.ProductNumber;
             cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
             cmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal).Value = e.UnitPrice;
