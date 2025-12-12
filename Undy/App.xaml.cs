@@ -47,7 +47,7 @@
             var paymentVM = new PaymentViewModel(salesOrderRepo, customerSalesOrderDisplayRepo);
             var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo);
             var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, productRepo, productSalesOrderRepo, customerRepo);
-            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
+            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo, productWholesaleOrderRepo);
             var productVM = new ProductViewModel(productRepo);
 
             var mainVM = new MainViewModel(
