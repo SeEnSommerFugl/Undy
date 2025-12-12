@@ -226,7 +226,7 @@ CREATE OR ALTER PROCEDURE usp_Insert_SalesOrder
 	@OrderStatus NVARCHAR(255),
 	@PaymentStatus NVARCHAR(255),
 	@SalesDate DATE,
-	@CustomerNumber NVARCHAR(255)
+	@CustomerNumber INT
 AS
 BEGIN
 	SET NOCOUNT ON;
