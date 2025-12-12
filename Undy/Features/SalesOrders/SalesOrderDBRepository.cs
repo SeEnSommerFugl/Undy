@@ -21,7 +21,7 @@
         protected override SalesOrder Map(IDataRecord r) => new SalesOrder
         {
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
-            CustomerID = r.GetGuid(r.GetOrdinal("CustomerID")),
+            //CustomerID = r.GetGuid(r.GetOrdinal("CustomerID")),
             SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
             OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
             PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),

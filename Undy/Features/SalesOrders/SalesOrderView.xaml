@@ -65,7 +65,7 @@
 
                             <!-- Order number -->
                             <GridViewColumn Header="Ordrenummer"
-                                DisplayMemberBinding="{Binding OrderNumber}" />
+                                DisplayMemberBinding="{Binding SalesOrderNumber}" />
 
                             <!-- Order status -->
                             <GridViewColumn Header="Ordrestatus"
