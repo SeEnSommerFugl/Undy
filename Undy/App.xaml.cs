@@ -77,7 +77,7 @@
             //await productSalesOrderRepo.InitializAsync();
             //await testReturnRepo.InitializeAsync();
             //await testPurchaseOrderRepo.InitializeAsync();
-            //await testSalesOrderRepo.InitializeAsync();
+            await testSalesOrderRepo.InitializeAsync();
 
         }
     }

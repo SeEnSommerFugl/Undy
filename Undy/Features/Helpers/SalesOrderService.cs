@@ -11,27 +11,27 @@
             _productSalesOrderRepo = new ProductSalesOrderDBRepository();
         }
 
-        public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrderLines)
-        {
-            using var con = await DB.OpenConnection();
-            using var transaction = con.BeginTransaction();
+        //public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrderLines)
+        //{
+        //    using var con = await DB.OpenConnection();
+        //    using var transaction = con.BeginTransaction();
 
-            try
-            {
-                await Task.WhenAll(
-                _salesOrderRepo.AddRangeAsync(new[] { salesOrder }, con, transaction),
-                Task.CompletedTask
-                );
+        //    try
+        //    {
+        //        await Task.WhenAll(
+        //        _salesOrderRepo.AddRangeAsync(new[] { salesOrder }, con, transaction),
+        //        Task.CompletedTask
+        //        );
 
-                await _productSalesOrderRepo.AddRangeAsync(productSalesOrderLines, con, transaction);
+        //        await _productSalesOrderRepo.AddRangeAsync(productSalesOrderLines, con, transaction);
 
-                await transaction.CommitAsync();
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        }
+        //        await transaction.CommitAsync();
+        //    }
+        //    catch
+        //    {
+        //        await transaction.RollbackAsync();
+        //        throw;
+        //    }
+        //}
     }
 }

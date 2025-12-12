@@ -5,15 +5,6 @@
         public IncomingWholesaleOrderView()
         {
             InitializeComponent();
-
-            // Når viewet er loadet, så bed den eksisterende VM om at hente data
-            Loaded += async (_, __) =>
-            {
-                if (DataContext is IncomingWholesaleOrderViewModel vm)
-                {
-                    await vm.LoadAsync();
-                }
-            };
         }
     }
 }

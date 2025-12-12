@@ -71,25 +71,33 @@
 
             await ReloadItemsAsync();
         }
-
-        // Add NEW method for participating in external transactions
-        public async Task AddRangeAsync(IEnumerable<T> entities, SqlConnection con, SqlTransaction transaction)
+        public async Task AddRangeAsync2(IEnumerable<T> entities)
         {
             var entitiesList = entities.ToList();
             if (!entitiesList.Any()) return;
 
-            // NO commit/rollback here - caller manages transaction
-            foreach (var entity in entitiesList)
+            using var con = await DB.OpenConnection();
+            using var transaction = (SqlTransaction)await con.BeginTransactionAsync();
+
+            try
             {
-                using var cmd = new SqlCommand(SqlInsert, con, transaction);
-                cmd.CommandType = CommandType.StoredProcedure;
+                foreach (var entity in entitiesList)
+                {
+                    using var cmd = new SqlCommand(SqlInsert, con, transaction);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                BindInsert(cmd, entity);
+                    BindInsert(cmd, entity);
 
-                var affected = await cmd.ExecuteNonQueryAsync();
+                    await cmd.ExecuteNonQueryAsync();
+                }
+                await transaction.CommitAsync();
+
             }
-
-            // Add to collection immediately (will be visible even if transaction fails - consider implications)
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
             await ReloadItemsAsync();
         }
 
@@ -135,30 +143,6 @@
             {
                 await transaction.RollbackAsync();
                 throw;
-            }
-        }
-
-        public async Task AddRangeAsync2(IEnumerable<T> entities)
-        {
-            var entitiesList = entities.ToList();
-            if (!entitiesList.Any()) return;
-
-            using var con = await DB.OpenConnection();
-            // NO commit/rollback here - caller manages transaction
-            foreach (var entity in entitiesList)
-            {
-                using var cmd = new SqlCommand(SqlInsert, con);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                BindInsert(cmd, entity);
-
-                var affected = await cmd.ExecuteNonQueryAsync();
-            }
-
-            // Add to collection immediately (will be visible even if transaction fails - consider implications)
-            foreach (var entity in entitiesList)
-            {
-                _items.Add(entity);
             }
         }
 

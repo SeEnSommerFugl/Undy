@@ -40,7 +40,7 @@
                                Style="{DynamicResource TitleLeft}"
                                Margin="0,0,0,10"/>
 
-                    <ListView ItemsSource="{Binding WholesaleOrders}"
+                    <ListView ItemsSource="{Binding WholesaleView}"
                               SelectedItem="{Binding SelectedOrder}">
                         <ListView.Resources>
                             <Style TargetType="GridViewColumnHeader">

@@ -131,7 +131,6 @@
             SelectedProduct = null;
             Quantity = 0;
             SalesOrderLines.Clear();
-
         }
     }
 }

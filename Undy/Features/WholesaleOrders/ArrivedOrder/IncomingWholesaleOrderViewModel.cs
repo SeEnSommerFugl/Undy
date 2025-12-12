@@ -5,8 +5,13 @@
         private readonly IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly IBaseRepository<ProductWholesaleOrder, Guid> _productWholesaleOrderRepo;
+        public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
+        public ICollectionView WholesaleView { get; }
 
+        public ObservableCollection<IncomingOrderLineViewModel> Lines { get; }
         private WholesaleOrder? _selectedOrder;
+        public ICommand ConfirmOrderCommand { get; }
+
         private bool _isFullyReceived;
         private string _statusMessage;
 
@@ -19,6 +24,7 @@
             _productRepo = productRepo;
             _productWholesaleOrderRepo = productWholesaleOrderRepo;
 
+            WholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
             Lines = new ObservableCollection<IncomingOrderLineViewModel>();
 
             ConfirmOrderCommand = new RelayCommand(
@@ -29,10 +35,6 @@
 
         // ---------- Properties ----------
 
-        public ObservableCollection<WholesaleOrder> WholesaleOrders
-            => _wholesaleOrderRepo.Items;
-
-        public ObservableCollection<IncomingOrderLineViewModel> Lines { get; }
 
         public WholesaleOrder? SelectedOrder
         {
@@ -84,27 +86,8 @@
             set => SetProperty(ref _statusMessage, value);
         }
 
-        public ICommand ConfirmOrderCommand { get; }
 
-        // ---------- Public metode til at loade data ----------
 
-        public async Task LoadAsync()
-        {
-            try
-            {
-                IsBusy = true;
-
-                await _wholesaleOrderRepo.InitializeAsync();
-                await _productRepo.InitializeAsync();
-                await _productWholesaleOrderRepo.InitializeAsync();
-
-                StatusMessage = string.Empty;
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
 
         // ---------- Hent linjer når SelectedOrder ændres ----------
 

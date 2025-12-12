@@ -3,7 +3,7 @@
     public class ProductSalesOrderDBRepository : BaseDBRepository<ProductSalesOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "SELECT * FROM vw_Products";
+        protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrders";
 
         // Stored procedure for getting by id
         protected override string SqlSelectById => "usp_SelectById_Product";

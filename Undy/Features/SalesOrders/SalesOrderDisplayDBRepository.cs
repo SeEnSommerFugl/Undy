@@ -5,20 +5,18 @@
         protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrders";
         protected override string SqlUpdate => "usp_Update_SalesOrder";
 
-        protected override SalesOrderDisplay Map(IDataRecord r)
+        protected override SalesOrderDisplay Map(IDataRecord r) => new SalesOrderDisplay
         {
-            return new SalesOrderDisplay
-            {
-                SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
-                SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
-                OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
-                PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),
-                SalesDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("SalesDate"))),
-                TotalPrice = r.GetDecimal(r.GetOrdinal("TotalPrice")),
-                ProductName = r.GetString(r.GetOrdinal("ProductName")),
-                Quantity = r.GetInt32(r.GetOrdinal("Quantity"))
-            };
-        }
+
+            SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
+            SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
+            OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
+            PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),
+            SalesDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("SalesDate"))),
+            TotalPrice = r.GetDecimal(r.GetOrdinal("TotalPrice")),
+            ProductName = r.GetString(r.GetOrdinal("ProductName")),
+            Quantity = r.GetInt32(r.GetOrdinal("Quantity"))
+        };
 
         protected override void BindUpdate(SqlCommand cmd, SalesOrderDisplay e)
         {

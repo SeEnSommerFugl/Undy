@@ -497,6 +497,7 @@ BEGIN
 	SELECT @WholesaleOrderID = WholesaleOrderID
 	FROM WholesaleOrder
 	WHERE WholesaleOrderNumber = @WholesaleOrderNumber;
+
 	
 	-- Validate Wholesale order exists
 	IF NOT EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
@@ -511,6 +512,15 @@ BEGIN
 		RAISERROR('This Wholesale order has already been fully received', 16, 1);
 		RETURN;
 	END
+
+	DECLARE @ReceivedQuantity INT;
+	DECLARE @OrderedQuantity INT;
+	
+	SELECT 
+		@ReceivedQuantity = ISNULL(QuantityReceived, 0),
+		@OrderedQuantity = Quantity
+	FROM ProductWholesaleOrder
+	WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
 
 	-- Update stock for each product in the order
 	UPDATE p
