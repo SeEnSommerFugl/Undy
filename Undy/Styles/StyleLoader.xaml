@@ -22,6 +22,9 @@
         <ResourceDictionary Source="/Styles/TableData/Interactions.xaml"/>
         <ResourceDictionary Source="/Styles/TableData/Listview.xaml"/>
         <ResourceDictionary Source="/Styles/TableData/Layout.xaml"/>
+
+        <!-- 5: MultiComboBox-->
+        <ResourceDictionary Source="/Styles/ComboBox/MultiColumnComboBoxStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
