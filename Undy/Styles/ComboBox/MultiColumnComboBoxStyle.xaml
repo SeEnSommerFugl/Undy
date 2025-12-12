@@ -2,12 +2,42 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- =============================================== -->
-    <!--  Shared row template for a single product       -->
-    <!--  Used both in dropdown and for selected value   -->
+    <!--  Shared text styles for multi-column comboboxes -->
+    <!-- =============================================== -->
+
+    <!-- Base style for all data cells -->
+    <Style x:Key="MultiColumnCellText" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Header text style -->
+    <Style x:Key="MultiColumnHeaderText" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- Stock text style (based on cell style) -->
+    <Style x:Key="MultiColumnStockText" TargetType="TextBlock" BasedOn="{StaticResource MultiColumnCellText}">
+        <Setter Property="Foreground" Value="Black" />
+        <Style.Triggers>
+            <!-- Highlight when out of stock -->
+            <DataTrigger Binding="{Binding NumberInStock}" Value="0">
+                <Setter Property="Foreground" Value="Red" />
+                <Setter Property="FontWeight" Value="Bold" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+
+
+    <!-- =============================================== -->
+    <!--  Product row template (multi-column)            -->
     <!-- =============================================== -->
     <DataTemplate x:Key="ProductRowTemplate">
-        <!-- NOTE: No margin here – spacing is handled by
-             ComboBoxItem.Padding and the SelectedContent margin -->
+        <!-- No margin here – spacing is handled by ComboBoxItem.Padding
+             and SelectedContent margin -->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -25,73 +55,108 @@
             <!-- Product Name -->
             <TextBlock Grid.Column="0"
                        Text="{Binding ProductName}"
-                       HorizontalAlignment="Center" />
+                       Style="{StaticResource MultiColumnCellText}" />
 
             <!-- Colour -->
             <TextBlock Grid.Column="1"
                        Text="{Binding Colour}"
-                       HorizontalAlignment="Center" />
+                       Style="{StaticResource MultiColumnCellText}" />
 
             <!-- Size -->
             <TextBlock Grid.Column="2"
                        Text="{Binding Size}"
-                       HorizontalAlignment="Center" />
+                       Style="{StaticResource MultiColumnCellText}" />
 
             <!-- Price -->
             <TextBlock Grid.Column="3"
                        Text="{Binding Price, StringFormat='{}{0:C}'}"
-                       HorizontalAlignment="Center" />
+                       Style="{StaticResource MultiColumnCellText}" />
 
             <!-- Stock -->
             <TextBlock Grid.Column="4"
                        Text="{Binding NumberInStock}"
-                       HorizontalAlignment="Center">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Foreground" Value="Black" />
-                        <Style.Triggers>
-                            <!-- Highlight when out of stock -->
-                            <DataTrigger Binding="{Binding NumberInStock}" Value="0">
-                                <Setter Property="Foreground" Value="Red" />
-                                <Setter Property="FontWeight" Value="Bold" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
+                       Style="{StaticResource MultiColumnStockText}" />
         </Grid>
     </DataTemplate>
 
 
 
     <!-- =============================================== -->
-    <!--  Multi-column ComboBox style for products       -->
+    <!--  Customer row template (multi-column)           -->
+    <!--  Columns: Name | Phone | Address | Postal | City-->
     <!-- =============================================== -->
-    <Style x:Key="ProductMultiColumnComboBoxStyle" TargetType="ComboBox">
+    <DataTemplate x:Key="CustomerRowTemplate">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <!-- Name -->
+                <ColumnDefinition Width="110" />
+                <!-- Phone -->
+                <ColumnDefinition Width="180" />
+                <!-- Address -->
+                <ColumnDefinition Width="70" />
+                <!-- Postal -->
+                <ColumnDefinition Width="120" />
+                <!-- City -->
+            </Grid.ColumnDefinitions>
 
+            <!-- Name = FirstName + LastName -->
+            <TextBlock Grid.Column="0"
+                       Style="{StaticResource MultiColumnCellText}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} {1}">
+                        <Binding Path="FirstName" />
+                        <Binding Path="LastName" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <!-- Phone -->
+            <TextBlock Grid.Column="1"
+                       Text="{Binding PhoneNumber}"
+                       Style="{StaticResource MultiColumnCellText}" />
+
+            <!-- Address -->
+            <TextBlock Grid.Column="2"
+                       Text="{Binding Address}"
+                       Style="{StaticResource MultiColumnCellText}" />
+
+            <!-- Postal code -->
+            <TextBlock Grid.Column="3"
+                       Text="{Binding PostalCode}"
+                       Style="{StaticResource MultiColumnCellText}" />
+
+            <!-- City -->
+            <TextBlock Grid.Column="4"
+                       Text="{Binding City}"
+                       Style="{StaticResource MultiColumnCellText}" />
+        </Grid>
+    </DataTemplate>
+
+
+
+    <!-- =============================================== -->
+    <!--  Base multi-column ComboBox template            -->
+    <!--  Reused by all specific multi-column combos     -->
+    <!-- =============================================== -->
+    <Style x:Key="BaseMultiColumnComboBoxStyle" TargetType="ComboBox">
         <!-- General ComboBox settings -->
         <Setter Property="Height" Value="30" />
         <Setter Property="IsEditable" Value="False" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
-        <!-- Use the shared template for dropdown rows -->
-        <Setter Property="ItemTemplate" Value="{StaticResource ProductRowTemplate}" />
-
-
         <!-- Container style for each dropdown item -->
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
                 <Style TargetType="ComboBoxItem">
-                    <!-- Vertical spacing for rows (also used for selected row) -->
+                    <!-- Vertical spacing for rows (also used visually for selected row) -->
                     <Setter Property="Padding" Value="0,2" />
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-
                     <Style.Triggers>
                         <!-- Hover style -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="#FFE5F1FF" />
                         </Trigger>
-
                         <!-- Selected style -->
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" Value="#FFD6EBFF" />
@@ -101,17 +166,11 @@
             </Setter.Value>
         </Setter>
 
-
-
-        <!-- =============================================== -->
-        <!--  ComboBox visual template (field + popup)      -->
-        <!-- =============================================== -->
+        <!-- Shared ComboBox Template (no arrow) -->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
-
                     <Grid>
-
                         <!-- Visible combo field -->
                         <Border x:Name="ContentBorder"
                                 Background="White"
@@ -130,41 +189,24 @@
                                                               RelativeSource={RelativeSource TemplatedParent}}">
 
                                 <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <!-- Selected item area -->
-                                        <ColumnDefinition Width="25" />
-                                        <!-- Arrow -->
-                                    </Grid.ColumnDefinitions>
-
-                                    <!-- Selected product using SAME template as dropdown rows -->
-                                    <ContentPresenter Grid.Column="0"
-                                                      x:Name="SelectedContent"
-                                                      Margin="0,2"  
-                                        Content="{Binding SelectedItem,
+                                    <!-- Selected item using ItemTemplate -->
+                                    <ContentPresenter x:Name="SelectedContent"
+                                                      Margin="0,2"
+                                                      Content="{Binding SelectedItem,
                                                                         RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                                       ContentTemplate="{TemplateBinding ItemTemplate}" />
 
-                                        <!-- Placeholder when nothing is selected -->
-                                        <TextBlock Grid.Column="0"
-                                               x:Name="PlaceholderText"
-                                               Text="Vælg produkt"
+                                    <!-- Placeholder when nothing is selected -->
+                                    <TextBlock x:Name="PlaceholderText"
+                                               Text="{TemplateBinding Text}"
                                                Visibility="Collapsed"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                Foreground="Gray" />
-
-                                        <!-- Dropdown arrow -->
-                                        <TextBlock Grid.Column="1"
-                                               Text="▼"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
                                 </Grid>
 
                             </ToggleButton>
                         </Border>
-
-
 
                         <!-- Popup dropdown -->
                         <Popup x:Name="Popup"
@@ -172,75 +214,126 @@
                                StaysOpen="False"
                                AllowsTransparency="True"
                                IsOpen="{TemplateBinding IsDropDownOpen}">
-
                             <Border Background="White"
                                     BorderBrush="Gray"
                                     BorderThickness="1"
                                     MinWidth="{Binding ActualWidth, ElementName=ContentBorder}">
-
                                 <DockPanel>
-
-                                    <!-- Column header -->
-                                    <Grid DockPanel.Dock="Top"
-                                          Background="#EEE"
-                                          Margin="0,0,0,1">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="80" />
-                                            <ColumnDefinition Width="90" />
-                                            <ColumnDefinition Width="70" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock Grid.Column="0" Text="Produkt"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="1" Text="Farve"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="2" Text="Størrelse"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="3" Text="Pris"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center" />
-                                        <TextBlock Grid.Column="4" Text="På lager"
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center" />
-                                    </Grid>
-
-                                    <!-- List of items -->
+                                    <!-- Column header (defined per-style via Tag) -->
+                                    <ContentPresenter DockPanel.Dock="Top"
+                                                      ContentTemplate="{TemplateBinding Tag}" />
+                                    <!-- Item list -->
                                     <ScrollViewer MaxHeight="300">
                                         <ItemsPresenter />
                                     </ScrollViewer>
-
                                 </DockPanel>
                             </Border>
                         </Popup>
-
                     </Grid>
-
 
                     <!-- Template triggers -->
                     <ControlTemplate.Triggers>
-
                         <!-- Dim the field when disabled -->
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="ContentBorder" Property="Opacity" Value="0.5" />
                         </Trigger>
-
-                        <!-- No product selected -> hide selected template and show placeholder -->
+                        <!-- No item selected -> show placeholder -->
                         <Trigger Property="SelectedItem" Value="{x:Null}">
                             <Setter TargetName="SelectedContent" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible" />
                         </Trigger>
-
                     </ControlTemplate.Triggers>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
 
+
+
+    <!-- =============================================== -->
+    <!--  Product MultiColumn ComboBox style             -->
+    <!-- =============================================== -->
+    <Style x:Key="ProductMultiColumnComboBoxStyle"
+           TargetType="ComboBox"
+           BasedOn="{StaticResource BaseMultiColumnComboBoxStyle}">
+
+        <!-- Placeholder text -->
+        <Setter Property="Text" Value="Vælg produkt" />
+
+        <!-- Use Product row template -->
+        <Setter Property="ItemTemplate" Value="{StaticResource ProductRowTemplate}" />
+
+        <!-- Header row for product combo -->
+        <Setter Property="Tag">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid Background="#EEE" Margin="0,0,0,1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="70" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Produkt"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                        <TextBlock Grid.Column="1" Text="Farve"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                        <TextBlock Grid.Column="2" Text="Størrelse"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                        <TextBlock Grid.Column="3" Text="Pris"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                        <TextBlock Grid.Column="4" Text="På lager"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+    <!-- =============================================== -->
+    <!--  Customer MultiColumn ComboBox style            -->
+    <!-- =============================================== -->
+    <Style x:Key="CustomerMultiColumnComboBoxStyle"
+           TargetType="ComboBox"
+           BasedOn="{StaticResource BaseMultiColumnComboBoxStyle}">
+
+        <!-- Placeholder text -->
+        <Setter Property="Text" Value="Vælg kunde" />
+
+        <!-- Use Customer row template -->
+        <Setter Property="ItemTemplate" Value="{StaticResource CustomerRowTemplate}" />
+
+        <!-- Header row for customer combo -->
+        <Setter Property="Tag">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid Background="#EEE" Margin="0,0,0,1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="110" />
+                            <ColumnDefinition Width="180" />
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="120" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Navn"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                        <TextBlock Grid.Column="1" Text="Telefon"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                        <TextBlock Grid.Column="2" Text="Adresse"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                        <TextBlock Grid.Column="3" Text="Postnr."
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                        <TextBlock Grid.Column="4" Text="By"
+                                   Style="{StaticResource MultiColumnHeaderText}" />
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

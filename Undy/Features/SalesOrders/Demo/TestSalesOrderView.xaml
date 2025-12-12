@@ -35,70 +35,85 @@
                        HorizontalAlignment="Center"
                        Foreground="Red"/>
 
-            <!-- Fields (Title Left, inputs højre) -->
+            <!-- Fields (headers above controls) -->
             <Grid Grid.Row="2"
-                  Margin="0,30"
-                  HorizontalAlignment="Center">
+      Margin="0,30"
+      HorizontalAlignment="Center"
+      Width="700">
+                <!-- Product area wide, small column for quantity -->
                 <Grid.ColumnDefinitions>
-                    <!-- Labels -->
-                    <ColumnDefinition Width="Auto"/>   
-                    <!-- Spacer -->
-                    <ColumnDefinition Width="20"/>    
-                    <!-- Input -->
-                    <ColumnDefinition Width="Auto"/>   
+                    <ColumnDefinition Width="*"/>
+                    <!-- KundeID + Produkt -->
+                    <ColumnDefinition Width="70"/>
+                    <!-- Antal (smal kasse) -->
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
-                    <!-- Customer -->
-                    <RowDefinition Height="50"/>
-                    <!-- Product -->
-                    <RowDefinition Height="50"/>
-                    <!-- Amount -->
-                    <RowDefinition Height="50"/>
-                    <!-- Add Product -->
-                    <RowDefinition Height="50"/>
+                    <!-- KundeID header -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- KundeID combo -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- spacer -->
+                    <RowDefinition Height="20"/>
+                    <!-- Produkt / Antal headers -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Produkt combo + Antal textbox -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Tilføj Produkt knap -->
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Customer Name -->
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="KundeID"
-                           Style="{DynamicResource TitleLeft}"/>
+                <!-- ========== KundeID ========== -->
 
-                <ComboBox Grid.Row="0" Grid.Column="2"
-                          ItemsSource="{Binding SortedCustomers}"
-                          SelectedItem="{Binding SelectedCustomer}"
-                          DisplayMemberPath="DisplayFullCustomerInfo"/>
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+               Text="Kunde"
+               Style="{DynamicResource H3}"
+               HorizontalAlignment="Center" />
 
-                <!-- Product Choice -->
-                <TextBlock Grid.Row="1" Grid.Column="0"
-                           Text="Produkt"
-                           Style="{DynamicResource TitleLeft}"/>
-
-                <!-- TODO Til Multi-Header ComboBox: ProductName, Colour, Size, Price, NumberInStock -->
-                <ComboBox Grid.Row="1" Grid.Column="2"
-          Width="450"
-          ItemsSource="{Binding Products}"
-          SelectedItem="{Binding SelectedProduct}"
-          Style="{StaticResource ProductMultiColumnComboBoxStyle}" />
+                <ComboBox Grid.Row="1" Grid.ColumnSpan="2"
+          ItemsSource="{Binding SortedCustomers}"
+          SelectedItem="{Binding SelectedCustomer}"
+          Style="{StaticResource CustomerMultiColumnComboBoxStyle}" />
 
 
 
+                <!-- ========== Produkt + Antal ========== -->
 
-                <!-- Quantity -->
-                <TextBlock Grid.Row="2" Grid.Column="0"
-                           Text="Antal"
-                           Style="{DynamicResource TitleLeft}"/>
+                <!-- Headers -->
+                <TextBlock Grid.Row="3" Grid.Column="0"
+               Text="Produkt"
+               Style="{DynamicResource H3}"
+               HorizontalAlignment="Center" />
 
-                <TextBox Grid.Row="2" Grid.Column="2"
-                         Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{DynamicResource InputRight}"/>
+                <TextBlock Grid.Row="3" Grid.Column="1"
+               Text="Antal"
+               Style="{DynamicResource H3}"
+               HorizontalAlignment="Center" />
 
-                <Button Grid.Row="3" Grid.ColumnSpan="3"
-                    Content="Tilføj Produkt"
-                        Style="{DynamicResource ButtonBase}"
-                        Command="{Binding AddProductCommand}"
-                        HorizontalAlignment="Center"/>
+                <!-- Produkt combobox -->
+                <ComboBox Grid.Row="4" Grid.Column="0"
+              ItemsSource="{Binding Products}"
+              SelectedItem="{Binding SelectedProduct}"
+              Style="{StaticResource ProductMultiColumnComboBoxStyle}" />
+
+                <!-- Antal textbox: small, with a bit of spacing, centered number -->
+                <TextBox Grid.Row="4" Grid.Column="1"
+             Width="50"
+             Margin="10,0,0,0"            
+                    Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+             HorizontalContentAlignment="Center"
+             VerticalContentAlignment="Center" />
+
+                    <!-- ========== Add Product button ========== -->
+                    <Button Grid.Row="5" Grid.ColumnSpan="2"
+            Content="Tilføj Produkt"
+            Style="{DynamicResource ButtonBase}"
+            Command="{Binding AddProductCommand}"
+            HorizontalAlignment="Center"
+            Margin="0,10,0,0"/>
             </Grid>
+
+
 
             <!-- Add Product + ListView/DataGrid -->
             <StackPanel Grid.Row="3"
