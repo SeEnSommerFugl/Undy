@@ -19,7 +19,7 @@
             = new ObservableCollection<ProductSalesOrder>();
 
         // Order status options used in the view
-        public List<string> OrderStatusOptions { get; } = new() { "Afventer", "Under Behandling", "Afsendt" };
+        public List<string> OrderStatusOptions { get; } = new() { "Afventer", "Afsendt" };
 
         public SalesOrderViewModel(
             IBaseRepository<SalesOrderDisplay, Guid> salesDisplayRepo,

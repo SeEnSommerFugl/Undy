@@ -81,7 +81,7 @@ EXEC usp_Insert_WholesaleOrder
 	@WholesaleOrderID = @WholesaleOrderID,
 	@WholesaleOrderDate = '2025-12-01',
 	@ExpectedDeliveryDate = '2025-12-24',
-	@OrderStatus = 'Pending'
+	@OrderStatus = 'Afventer'
 
 
 SET @WholesaleOrderID = NEWID();
@@ -89,7 +89,7 @@ EXEC usp_Insert_WholesaleOrder
 	@WholesaleOrderID = @WholesaleOrderID,
 	@WholesaleOrderDate = '2026-01-01',
 	@ExpectedDeliveryDate = '2026-01-24',
-	@OrderStatus = 'Pending'
+	@OrderStatus = 'Afventer'
 
 
 SET @WholesaleOrderID = NEWID();
@@ -97,7 +97,7 @@ EXEC usp_Insert_WholesaleOrder
 	@WholesaleOrderID = @WholesaleOrderID,
 	@WholesaleOrderDate = '2026-02-01',
 	@ExpectedDeliveryDate = '2026-02-24',
-	@OrderStatus = 'Pending'
+	@OrderStatus = 'Afventer'
 
 
 SET @WholesaleOrderID = NEWID();
@@ -105,7 +105,7 @@ EXEC usp_Insert_WholesaleOrder
 	@WholesaleOrderID = @WholesaleOrderID,
 	@WholesaleOrderDate = '2026-03-01',
 	@ExpectedDeliveryDate = '2026-03-24',
-	@OrderStatus = 'Pending'
+	@OrderStatus = 'Afventer'
 GO
 
 -- Insert ProductWholesaleOrder
@@ -145,8 +145,8 @@ DECLARE @SalesOrderID UNIQUEIDENTIFIER;
 SET @SalesOrderID = NEWID();
 EXEC usp_Insert_SalesOrder
 	@SalesOrderID = @SalesOrderID,
-	@OrderStatus = 'Pending',
-	@PaymentStatus = 'Unpaid',
+	@OrderStatus = 'Afventer',
+	@PaymentStatus = 'Afventer Betaling',
 	@SalesDate = '2025-12-05',
 	@CustomerNumber = 11
 
@@ -154,8 +154,8 @@ EXEC usp_Insert_SalesOrder
 SET @SalesOrderID = NEWID();
 EXEC usp_Insert_SalesOrder
 	@SalesOrderID = @SalesOrderID,
-	@OrderStatus = 'Sent',
-	@PaymentStatus = 'Paid',
+	@OrderStatus = 'Afsendt',
+	@PaymentStatus = 'Betalt',
 	@SalesDate = '2025-12-05',
 	@CustomerNumber = 12
 
@@ -163,8 +163,8 @@ EXEC usp_Insert_SalesOrder
 SET @SalesOrderID = NEWID();
 EXEC usp_Insert_SalesOrder
 	@SalesOrderID = @SalesOrderID,
-	@OrderStatus = 'Being processed',
-	@PaymentStatus = 'Unpaid',
+	@OrderStatus = 'Afventer',
+	@PaymentStatus = 'Afventer Betaling',
 	@SalesDate = '2025-12-05',
 	@CustomerNumber = 13
 GO

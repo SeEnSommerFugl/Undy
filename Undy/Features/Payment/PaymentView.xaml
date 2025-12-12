@@ -34,7 +34,7 @@
 
             <!-- LISTE MED ORDRER -->
             <ListView Grid.Row="2"
-                      ItemsSource="{Binding UnpaidOrders}"
+                      ItemsSource="{Binding PaymentView}"
                       SelectedItem="{Binding SelectedOrder}"
                       Margin="0,0,0,10">
 
@@ -58,7 +58,7 @@
 
                         <!-- Kundenavn -->
                         <GridViewColumn Header="Kundenavn" Width="200"
-                                        DisplayMemberBinding="{Binding CustomerName}" />
+                                        DisplayMemberBinding="{Binding FullName}" />
 
                         <!-- Samlet beløb -->
                         <GridViewColumn Header="Samlet beløb" Width="140">

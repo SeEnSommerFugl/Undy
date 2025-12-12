@@ -47,6 +47,7 @@
         // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, SalesOrder e)
         {
+            cmd.Parameters.Add("SalesOrderID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 255).Value = e.OrderStatus;
             cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
         }

@@ -6,42 +6,38 @@
         private readonly IBaseRepository<CustomerSalesOrderDisplay, Guid> _customerSalesOrderDisplayRepo;
 
         // Liste med ALLE ordrer 
-        public ObservableCollection<CustomerSalesOrderDisplay> Orders { get; }
+        public ObservableCollection<CustomerSalesOrderDisplay> Orders => _customerSalesOrderDisplayRepo.Items;
 
         // Viewet som UI binder til
-        public ICollectionView OrdersView { get; }
+        public ICollectionView PaymentView { get; }
 
+        public string OrderNumber { get; private set; }
+        public string CustomerName { get; private set; }
+        public decimal TotalAmount { get; private set; }
+
+        // Info om valgt ordre 
         private CustomerSalesOrderDisplay _selectedOrder;
         public CustomerSalesOrderDisplay SelectedOrder
         {
             get => _selectedOrder;
             set
             {
-                _selectedOrder = value;
-                OnPropertyChanged();
-                LoadSelectedOrderInfo(_selectedOrder);
-
-                (ConfirmPaymentCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                if(SetProperty(ref _selectedOrder, value));
             }
         }
-
-        // Info om valgt ordre 
-        public string OrderNumber { get; private set; }
-        public string CustomerName { get; private set; }
-        public decimal TotalAmount { get; private set; }
 
         private string _statusMessage;
         public string StatusMessage
         {
             get => _statusMessage;
-            set { _statusMessage = value; OnPropertyChanged(); }
+            set {
+                if (SetProperty(ref _statusMessage, value));
+            }
         }
 
         public ICommand ConfirmPaymentCommand { get; }
 
-        
-        // Constructors
-        
+        // Constructor
         public PaymentViewModel(
             IBaseRepository<SalesOrder, Guid> salesOrderRepo,
             IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo)
@@ -49,68 +45,24 @@
             _salesOrderRepo = salesOrderRepo;
             _customerSalesOrderDisplayRepo = customerSalesOrderDisplayRepo;
 
-            Orders = new ObservableCollection<CustomerSalesOrderDisplay>();
-            OrdersView = CollectionViewSource.GetDefaultView(Orders);
-
-            // Sætter filteret 
-            OrdersView.Filter = PaymentFilter;
+            PaymentView = CollectionViewSource.GetDefaultView(Orders);
+            PaymentView.SortDescriptions.Add(new SortDescription("SalesDate", ListSortDirection.Descending));
+            PaymentView.Filter = po => po is CustomerSalesOrderDisplay paymentOrder && paymentOrder.PaymentStatus != "Betalt";
 
             ConfirmPaymentCommand = new RelayCommand(
                 async _ => await ConfirmPaymentAsync(),
                 _ => SelectedOrder != null && SelectedOrder.IsSelectedForPayment
             );
         }
-                
-        // Loader: 
-        
-        public async Task LoadOrdersAsync()
-        {
-            StatusMessage = string.Empty;
-            Orders.Clear();
-
-            //var all = await _customerSalesOrderDisplayRepo.GetAllAsync();
-            var all = _customerSalesOrderDisplayRepo.Items;
-
-            foreach (CustomerSalesOrderDisplay o in all)
-            {
-                o.IsSelectedForPayment = false;
-                Orders.Add(o);
-            }
-
-            RefreshPaymentView();
-
-            if (OrdersView.IsEmpty)
-                StatusMessage = "Der er ingen ordrer, der mangler betaling.";
-        }
-
-        
-        // Filter 
-        
-        private bool PaymentFilter(object obj)
-        {
-            if (obj is not CustomerSalesOrderDisplay o)
-                return false;
-
-            // Kun ubetalte
-            bool isUnpaid = !string.Equals(
-                o.PaymentStatus,
-                "Betalt",
-                StringComparison.OrdinalIgnoreCase);
-
-            return isUnpaid;
-        }
-
         
         // Refresh 
-        
         private void RefreshPaymentView()
         {
-            OrdersView.Refresh();
+            PaymentView.Refresh();
         }
 
         
         // Vis info om valgt ordre
-        
         private void LoadSelectedOrderInfo(CustomerSalesOrderDisplay order)
         {
             if (order == null)
@@ -122,7 +74,7 @@
             else
             {
                 OrderNumber = order.DisplaySalesOrderNumber;
-                CustomerName = order.CustomerName;
+                CustomerName = order.FullName;
                 TotalAmount = order.TotalPrice;
             }
 
@@ -133,7 +85,6 @@
 
         
         // Registrér betaling
-        
         private async Task ConfirmPaymentAsync()
         {
             StatusMessage = string.Empty;
@@ -152,7 +103,6 @@
                 return;
             }
 
-            
             dbOrder.PaymentStatus = "Betalt";
             await _salesOrderRepo.UpdateAsync(dbOrder);
 
@@ -160,7 +110,6 @@
             SelectedOrder.PaymentStatus = "Betalt";
             SelectedOrder.IsSelectedForPayment = false;
 
-            
             RefreshPaymentView();
 
             StatusMessage = "Betaling registreret.";

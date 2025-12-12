@@ -18,16 +18,16 @@
         public int CustomerNumber { get; set; }
         public string DisplayCustomerNumber { get; set; }
 
-        private string _customerName;
-        public string CustomerName
+        private string _fullName;
+        public string FullName
         {
-            get => _customerName;
+            get => _fullName;
             set
             {
-                if (_customerName != value)
+                if (_fullName != value)
                 {
-                    _customerName = value;
-                    OnPropertyChanged(nameof(CustomerName));
+                    _fullName = value;
+                    OnPropertyChanged(nameof(FullName));
                 }
             }
         }
