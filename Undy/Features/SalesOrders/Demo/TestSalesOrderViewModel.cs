@@ -26,7 +26,7 @@
             _testSalesOrderView = CollectionViewSource.GetDefaultView(Products);
 
             ConfirmCommand = new RelayCommand(async _ => await CreateSalesOrderAsync());
-            AddProductCommand = new RelayCommand(_ => AddProduct());
+            AddProductCommand = new RelayCommand(_ => AddProduct(), _ => CanAddProduct());
             RemoveSalesOrderLineCommand = new RelayCommand(salesOrderLine => RemoveSalesOrderLine(salesOrderLine as SalesOrderLineViewModel));
 
             SortedCustomers = CollectionViewSource.GetDefaultView(_customerRepo.Items);
@@ -39,7 +39,7 @@
             get => _currentSalesOrder;
             set
             {
-                if (SetProperty(ref _currentSalesOrder, value)) ;
+                if (SetProperty(ref _currentSalesOrder, value));
             }
         }
 
@@ -49,7 +49,7 @@
             get => _selectedProduct;
             set
             {
-                if (SetProperty(ref _selectedProduct, value)) ;
+                if (SetProperty(ref _selectedProduct, value));
             }
         }
 
@@ -59,7 +59,7 @@
             get => _selectedCustomer;
             set
             {
-                if (SetProperty(ref _selectedCustomer, value)) ;
+                if (SetProperty(ref _selectedCustomer, value));
             }
         }
 
@@ -69,10 +69,9 @@
             get => _quantity;
             set
             {
-                if (SetProperty(ref _quantity, value)) ;
+                if (SetProperty(ref _quantity, value));
             }
         }
-
 
         public ICommand ConfirmCommand { get; }
         public ICommand RemoveSalesOrderLineCommand { get; }
@@ -86,6 +85,14 @@
             }
 
             SalesOrderLines.Add(new SalesOrderLineViewModel(SelectedProduct, Quantity));
+        }
+
+        private bool CanAddProduct() {
+            if(SelectedProduct == null || Quantity <= 0 || Quantity > SelectedProduct.NumberInStock) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
         private void RemoveSalesOrderLine(SalesOrderLineViewModel salesOrderLine)
