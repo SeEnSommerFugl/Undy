@@ -159,6 +159,7 @@ GO
 
 -- Insert ProductWholesaleOrder
 CREATE OR ALTER  PROCEDURE usp_Insert_ProductWholesaleOrder
+	@WholesaleOrderID UNIQUEIDENTIFIER,
 	@WholesaleOrderNumber INT,
 	@ProductNumber NVARCHAR(255),
 	@Quantity INT,
@@ -167,11 +168,6 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	DECLARE @WholesaleOrderID UNIQUEIDENTIFIER;
-	
-	SELECT @WholesaleOrderID = WholesaleOrderID
-	FROM WholesaleOrder
-	WHERE WholesaleOrderNumber = @WholesaleOrderNumber;
 	
 	-- Validate WholesaleOrder exists
 	IF NOT EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
@@ -226,17 +222,10 @@ CREATE OR ALTER PROCEDURE usp_Insert_SalesOrder
 	@OrderStatus NVARCHAR(255),
 	@PaymentStatus NVARCHAR(255),
 	@SalesDate DATE,
-	@CustomerNumber INT
+	@CustomerID UNIQUEIDENTIFIER
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	-- Look up CustomerID from CustomerNumber
-	DECLARE @CustomerID UNIQUEIDENTIFIER;
-	
-	SELECT @CustomerID = CustomerID
-	FROM Customers
-	WHERE CustomerNumber = @CustomerNumber;
 	
 	INSERT INTO SalesOrder(SalesOrderID, OrderStatus, PaymentStatus, SalesDate,CustomerID)
 	VALUES(@SalesOrderID, @OrderStatus, @PaymentStatus, @SalesDate, @CustomerID);
@@ -245,19 +234,13 @@ GO
 
 -- Insert ProductSalesOrder
 CREATE OR ALTER PROCEDURE usp_Insert_ProductSalesOrder
-	@SalesOrderNumber INT,
+	@SalesOrderID UNIQUEIDENTIFIER,
 	@ProductNumber NVARCHAR(255),
 	@Quantity INT,
 	@UnitPrice DECIMAL(10,2)
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	-- Look up SalesOrderID from SalesOrderNumber
-	DECLARE @SalesOrderID UNIQUEIDENTIFIER;
-	SELECT @SalesOrderID = SalesOrderID
-	FROM SalesOrder
-	WHERE SalesOrderNumber = @SalesOrderNumber;
 	
 	-- Validate SalesOrder exists
 	IF NOT EXISTS(SELECT 1 FROM SalesOrder WHERE SalesOrderID = @SalesOrderID)
@@ -428,7 +411,8 @@ GO
 -- View SalesOrders
 CREATE OR ALTER VIEW vw_SalesOrders AS
 SELECT 
-	so.SalesOrderID, 
+	so.SalesOrderID,
+	so.CustomerID,
 	so.SalesOrderNumber, 
 	so.DisplaySalesOrderNumber,
 	so.OrderStatus, 

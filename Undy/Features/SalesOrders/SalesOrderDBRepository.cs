@@ -21,7 +21,7 @@
         protected override SalesOrder Map(IDataRecord r) => new SalesOrder
         {
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
-            //CustomerID = r.GetGuid(r.GetOrdinal("CustomerID")),
+            CustomerID = r.GetGuid(r.GetOrdinal("CustomerID")),
             SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
             OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
             PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),
@@ -39,11 +39,10 @@
         protected override void BindInsert(SqlCommand cmd, SalesOrder e)
         {
             cmd.Parameters.Add("@SalesOrderID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
-            //cmd.Parameters.Add(@"CustomerID", SqlDbType.UniqueIdentifier).Value = e.CustomerID;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 255).Value = e.OrderStatus;
-            cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
             cmd.Parameters.Add("@SalesDate", SqlDbType.Date).Value = e.SalesDate;
-            cmd.Parameters.Add("@CustomerNumber", SqlDbType.NVarChar, 255).Value = e.CustomerNumber;
+            cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
+            cmd.Parameters.Add(@"CustomerID", SqlDbType.UniqueIdentifier).Value = e.CustomerID;
         }
         // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, SalesOrder e)

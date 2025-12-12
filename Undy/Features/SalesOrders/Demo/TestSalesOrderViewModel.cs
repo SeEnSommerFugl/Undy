@@ -126,10 +126,12 @@
 
             SalesOrderLineList.AddRange(salesOrderLineProducts);
             await _productSalesOrderRepo.AddRangeAsync2(salesOrderLineProducts);
-            //.ToList();
 
+            SelectedCustomer = null;
+            SelectedProduct = null;
+            Quantity = 0;
+            SalesOrderLines.Clear();
 
-            //await _salesOrderService.CreateSalesOrderWithProducts(salesOrder,  salesOrderLineProducts);
         }
     }
 }
