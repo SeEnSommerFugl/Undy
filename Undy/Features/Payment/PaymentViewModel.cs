@@ -11,36 +11,33 @@
         // Viewet som UI binder til
         public ICollectionView PaymentView { get; }
 
+        public string OrderNumber { get; private set; }
+        public string CustomerName { get; private set; }
+        public decimal TotalAmount { get; private set; }
+
+        // Info om valgt ordre 
         private CustomerSalesOrderDisplay _selectedOrder;
         public CustomerSalesOrderDisplay SelectedOrder
         {
             get => _selectedOrder;
             set
             {
-                _selectedOrder = value;
-                OnPropertyChanged();
-                LoadSelectedOrderInfo(_selectedOrder);
-
-                (ConfirmPaymentCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                if(SetProperty(ref _selectedOrder, value));
             }
         }
-
-        // Info om valgt ordre 
-        public string OrderNumber { get; private set; }
-        public string CustomerName { get; private set; }
-        public decimal TotalAmount { get; private set; }
 
         private string _statusMessage;
         public string StatusMessage
         {
             get => _statusMessage;
-            set { _statusMessage = value; OnPropertyChanged(); }
+            set {
+                if (SetProperty(ref _statusMessage, value));
+            }
         }
 
         public ICommand ConfirmPaymentCommand { get; }
 
-        
-        // Constructors
+        // Constructor
         public PaymentViewModel(
             IBaseRepository<SalesOrder, Guid> salesOrderRepo,
             IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo)
@@ -106,7 +103,6 @@
                 return;
             }
 
-            
             dbOrder.PaymentStatus = "Betalt";
             await _salesOrderRepo.UpdateAsync(dbOrder);
 
@@ -114,7 +110,6 @@
             SelectedOrder.PaymentStatus = "Betalt";
             SelectedOrder.IsSelectedForPayment = false;
 
-            
             RefreshPaymentView();
 
             StatusMessage = "Betaling registreret.";
