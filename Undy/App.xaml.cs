@@ -32,6 +32,7 @@
             IBaseRepository<ReturnOrder, Guid> testReturnRepo = new ReturnOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> testSalesOrderRepo = new SalesOrderDBRepository();
             IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
+            IBaseRepository<WholesaleOrderDisplay, Guid> wholesaleOrderDisplayRepo = new WholesaleOrderDisplayDBRepository();
             IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo = new ProductWholesaleOrderDBRepository();
             IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo = new ProductSalesOrderDBRepository();
             IBaseRepository<Customer, Guid> customerRepo = new CustomerDBRepository();
@@ -40,7 +41,7 @@
 
             //----- ViewModels ----- //
             var startPageVM = new StartPageViewModel();
-            var wholesaleOrderVM = new WholesaleOrderViewModel(wholesaleOrderRepo, productRepo);
+            var wholesaleOrderVM = new WholesaleOrderViewModel(wholesaleOrderDisplayRepo, productRepo, productWholesaleOrderRepo);
             var incomingWholesaleOrderVM = new IncomingWholesaleOrderViewModel(wholesaleOrderRepo, productRepo, productWholesaleOrderRepo);
             var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo, productSalesOrderRepo);
             var paymentVM = new PaymentViewModel(salesOrderRepo, customerSalesOrderDisplayRepo);
@@ -71,6 +72,7 @@
             wholesaleOrderRepo.InitializeAsync(),
             salesOrderRepo.InitializeAsync(),
             salesOrderDisplayRepo.InitializeAsync(),
+            wholesaleOrderDisplayRepo.InitializeAsync(),
             customerRepo.InitializeAsync(),
             //productSalesOrderRepo.InitializeAsync(),
             //testReturnRepo.InitializeAsync(),
