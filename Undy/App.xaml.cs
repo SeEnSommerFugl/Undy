@@ -74,6 +74,7 @@
             await salesOrderDisplayRepo.InitializeAsync();
             await wholesaleOrderDisplayRepo.InitializeAsync();
             await customerRepo.InitializeAsync();
+            await customerSalesOrderDisplayRepo.InitializeAsync();
             //await productSalesOrderRepo.InitializAsync();
             //await testReturnRepo.InitializeAsync();
             //await testPurchaseOrderRepo.InitializeAsync();

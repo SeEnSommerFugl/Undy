@@ -5,14 +5,6 @@
         public PaymentView()
         {
             InitializeComponent();
-
-            Loaded += async (_, __) =>
-            {
-                if (DataContext is PaymentViewModel vm)
-                {
-                    await vm.LoadOrdersAsync();
-                }
-            };
         }
     }
 }
