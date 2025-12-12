@@ -92,29 +92,7 @@
             // Add to collection immediately (will be visible even if transaction fails - consider implications)
             await ReloadItemsAsync();
         }
-        public async Task AddRangeAsync2(IEnumerable<T> entities)
-        {
-            using var con = await DB.OpenConnection();
-            var entitiesList = entities.ToList();
-            if (!entitiesList.Any()) return;
 
-            // NO commit/rollback here - caller manages transaction
-            foreach (var entity in entitiesList)
-            {
-                using var cmd = new SqlCommand(SqlInsert, con);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                BindInsert(cmd, entity);
-
-                var affected = await cmd.ExecuteNonQueryAsync();
-            }
-
-            // Add to collection immediately (will be visible even if transaction fails - consider implications)
-            foreach (var entity in entitiesList)
-            {
-                _items.Add(entity);
-            }
-        }
 
         public async Task UpdateAsync(T entity)
         {
@@ -157,6 +135,30 @@
             {
                 await transaction.RollbackAsync();
                 throw;
+            }
+        }
+
+        public async Task AddRangeAsync2(IEnumerable<T> entities)
+        {
+            var entitiesList = entities.ToList();
+            if (!entitiesList.Any()) return;
+
+            using var con = await DB.OpenConnection();
+            // NO commit/rollback here - caller manages transaction
+            foreach (var entity in entitiesList)
+            {
+                using var cmd = new SqlCommand(SqlInsert, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                BindInsert(cmd, entity);
+
+                var affected = await cmd.ExecuteNonQueryAsync();
+            }
+
+            // Add to collection immediately (will be visible even if transaction fails - consider implications)
+            foreach (var entity in entitiesList)
+            {
+                _items.Add(entity);
             }
         }
 
