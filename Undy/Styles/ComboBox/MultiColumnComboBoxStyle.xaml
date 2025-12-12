@@ -1,0 +1,246 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- =============================================== -->
+    <!--  Shared row template for a single product       -->
+    <!--  Used both in dropdown and for selected value   -->
+    <!-- =============================================== -->
+    <DataTemplate x:Key="ProductRowTemplate">
+        <!-- NOTE: No margin here – spacing is handled by
+             ComboBoxItem.Padding and the SelectedContent margin -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <!-- Product -->
+                <ColumnDefinition Width="80" />
+                <!-- Colour -->
+                <ColumnDefinition Width="80" />
+                <!-- Size -->
+                <ColumnDefinition Width="90" />
+                <!-- Price -->
+                <ColumnDefinition Width="70" />
+                <!-- Stock -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Product Name -->
+            <TextBlock Grid.Column="0"
+                       Text="{Binding ProductName}"
+                       HorizontalAlignment="Center" />
+
+            <!-- Colour -->
+            <TextBlock Grid.Column="1"
+                       Text="{Binding Colour}"
+                       HorizontalAlignment="Center" />
+
+            <!-- Size -->
+            <TextBlock Grid.Column="2"
+                       Text="{Binding Size}"
+                       HorizontalAlignment="Center" />
+
+            <!-- Price -->
+            <TextBlock Grid.Column="3"
+                       Text="{Binding Price, StringFormat='{}{0:C}'}"
+                       HorizontalAlignment="Center" />
+
+            <!-- Stock -->
+            <TextBlock Grid.Column="4"
+                       Text="{Binding NumberInStock}"
+                       HorizontalAlignment="Center">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="Black" />
+                        <Style.Triggers>
+                            <!-- Highlight when out of stock -->
+                            <DataTrigger Binding="{Binding NumberInStock}" Value="0">
+                                <Setter Property="Foreground" Value="Red" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+    </DataTemplate>
+
+
+
+    <!-- =============================================== -->
+    <!--  Multi-column ComboBox style for products       -->
+    <!-- =============================================== -->
+    <Style x:Key="ProductMultiColumnComboBoxStyle" TargetType="ComboBox">
+
+        <!-- General ComboBox settings -->
+        <Setter Property="Height" Value="30" />
+        <Setter Property="IsEditable" Value="False" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+        <!-- Use the shared template for dropdown rows -->
+        <Setter Property="ItemTemplate" Value="{StaticResource ProductRowTemplate}" />
+
+
+        <!-- Container style for each dropdown item -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ComboBoxItem">
+                    <!-- Vertical spacing for rows (also used for selected row) -->
+                    <Setter Property="Padding" Value="0,2" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                    <Style.Triggers>
+                        <!-- Hover style -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FFE5F1FF" />
+                        </Trigger>
+
+                        <!-- Selected style -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#FFD6EBFF" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
+
+
+
+        <!-- =============================================== -->
+        <!--  ComboBox visual template (field + popup)      -->
+        <!-- =============================================== -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+
+                    <Grid>
+
+                        <!-- Visible combo field -->
+                        <Border x:Name="ContentBorder"
+                                Background="White"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                CornerRadius="0">
+
+                            <!-- Entire field is clickable -->
+                            <ToggleButton x:Name="DropDownToggle"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          Focusable="False"
+                                          HorizontalContentAlignment="Stretch"
+                                          IsChecked="{Binding IsDropDownOpen,
+                                                              Mode=TwoWay,
+                                                              RelativeSource={RelativeSource TemplatedParent}}">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <!-- Selected item area -->
+                                        <ColumnDefinition Width="25" />
+                                        <!-- Arrow -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Selected product using SAME template as dropdown rows -->
+                                    <ContentPresenter Grid.Column="0"
+                                                      x:Name="SelectedContent"
+                                                      Margin="0,2"  
+                                        Content="{Binding SelectedItem,
+                                                                        RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                      ContentTemplate="{TemplateBinding ItemTemplate}" />
+
+                                        <!-- Placeholder when nothing is selected -->
+                                        <TextBlock Grid.Column="0"
+                                               x:Name="PlaceholderText"
+                                               Text="Vælg produkt"
+                                               Visibility="Collapsed"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="Gray" />
+
+                                        <!-- Dropdown arrow -->
+                                        <TextBlock Grid.Column="1"
+                                               Text="▼"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+
+                            </ToggleButton>
+                        </Border>
+
+
+
+                        <!-- Popup dropdown -->
+                        <Popup x:Name="Popup"
+                               Placement="Bottom"
+                               StaysOpen="False"
+                               AllowsTransparency="True"
+                               IsOpen="{TemplateBinding IsDropDownOpen}">
+
+                            <Border Background="White"
+                                    BorderBrush="Gray"
+                                    BorderThickness="1"
+                                    MinWidth="{Binding ActualWidth, ElementName=ContentBorder}">
+
+                                <DockPanel>
+
+                                    <!-- Column header -->
+                                    <Grid DockPanel.Dock="Top"
+                                          Background="#EEE"
+                                          Margin="0,0,0,1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="70" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Text="Produkt"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="1" Text="Farve"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="Størrelse"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="3" Text="Pris"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="På lager"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center" />
+                                    </Grid>
+
+                                    <!-- List of items -->
+                                    <ScrollViewer MaxHeight="300">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+
+                                </DockPanel>
+                            </Border>
+                        </Popup>
+
+                    </Grid>
+
+
+                    <!-- Template triggers -->
+                    <ControlTemplate.Triggers>
+
+                        <!-- Dim the field when disabled -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ContentBorder" Property="Opacity" Value="0.5" />
+                        </Trigger>
+
+                        <!-- No product selected -> hide selected template and show placeholder -->
+                        <Trigger Property="SelectedItem" Value="{x:Null}">
+                            <Setter TargetName="SelectedContent" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PlaceholderText" Property="Visibility" Value="Visible" />
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+</ResourceDictionary>

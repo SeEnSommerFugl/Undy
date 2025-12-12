@@ -76,10 +76,13 @@
 
                 <!-- TODO Til Multi-Header ComboBox: ProductName, Colour, Size, Price, NumberInStock -->
                 <ComboBox Grid.Row="1" Grid.Column="2"
-                          Height="45"
-                          ItemsSource="{Binding Products}"
-                          SelectedItem="{Binding SelectedProduct}"
-                          DisplayMemberPath="ProductName"/>
+          Width="450"
+          ItemsSource="{Binding Products}"
+          SelectedItem="{Binding SelectedProduct}"
+          Style="{StaticResource ProductMultiColumnComboBoxStyle}" />
+
+
+
 
                 <!-- Quantity -->
                 <TextBlock Grid.Row="2" Grid.Column="0"
