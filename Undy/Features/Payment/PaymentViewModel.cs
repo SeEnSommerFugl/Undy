@@ -26,6 +26,14 @@
             }
         }
 
+        private bool _isSelectedForPayment;
+        public bool IsSelectedForPayment {
+            get => _isSelectedForPayment;
+            set {
+                if(SetProperty(ref _isSelectedForPayment, value));
+            }
+        }
+
         private string _statusMessage;
         public string StatusMessage
         {
