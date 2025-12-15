@@ -74,8 +74,12 @@
                         <GridViewColumn Header="Betales" Width="80">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <CheckBox HorizontalAlignment="Center"
-                                              IsChecked="{Binding IsSelectedForPayment, Mode=TwoWay}" />
+                                    <CheckBox x:Name="PaymentCheckBox" HorizontalAlignment="Center"
+                                              Tag="{Binding SalesOrderID}"
+                                              Checked="PaymentCheckBox_Checked"
+                                              Unchecked="PaymentCheckBox_Unchecked"
+                                              Loaded="PaymentCheckBox_Loaded"
+                                              Unloaded="PaymentCheckBox_Unloaded"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
