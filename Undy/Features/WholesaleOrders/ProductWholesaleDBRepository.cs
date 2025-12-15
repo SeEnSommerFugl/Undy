@@ -10,7 +10,7 @@
         protected override string SqlSelectById => "usp_SelectById_WholesaleOrder";
 
         // Stored procedures for adding (insert into)
-        protected override string SqlInsert => "usp_Insert_WholesaleOrder";
+        protected override string SqlInsert => "usp_Insert_ProductWholesaleOrder";
 
         // Stored procedure for updating
         protected override string SqlUpdate => "usp_Update_WholesaleOrder";
