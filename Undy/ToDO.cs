@@ -8,3 +8,25 @@
  */
 
 //Ændre salgsordrestadier til Afventer og Afsendt
+
+
+
+/* TODO:
+ * Startside mangler binding, hvis det kan nåes.
+ * 
+ * Indkøb mangler binding til "Vælg vare"
+ * 
+ * Varemodtagelse 2nd grid loader ikke, før man tjekker flueben fra, 
+ * men loader samme uanset ordre.
+ * 
+ * Salgsordre 2nd grid mangler binding. Main Grid opdatere ikke ved ny salgsordre.
+ * Lister skal kobles sammen. 
+ * 
+ * Betalinger mangler SQL "SelectByID"
+ * 
+ * TestReturneringer fejler ved ordrenummer.. Binding?
+ * 
+ * TestIndkøbsordre fejler med SQL for mange argumenter
+ * 
+ * TestSalgsordre virker.
+*/
