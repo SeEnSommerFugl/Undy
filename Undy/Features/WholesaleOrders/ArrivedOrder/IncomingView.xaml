@@ -5,7 +5,6 @@
 
     <Border Style="{DynamicResource Card}">
         <Grid>
-
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

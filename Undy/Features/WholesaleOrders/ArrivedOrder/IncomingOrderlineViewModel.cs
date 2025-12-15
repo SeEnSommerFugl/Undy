@@ -41,6 +41,6 @@
                 calculated = OrderedQuantity - AlreadyReceived;
             }
             return Difference = calculated;
-         }
+        }
     }
 }

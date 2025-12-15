@@ -65,11 +65,9 @@ namespace Undy.Features.ViewModel
             if (SelectedProduct == null || Quantity <= 0)
                 return;
 
-            // (Valgfrit) Hvis du vil undgå dubletter: merge samme ProductID
             var existing = WholesaleOrderLines.FirstOrDefault(l => l.ProductID == SelectedProduct.ProductID);
             if (existing != null)
             {
-                // OBS: WholesaleOrderDisplay properties er set; så denne virker kun hvis de ikke er read-only
                 existing.Quantity += Quantity;
                 OnPropertyChanged(nameof(WholesaleOrderLines));
                 return;
@@ -86,7 +84,7 @@ namespace Undy.Features.ViewModel
 
                 // ProductWholesaleOrder-linje
                 Quantity = Quantity,
-                UnitPrice = SelectedProduct.Price,   // <-- ret hvis pris hedder noget andet
+                UnitPrice = SelectedProduct.Price,
                 QuantityReceived = 0
             };
 
@@ -105,13 +103,14 @@ namespace Undy.Features.ViewModel
                 return;
 
             var newWholesaleOrderId = Guid.NewGuid();
+            var orderDate = DateOnly.FromDateTime(DateTime.Today);
 
             // Ordrehoved (kun det nødvendige)
             var wholesaleOrder = new WholesaleOrder
             {
                 WholesaleOrderID = newWholesaleOrderId,
-                WholesaleOrderDate = DateOnly.FromDateTime(DateTime.Today),
-                ExpectedDeliveryDate = DateOnly.FromDateTime(ExpectedDeliveryDate.Value),
+                WholesaleOrderDate = orderDate,
+                ExpectedDeliveryDate = orderDate.AddMonths(9),
                 OrderStatus = "Afventer Modtagelse"
             };
 

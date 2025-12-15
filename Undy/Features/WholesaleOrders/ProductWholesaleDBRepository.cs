@@ -18,9 +18,6 @@
         // Stored procedure for deleting
         protected override string SqlDeleteById => "usp_DeleteById_WholesaleOrder";
 
-        // Stored procedure for partial orders
-        protected override string SqlPartialInsert => "usp_InsertPartial_WholesaleOrder";
-
         protected override ProductWholesaleOrder Map(IDataRecord r) => new ProductWholesaleOrder
         {
             WholesaleOrderID = r.GetGuid(r.GetOrdinal("WholesaleOrderID")),
