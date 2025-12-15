@@ -5,11 +5,12 @@
         private readonly IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly IBaseRepository<ProductWholesaleOrder, Guid> _productWholesaleOrderRepo;
+
         public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
         public ICollectionView WholesaleView { get; }
-
+        public ICollectionView LinesView { get; }
         public ObservableCollection<IncomingOrderLineViewModel> Lines { get; }
-        private WholesaleOrder? _selectedOrder;
+
         public ICommand ConfirmOrderCommand { get; }
 
         private bool _isFullyReceived;
@@ -25,7 +26,9 @@
             _productWholesaleOrderRepo = productWholesaleOrderRepo;
 
             WholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
+            WholesaleView.Filter = WholesaleFilter;
             Lines = new ObservableCollection<IncomingOrderLineViewModel>();
+            LinesView = CollectionViewSource.GetDefaultView(Lines);
 
             ConfirmOrderCommand = new RelayCommand(
                 async _ => await ConfirmAsync(),
@@ -35,7 +38,7 @@
 
         // ---------- Properties ----------
 
-
+        private WholesaleOrder? _selectedOrder;
         public WholesaleOrder? SelectedOrder
         {
             get => _selectedOrder;
@@ -43,42 +46,42 @@
             {
                 if (SetProperty(ref _selectedOrder, value))
                 {
-                    _ = LoadLinesForSelectedOrderAsync();
-                    (ConfirmOrderCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                    LoadLinesForSelectedOrder();
+                    //(ConfirmOrderCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
 
-        public bool IsFullyReceived
-        {
-            get => _isFullyReceived;
-            set
-            {
-                if (SetProperty(ref _isFullyReceived, value))
-                {
-                    if (_isFullyReceived)
-                    {
-                        
-                        foreach (var line in Lines)
-                        {
-                            var remaining = line.OrderedQuantity - line.AlreadyReceived;
-                            if (remaining < 0)
-                                remaining = 0;
+        //public bool IsFullyReceived
+        //{
+        //    get => _isFullyReceived;
+        //    set
+        //    {
+        //        if (SetProperty(ref _isFullyReceived, value))
+        //        {
+        //            if (_isFullyReceived)
+        //            {
 
-                            line.ReceivedQuantity = remaining;
-                        }
-                    }
-                    else
-                    {
-                       
-                        foreach (var line in Lines)
-                        {
-                            line.ReceivedQuantity = 0;
-                        }
-                    }
-                }
-            }
-        }
+        //                foreach (var line in Lines)
+        //                {
+        //                    var remaining = line.OrderedQuantity - line.AlreadyReceived;
+        //                    if (remaining < 0)
+        //                        remaining = 0;
+
+        //                    line.ReceivedQuantity = remaining;
+        //                }
+        //            }
+        //            else
+        //            {
+
+        //                foreach (var line in Lines)
+        //                {
+        //                    line.ReceivedQuantity = 0;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         public string StatusMessage
         {
@@ -86,33 +89,29 @@
             set => SetProperty(ref _statusMessage, value);
         }
 
-
-
+        private bool WholesaleFilter(object obj)
+        {
+            if (obj is not WholesaleOrder order) return false;
+            bool isNotReceived = order.OrderStatus != "Modtaget";
+            return isNotReceived;
+        }
 
         // ---------- Hent linjer når SelectedOrder ændres ----------
-
-        private async Task LoadLinesForSelectedOrderAsync()
+        private void LoadLinesForSelectedOrder()
         {
-            Lines.Clear();
-            IsFullyReceived = false;
-
             if (SelectedOrder == null)
                 return;
+            Lines.Clear();
 
-            try
+            var orderLines = _productWholesaleOrderRepo.Items;
+
+            if (SelectedOrder != null)
             {
-                IsBusy = true;
-
-                // find alle linjer for den valgte ordre
-                var orderLines = _productWholesaleOrderRepo.Items
-                    .Where(l => l.WholesaleOrderID == SelectedOrder.WholesaleOrderID);
-
-                foreach (var line in orderLines)
+                foreach (var line in orderLines.Where(l => l.WholesaleOrderID == SelectedOrder.WholesaleOrderID))
                 {
                     // slå produktet op for navn/nummer (hvis det findes)
                     var product = _productRepo.Items
                         .FirstOrDefault(p => p.ProductID == line.ProductID);
-
                     Lines.Add(new IncomingOrderLineViewModel
                     {
                         WholesaleOrderID = line.WholesaleOrderID,
@@ -124,18 +123,56 @@
                         ReceivedQuantity = 0
                     });
                 }
-
-                // er alle linjer allerede fuldt modtaget?
-                var allAlreadyReceived = Lines.All(l => l.OrderedQuantity <= l.AlreadyReceived);
-                IsFullyReceived = allAlreadyReceived;
-
-                StatusMessage = string.Empty;
             }
-            finally
-            {
-                IsBusy = false;
-            }
+            LinesView.Refresh();
         }
+
+
+        //private void LoadLinesForSelectedOrderAsync()
+        //{
+        //    Lines.Clear();
+        //    IsFullyReceived = false;
+
+        //    if (SelectedOrder == null)
+        //        return;
+
+        //    try
+        //    {
+        //        IsBusy = true;
+
+        //        // find alle linjer for den valgte ordre
+        //        var orderLines = _productWholesaleOrderRepo.Items
+        //            .Where(l => l.WholesaleOrderID == SelectedOrder.WholesaleOrderID);
+
+        //        foreach (var line in orderLines)
+        //        {
+        //            // slå produktet op for navn/nummer (hvis det findes)
+        //            var product = _productRepo.Items
+        //                .FirstOrDefault(p => p.ProductID == line.ProductID);
+
+        //            Lines.Add(new IncomingOrderLineViewModel
+        //            {
+        //                WholesaleOrderID = line.WholesaleOrderID,
+        //                ProductID = line.ProductID,
+        //                ProductNumber = product?.ProductNumber ?? string.Empty,
+        //                ProductName = product?.ProductName ?? string.Empty,
+        //                OrderedQuantity = line.Quantity,
+        //                AlreadyReceived = line.QuantityReceived,
+        //                ReceivedQuantity = 0
+        //            });
+        //        }
+
+        //        // er alle linjer allerede fuldt modtaget?
+        //        var allAlreadyReceived = Lines.All(l => l.OrderedQuantity <= l.AlreadyReceived);
+        //        IsFullyReceived = allAlreadyReceived;
+
+        //        StatusMessage = string.Empty;
+        //    }
+        //    finally
+        //    {
+        //        IsBusy = false;
+        //    }
+        //}
 
         // ---------- Bekræft varemodtagelse ----------
 
@@ -158,11 +195,11 @@
                     return;
                 }
 
-                if (IsFullyReceived)
-                {
-                    // fuld modtagelse
-                    await concreteRepo.ConfirmFullReceiveAsync(SelectedOrder.WholesaleOrderNumber);
-                }
+                //if (IsFullyReceived)
+                //{
+                //    // fuld modtagelse
+                //    await concreteRepo.ConfirmFullReceiveAsync(SelectedOrder.WholesaleOrderNumber);
+                //}
                 else
                 {
                     // delvis modtagelse 
@@ -183,9 +220,7 @@
                 }
 
                 // reload data efter opdatering
-                await _wholesaleOrderRepo.InitializeAsync();
-                await _productWholesaleOrderRepo.InitializeAsync();
-                await LoadLinesForSelectedOrderAsync();
+                WholesaleView.Refresh();
 
                 StatusMessage = "Varemodtagelse registreret.";
             }
