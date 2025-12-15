@@ -77,5 +77,17 @@
             // Load order details into DataGrid
             viewModel.LoadOrderDetails(selectedOrder);
         }
+
+        private void SalesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is not SalesOrderViewModel viewModel)
+                return;
+
+            if (SalesListView.SelectedItem is not SalesOrderDisplay selectedOrder)
+                return;
+
+            viewModel.LoadOrderDetails(selectedOrder);
+        }
+
     }
 }

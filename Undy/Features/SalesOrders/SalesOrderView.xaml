@@ -61,9 +61,9 @@
                           MaxHeight="1000"
                           MouseDoubleClick="SalesListView_MouseDoubleClick">
                     <ListView.View>
-                        <GridView ColumnHeaderContainerStyle="{StaticResource SortableHeader}">
+                    <GridView ColumnHeaderContainerStyle="{StaticResource SortableHeader}">
 
-                            <!-- Order number -->
+                        <!-- Order number -->
                             <GridViewColumn Header="Ordrenummer"
                                 DisplayMemberBinding="{Binding SalesOrderNumber}" />
 
@@ -104,7 +104,7 @@
                                 DisplayMemberBinding="{Binding TotalPrice, StringFormat=C}" />
 
                         </GridView>
-                    </ListView.View>
+                </ListView.View>
                 </ListView>
 
                 <!-- DataGrid with selected order details -->
