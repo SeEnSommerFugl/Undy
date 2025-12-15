@@ -9,7 +9,7 @@
         public int OrderedQuantity { get; set; }
         public int AlreadyReceived { get; set; }
 
-        private int _receivedQuantity = 0;
+        private int _receivedQuantity;
         public int ReceivedQuantity
         {
             get => _receivedQuantity;

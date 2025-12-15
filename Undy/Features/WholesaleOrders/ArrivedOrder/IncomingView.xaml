@@ -134,6 +134,13 @@
                             </DataGridTemplateColumn>
 
                             <!-- Bestilt (kun læsning) -->
+                            <DataGridTextColumn Header="Allerede modtaget"
+                                                Binding="{Binding AlreadyReceived}"
+                                                Width="120"
+                                                ElementStyle="{StaticResource NumericCellStyle}"
+                                                IsReadOnly="True"/>
+
+                            <!-- Bestilt (kun læsning) -->
                             <DataGridTextColumn Header="Bestilt"
                                                 Binding="{Binding OrderedQuantity}"
                                                 Width="80"

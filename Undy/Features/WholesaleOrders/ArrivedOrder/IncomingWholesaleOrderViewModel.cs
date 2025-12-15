@@ -5,12 +5,10 @@
         private readonly IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly IBaseRepository<ProductWholesaleOrder, Guid> _productWholesaleOrderRepo;
-        private readonly ICollectionView _wholesaleView;
-        private readonly ICollectionView _linesView;
 
         public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
-        public ICollectionView WholesaleView => _wholesaleView;
-        public ICollectionView LinesView => _linesView;
+        public ICollectionView WholesaleView { get; }
+        public ICollectionView LinesView { get; }
         public ObservableCollection<IncomingOrderLineViewModel> Lines { get; }
 
         public ICommand ConfirmOrderCommand { get; }
@@ -27,9 +25,10 @@
             _productRepo = productRepo;
             _productWholesaleOrderRepo = productWholesaleOrderRepo;
 
-            _wholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
+            WholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
+            WholesaleView.Filter = WholesaleFilter;
             Lines = new ObservableCollection<IncomingOrderLineViewModel>();
-            _linesView = CollectionViewSource.GetDefaultView(Lines);
+            LinesView = CollectionViewSource.GetDefaultView(Lines);
 
             ConfirmOrderCommand = new RelayCommand(
                 async _ => await ConfirmAsync(),
@@ -90,7 +89,12 @@
             set => SetProperty(ref _statusMessage, value);
         }
 
-
+        private bool WholesaleFilter(object obj)
+        {
+            if (obj is not WholesaleOrder order) return false;
+            bool isNotReceived = order.OrderStatus != "Modtaget";
+            return isNotReceived;
+        }
 
 
         // ---------- Hent linjer når SelectedOrder ændres ----------
