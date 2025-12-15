@@ -160,10 +160,10 @@ GO
 -- Insert ProductWholesaleOrder
 CREATE OR ALTER  PROCEDURE usp_Insert_ProductWholesaleOrder
 	@WholesaleOrderID UNIQUEIDENTIFIER,
-	@WholesaleOrderNumber INT,
-	@ProductNumber NVARCHAR(255),
+	@ProductID UNIQUEIDENTIFIER,
 	@Quantity INT,
-	@UnitPrice DECIMAL(10,2)
+	@UnitPrice DECIMAL(10,2),
+	@QuantityReceived INT
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -176,17 +176,10 @@ BEGIN
 		RETURN;
 	END
 	
-	-- Look up ProductID from the user-friendly ProductNumber
-	DECLARE @ProductID UNIQUEIDENTIFIER;
-	
-	SELECT @ProductID = ProductID
-	FROM [Product]
-	WHERE ProductNumber = @ProductNumber;
-	
 	-- Validate Product exists
 	IF @ProductID IS NULL
 	BEGIN
-		RAISERROR('Product with ProductNumber %s not found', 16, 1, @ProductNumber);
+		RAISERROR('Product with ProductNumber %s not found', 16, 1);
 		RETURN;
 	END
 	
@@ -194,7 +187,7 @@ BEGIN
 	IF EXISTS(SELECT 1 FROM ProductWholesaleOrder 
 	          WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID)
 	BEGIN
-		RAISERROR('Product %s is already in this Wholesale order', 16, 1, @ProductNumber);
+		RAISERROR('The chosen product is already in this Wholesale order', 16, 1);
 		RETURN;
 	END
 	
