@@ -110,7 +110,9 @@ namespace Undy.Features.ViewModel
             var wholesaleOrder = new WholesaleOrder
             {
                 WholesaleOrderID = newWholesaleOrderId,
-                ExpectedDeliveryDate = DateOnly.FromDateTime(ExpectedDeliveryDate.Value)
+                WholesaleOrderDate = DateOnly.FromDateTime(DateTime.Today),
+                ExpectedDeliveryDate = DateOnly.FromDateTime(ExpectedDeliveryDate.Value),
+                OrderStatus = "Afventer Modtagelse"
             };
 
             await _wholesaleOrderRepo.AddAsync(wholesaleOrder);
