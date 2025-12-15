@@ -96,7 +96,6 @@
             return isNotReceived;
         }
 
-
         // ---------- Hent linjer når SelectedOrder ændres ----------
         private void LoadLinesForSelectedOrder()
         {
