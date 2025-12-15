@@ -1,10 +1,10 @@
 ﻿namespace Undy.Data.Repository
 {
-    public class CustomerSalesOrderDisplayDBRepository : BaseDBRepository<CustomerSalesOrderDisplay, Guid>
+    public class CustomerSalesOrderDBRepository : BaseDBRepository<CustomerSalesOrder, Guid>
     {
         protected override string SqlSelectAll => "SELECT * FROM vw_CustomerSalesOrders";
 
-        protected override CustomerSalesOrderDisplay Map(IDataRecord r) => new CustomerSalesOrderDisplay {
+        protected override CustomerSalesOrder Map(IDataRecord r) => new CustomerSalesOrder {
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
             SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
             DisplaySalesOrderNumber = r.GetString(r.GetOrdinal("DisplaySalesOrderNumber")),
@@ -19,6 +19,6 @@
             FullName = r.GetString(r.GetOrdinal("FullName"))
         };
 
-        protected override Guid GetKey(CustomerSalesOrderDisplay e) => e.SalesOrderID;
+        protected override Guid GetKey(CustomerSalesOrder e) => e.SalesOrderID;
     }
 }

@@ -26,28 +26,59 @@
                 new FrameworkPropertyMetadata(
                     XmlLanguage.GetLanguage(culture.IetfLanguageTag)));
 
-            // ----- Shared Instances ----- //
+            // ----- Shared Repository Instances ----- //
             IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo = new WholesaleOrderDBRepository();
             IBaseRepository<SalesOrder, Guid> salesOrderRepo = new SalesOrderDBRepository();
-            IBaseRepository<ReturnOrder, Guid> testReturnRepo = new ReturnOrderDBRepository();
-            IBaseRepository<SalesOrder, Guid> testSalesOrderRepo = new SalesOrderDBRepository();
-            IBaseRepository<SalesOrderDisplay, Guid> salesOrderDisplayRepo = new SalesOrderDisplayDBRepository();
+            IBaseRepository<ReturnOrder, Guid> returnOrderRepo = new ReturnOrderDBRepository();
+
             IBaseRepository<WholesaleOrderDisplay, Guid> wholesaleOrderDisplayRepo = new WholesaleOrderDisplayDBRepository();
             IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo = new ProductWholesaleOrderDBRepository();
             IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo = new ProductSalesOrderDBRepository();
+
             IBaseRepository<Customer, Guid> customerRepo = new CustomerDBRepository();
-            IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo = new CustomerSalesOrderDisplayDBRepository();
+            IBaseRepository<CustomerSalesOrder, Guid> customerSalesOrderRepo = new CustomerSalesOrderDBRepository();
             IBaseRepository<Product, Guid> productRepo = new ProductDBRepository();
 
-            //----- ViewModels ----- //
+            // ----- ViewModels ----- //
             var startPageVM = new StartPageViewModel();
-            var wholesaleOrderVM = new WholesaleOrderViewModel(wholesaleOrderDisplayRepo, productRepo, productWholesaleOrderRepo);
-            var incomingWholesaleOrderVM = new IncomingWholesaleOrderViewModel(wholesaleOrderRepo, productRepo, productWholesaleOrderRepo);
-            var salesOrderVM = new SalesOrderViewModel(salesOrderDisplayRepo, productSalesOrderRepo);
-            var paymentVM = new PaymentViewModel(salesOrderRepo, customerSalesOrderDisplayRepo);
-            var testReturnOrderVM = new TestReturnOrderViewModel(testReturnRepo, testSalesOrderRepo);
-            var testSalesOrderVM = new TestSalesOrderViewModel(salesOrderRepo, productRepo, productSalesOrderRepo, customerRepo);
-            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(wholesaleOrderRepo, productRepo, productWholesaleOrderRepo);
+
+            var wholesaleOrderVM = new WholesaleOrderViewModel(
+                wholesaleOrderDisplayRepo,
+                productRepo,
+                productWholesaleOrderRepo);
+
+
+            var incomingWholesaleOrderVM = new IncomingWholesaleOrderViewModel(
+                wholesaleOrderRepo,
+                productRepo,
+                productWholesaleOrderRepo);
+
+            // IMPORTANT:
+            // SalesOrderVM og TestSalesOrderVM skal bruge SAMME salesOrderRepo instance,
+            // ellers virker "live" opdatering ikke.
+            var salesOrderVM = new SalesOrderViewModel(
+                salesOrderRepo,
+                productSalesOrderRepo);
+
+            var paymentVM = new PaymentViewModel(
+                salesOrderRepo,
+                customerSalesOrderRepo);
+
+            var testReturnOrderVM = new TestReturnOrderViewModel(
+                returnOrderRepo,
+                salesOrderRepo);
+
+            var testSalesOrderVM = new TestSalesOrderViewModel(
+                salesOrderRepo,
+                productRepo,
+                productSalesOrderRepo,
+                customerRepo);
+
+            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(
+                wholesaleOrderRepo,
+                productRepo,
+                productWholesaleOrderRepo);
+
             var productVM = new ProductViewModel(productRepo);
 
             var mainVM = new MainViewModel(
@@ -62,25 +93,23 @@
                 productVM
             );
 
-
             // ----- Main Window ----- //
             var mainWindow = new MainWindow(mainVM);
             mainWindow.Show();
 
-            //await startPageRepo.InitializeAsync();
+            // ----- Load data from DB ----- //
             await productRepo.InitializeAsync();
-            await wholesaleOrderRepo.InitializeAsync();
-            await salesOrderRepo.InitializeAsync();
-            await salesOrderDisplayRepo.InitializeAsync();
-            await wholesaleOrderDisplayRepo.InitializeAsync();
             await customerRepo.InitializeAsync();
-            await customerSalesOrderDisplayRepo.InitializeAsync();
-            await productWholesaleOrderRepo.InitializeAsync();
-            //await productSalesOrderRepo.InitializAsync();
-            //await testReturnRepo.InitializeAsync();
-            //await testPurchaseOrderRepo.InitializeAsync();
-            await testSalesOrderRepo.InitializeAsync();
 
+            await wholesaleOrderRepo.InitializeAsync();
+            await productWholesaleOrderRepo.InitializeAsync();
+            await wholesaleOrderDisplayRepo.InitializeAsync();
+
+            await salesOrderRepo.InitializeAsync();
+            await productSalesOrderRepo.InitializeAsync();
+            await customerSalesOrderRepo.InitializeAsync();
+
+            await returnOrderRepo.InitializeAsync();
         }
     }
 }

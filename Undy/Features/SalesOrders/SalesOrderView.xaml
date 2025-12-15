@@ -61,50 +61,32 @@
                           MaxHeight="1000"
                           MouseDoubleClick="SalesListView_MouseDoubleClick">
                     <ListView.View>
-                    <GridView ColumnHeaderContainerStyle="{StaticResource SortableHeader}">
+                        <GridView ColumnHeaderContainerStyle="{StaticResource SortableHeader}">
 
-                        <!-- Order number -->
                             <GridViewColumn Header="Ordrenummer"
-                                DisplayMemberBinding="{Binding SalesOrderNumber}" />
+                    DisplayMemberBinding="{Binding SalesOrderNumber}" />
 
-                            <!-- Order status -->
                             <GridViewColumn Header="Ordrestatus"
-                                DisplayMemberBinding="{Binding OrderStatus}" />
+                    DisplayMemberBinding="{Binding OrderStatus}" />
 
-                            <!-- Payment Status -->
                             <GridViewColumn Header="Betalingsstatus"
-                                DisplayMemberBinding="{Binding PaymentStatus}" />
+                    DisplayMemberBinding="{Binding PaymentStatus}" />
 
-                            <!-- Sales Date -->
                             <GridViewColumn Header="Dato"
-                                DisplayMemberBinding="{Binding SalesDate}" />
+                    DisplayMemberBinding="{Binding SalesDate}" />
 
-                            <!-- Product Name -->
-                            <GridViewColumn Header="Produktnavn"
-                                DisplayMemberBinding="{Binding ProductName}" />
-
-                            <!-- Quantity -->
-                            <GridViewColumn Header="Antal"
-                                DisplayMemberBinding="{Binding Quantity}" />
-
-                            <!-- Total Price -->
-                            <GridViewColumn Header="Total Pris"
-                                DisplayMemberBinding="{Binding TotalPrice, StringFormat=C}" />
-
-                            <!-- Customer name -->
                             <GridViewColumn Header="Kundenavn"
-                                DisplayMemberBinding="{Binding CustomerName}" />
+                    DisplayMemberBinding="{Binding CustomerName}" />
 
-                            <!-- City -->
                             <GridViewColumn Header="By"
-                                DisplayMemberBinding="{Binding City}" />
+                    DisplayMemberBinding="{Binding City}" />
 
-                            <!-- Total Order price -->
                             <GridViewColumn Header="Total Pris"
-                                DisplayMemberBinding="{Binding TotalPrice, StringFormat=C}" />
+                    DisplayMemberBinding="{Binding TotalPrice, StringFormat=C}" />
 
                         </GridView>
-                </ListView.View>
+
+                    </ListView.View>
                 </ListView>
 
                 <!-- DataGrid with selected order details -->

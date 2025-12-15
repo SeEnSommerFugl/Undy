@@ -1,6 +1,6 @@
 ﻿namespace Undy.Models
 {
-    public class CustomerSalesOrderDisplay : INotifyPropertyChanged
+    public class CustomerSalesOrder : INotifyPropertyChanged
     {
         // Nøgle fra SalesOrder
         public Guid SalesOrderID { get; set; }

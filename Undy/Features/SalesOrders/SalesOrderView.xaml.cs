@@ -60,6 +60,7 @@
         }
 
         // Handles double click on a sales order
+        // Edit reason: No auto-update on selection, user must double-click to load details
         private void SalesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // Get view model
@@ -69,23 +70,12 @@
             }
 
             // Get selected order
-            if (SalesListView.SelectedItem is not SalesOrderDisplay selectedOrder)
+            if (SalesListView.SelectedItem is not SalesOrder selectedOrder)
             {
                 return;
             }
 
             // Load order details into DataGrid
-            viewModel.LoadOrderDetails(selectedOrder);
-        }
-
-        private void SalesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DataContext is not SalesOrderViewModel viewModel)
-                return;
-
-            if (SalesListView.SelectedItem is not SalesOrderDisplay selectedOrder)
-                return;
-
             viewModel.LoadOrderDetails(selectedOrder);
         }
 
