@@ -110,6 +110,7 @@ namespace Undy.Features.ViewModel
             var wholesaleOrder = new WholesaleOrder
             {
                 WholesaleOrderID = newWholesaleOrderId,
+                WholesaleOrderDate = DateOnly.FromDateTime(DateTime.Today),
                 ExpectedDeliveryDate = DateOnly.FromDateTime(ExpectedDeliveryDate.Value)
             };
 
@@ -125,7 +126,7 @@ namespace Undy.Features.ViewModel
                 QuantityReceived = 0
             });
 
-            await _productWholesaleOrderRepo.AddRangeAsync2(lines);
+            await _productWholesaleOrderRepo.AddRangeAsync(lines);
         }
     }
 }

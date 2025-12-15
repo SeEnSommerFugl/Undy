@@ -23,10 +23,14 @@
  * Lister skal kobles sammen. 
  * 
  * Betalinger mangler SQL "SelectByID"
+ * Mangler binding på checkmark til at select produkt 
+ * Checkmark selecter ikke, medmindre linjen er selected.
  * 
  * TestReturneringer fejler ved ordrenummer.. Binding?
  * 
  * TestIndkøbsordre fejler med SQL for mange argumenter
  * 
  * TestSalgsordre virker.
+ * 
+ * Vi har ingen metode til at oprette nye produkter???
 */
