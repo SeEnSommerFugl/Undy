@@ -3,6 +3,7 @@
     public class TestReturnOrderViewModel : BaseViewModel
     {
         private IBaseRepository<ReturnOrder, Guid> _tempReturnRepo;
+        private IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
 
         private string? _orderNumber;
         public string? OrderNumber
@@ -44,9 +45,10 @@
 
         public ICommand ConfirmCommand { get; }
 
-        public TestReturnOrderViewModel(IBaseRepository<ReturnOrder, Guid> tempReturnRepo)
+        public TestReturnOrderViewModel(IBaseRepository<ReturnOrder, Guid> tempReturnRepo, IBaseRepository<SalesOrder, Guid> salesOrderRepo)
         {
             _tempReturnRepo = tempReturnRepo;
+            _salesOrderRepo = salesOrderRepo;
 
             ConfirmCommand = new RelayCommand(ConfirmAction, CanConfirm);
         }

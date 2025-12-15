@@ -22,8 +22,8 @@ namespace Undy.Features.ViewModel
         public ICommand RemoveWholesaleOrderLineCommand { get; }
         public ICommand AddProductCommand { get; }
 
-        private Product _selectedProduct;
-        public Product SelectedProduct
+        private Product? _selectedProduct;
+        public Product? SelectedProduct
         {
             get => _selectedProduct;
             set => SetProperty(ref _selectedProduct, value);
@@ -128,6 +128,13 @@ namespace Undy.Features.ViewModel
             });
 
             await _productWholesaleOrderRepo.AddRangeAsync(lines);
+
+            // Ryd op i ViewModel efter oprettelse
+            WholesaleOrderLines.Clear();
+            ExpectedDeliveryDate = DateTime.Today;
+            SelectedProduct = null;
+            Quantity = 0;
+
         }
     }
 }

@@ -15,6 +15,9 @@
         public string CustomerName { get; private set; }
         public decimal TotalAmount { get; private set; }
 
+        //Order line selections using hashset
+        private HashSet<Guid> _selectedSalesOrderIds = new HashSet<Guid>();
+
         // Info om valgt ordre 
         private CustomerSalesOrderDisplay _selectedOrder;
         public CustomerSalesOrderDisplay SelectedOrder
@@ -23,6 +26,14 @@
             set
             {
                 if(SetProperty(ref _selectedOrder, value));
+            }
+        }
+
+        private bool _isSelectedForPayment;
+        public bool IsSelectedForPayment {
+            get => _isSelectedForPayment;
+            set {
+                if(SetProperty(ref _isSelectedForPayment, value));
             }
         }
 
@@ -51,8 +62,13 @@
 
             ConfirmPaymentCommand = new RelayCommand(
                 async _ => await ConfirmPaymentAsync(),
-                _ => SelectedOrder != null && SelectedOrder.IsSelectedForPayment
+                _ => _selectedSalesOrderIds.Any()
             );
+
+            //ConfirmPaymentCommand = new RelayCommand(
+            //    async _ => await ConfirmPaymentAsync(),
+            //    _ => SelectedOrder != null && SelectedOrder.IsSelectedForPayment
+            //);
         }
         
         // Refresh 
@@ -113,6 +129,16 @@
             RefreshPaymentView();
 
             StatusMessage = "Betaling registreret.";
+        }
+
+        public bool IsSalesOrderSelected(Guid SalesOrderID) => _selectedSalesOrderIds.Contains(SalesOrderID);
+
+        public void SetSalesOrderSelection(Guid SalesOrderID, bool IsSelectedForPayment) {
+            if(IsSelectedForPayment) {
+                _selectedSalesOrderIds.Add(SalesOrderID);
+            } else {
+                _selectedSalesOrderIds.Remove(SalesOrderID);
+            }
         }
     }
 }
