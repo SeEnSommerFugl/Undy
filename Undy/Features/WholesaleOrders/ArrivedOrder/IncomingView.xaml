@@ -88,7 +88,7 @@
 
                     <!-- DataGrid for linjer -->
                     <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding Lines}"
+                              ItemsSource="{Binding LinesView}"
                               AutoGenerateColumns="False"
                               HeadersVisibility="Column"
                               AlternationCount="2"

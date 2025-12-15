@@ -28,9 +28,7 @@
  * 
  * TestReturneringer fejler ved ordrenummer.. Binding?
  * 
- * TestIndkøbsordre fejler med SQL for mange argumenter
- * 
- * TestSalgsordre virker.
+ * TestIndkøbsordre og indkøb skal bindes sammen til samme View.
  * 
  * Vi har ingen metode til at oprette nye produkter???
 */
