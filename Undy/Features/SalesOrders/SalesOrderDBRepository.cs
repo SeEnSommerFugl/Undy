@@ -2,8 +2,13 @@
 {
     public class SalesOrderDBRepository : BaseDBRepository<SalesOrder, Guid>
     {
+
+        // OLD: protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrder";
+        // Issue: SalesOrders will give 1 row per orderline, returning SalesOrderID/SalesOrderNumber/CustomerID repeatedly.
+        // ListView will show same order many times, UI can't differentiate properly between "What's an order" and "What's an order line".
+
         // View for selecting all
-        protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrders";
+        protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrderHeaders";
 
         // Stored procedure for getting by id
         protected override string SqlSelectById => "usp_SelectById_SalesOrder";
@@ -20,7 +25,10 @@
         // Map data record to entity
         protected override SalesOrder Map(IDataRecord r) => new SalesOrder
         {
+            // Very important: None of these fields are ever permitted to be null during runtime.
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
+            CustomerName = r.GetString(r.GetOrdinal("CustomerName")),
+            City = r.GetString(r.GetOrdinal("City")),
             CustomerID = r.GetGuid(r.GetOrdinal("CustomerID")),
             SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
             OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
@@ -42,12 +50,12 @@
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 255).Value = e.OrderStatus;
             cmd.Parameters.Add("@SalesDate", SqlDbType.Date).Value = e.SalesDate;
             cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
-            cmd.Parameters.Add(@"CustomerID", SqlDbType.UniqueIdentifier).Value = e.CustomerID;
+            cmd.Parameters.Add("@CustomerID", SqlDbType.UniqueIdentifier).Value = e.CustomerID;
         }
         // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, SalesOrder e)
         {
-            cmd.Parameters.Add("SalesOrderID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
+            cmd.Parameters.Add("@SalesOrderID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 255).Value = e.OrderStatus;
             cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
         }

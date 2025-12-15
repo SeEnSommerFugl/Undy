@@ -3,10 +3,10 @@
     public class PaymentViewModel : BaseViewModel
     {
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
-        private readonly IBaseRepository<CustomerSalesOrderDisplay, Guid> _customerSalesOrderDisplayRepo;
+        private readonly IBaseRepository<CustomerSalesOrder, Guid> _customerSalesOrderRepo;
 
         // Liste med ALLE ordrer 
-        public ObservableCollection<CustomerSalesOrderDisplay> Orders => _customerSalesOrderDisplayRepo.Items;
+        public ObservableCollection<CustomerSalesOrder> Orders => _customerSalesOrderRepo.Items;
 
         // Viewet som UI binder til
         public ICollectionView PaymentView { get; }
@@ -19,13 +19,13 @@
         private HashSet<Guid> _selectedSalesOrderIds = new HashSet<Guid>();
 
         // Info om valgt ordre 
-        private CustomerSalesOrderDisplay _selectedOrder;
-        public CustomerSalesOrderDisplay SelectedOrder
+        private CustomerSalesOrder _selectedOrder;
+        public CustomerSalesOrder SelectedOrder
         {
             get => _selectedOrder;
             set
             {
-                if(SetProperty(ref _selectedOrder, value));
+                SetProperty(ref _selectedOrder, value);
             }
         }
 
@@ -33,7 +33,7 @@
         public bool IsSelectedForPayment {
             get => _isSelectedForPayment;
             set {
-                if(SetProperty(ref _isSelectedForPayment, value));
+                SetProperty(ref _isSelectedForPayment, value);
             }
         }
 
@@ -42,7 +42,7 @@
         {
             get => _statusMessage;
             set {
-                if (SetProperty(ref _statusMessage, value));
+                SetProperty(ref _statusMessage, value);
             }
         }
 
@@ -51,14 +51,14 @@
         // Constructor
         public PaymentViewModel(
             IBaseRepository<SalesOrder, Guid> salesOrderRepo,
-            IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo)
+            IBaseRepository<CustomerSalesOrder, Guid> customerSalesOrderRepo)
         {
             _salesOrderRepo = salesOrderRepo;
-            _customerSalesOrderDisplayRepo = customerSalesOrderDisplayRepo;
+            _customerSalesOrderRepo = customerSalesOrderRepo;
 
             PaymentView = CollectionViewSource.GetDefaultView(Orders);
             PaymentView.SortDescriptions.Add(new SortDescription("SalesDate", ListSortDirection.Descending));
-            PaymentView.Filter = po => po is CustomerSalesOrderDisplay paymentOrder && paymentOrder.PaymentStatus != "Betalt";
+            PaymentView.Filter = po => po is CustomerSalesOrder paymentOrder && paymentOrder.PaymentStatus != "Betalt";
 
             ConfirmPaymentCommand = new RelayCommand(
                 async _ => await ConfirmPaymentAsync(),
@@ -79,7 +79,7 @@
 
         
         // Vis info om valgt ordre
-        private void LoadSelectedOrderInfo(CustomerSalesOrderDisplay order)
+        private void LoadSelectedOrderInfo(CustomerSalesOrder order)
         {
             if (order == null)
             {

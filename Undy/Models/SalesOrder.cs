@@ -10,5 +10,9 @@
         public DateOnly SalesDate { get; set; }
         public decimal TotalPrice { get; set; }
         public string DisplaySalesOrderNumber { get; set; }
+
+        // Comes from View/Join - For display purposes only
+        public string? CustomerName { get; set; }
+        public string? City { get; set; }
     }
 }

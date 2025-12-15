@@ -3,7 +3,7 @@
     public class ProductSalesOrderDBRepository : BaseDBRepository<ProductSalesOrder, Guid>
     {
         // View for selecting all
-        protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrders";
+        protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrderLines";
 
         // Stored procedure for getting by id
         protected override string SqlSelectById => "usp_SelectById_Product";
@@ -21,7 +21,9 @@
         protected override ProductSalesOrder Map(IDataRecord r) => new ProductSalesOrder
         {
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
+            SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
             ProductID = r.GetGuid(r.GetOrdinal("ProductID")),
+            ProductNumber = r["ProductNumber"].ToString(),
             Quantity = r.GetInt32(r.GetOrdinal("Quantity")),
             UnitPrice = r.GetDecimal(r.GetOrdinal("UnitPrice"))
         };
@@ -35,7 +37,8 @@
         // Parameter binding for insert
         protected override void BindInsert(SqlCommand cmd, ProductSalesOrder e)
         {
-            cmd.Parameters.Add(@"SalesOrderID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
+            cmd.Parameters.Add("@SalesOrderID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
+
             cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255).Value = e.ProductNumber;
             cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
             cmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal).Value = e.UnitPrice;

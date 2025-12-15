@@ -3,13 +3,13 @@
     public class SalesOrderViewModel : BaseViewModel
     {
         // Repository for sales order display rows
-        private readonly IBaseRepository<SalesOrderDisplay, Guid> _salesDisplayRepo;
+        private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
 
         // Repository for product lines on sales orders
         private readonly IBaseRepository<ProductSalesOrder, Guid> _productSalesOrderRepo;
 
         // All sales orders for the ListView
-        public ObservableCollection<SalesOrderDisplay> SalesDisplay => _salesDisplayRepo.Items;
+        public ObservableCollection<SalesOrder> SalesDisplay => _salesOrderRepo.Items;
 
         // View for sorting and filtering
         public ICollectionView SaleView { get; }
@@ -21,35 +21,22 @@
         // Order status options used in the view
         public List<string> OrderStatusOptions { get; } = new() { "Afventer", "Afsendt" };
 
+        // 
+        // SaleView binds directly to Repository
         public SalesOrderViewModel(
-            IBaseRepository<SalesOrderDisplay, Guid> salesDisplayRepo,
+            IBaseRepository<SalesOrder, Guid> salesDisplayRepo,
             IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo)
         {
-            _salesDisplayRepo = salesDisplayRepo;
+            _salesOrderRepo = salesDisplayRepo;
             _productSalesOrderRepo = productSalesOrderRepo;
 
             SaleView = CollectionViewSource.GetDefaultView(SalesDisplay);
             SaleView.SortDescriptions.Add(new SortDescription("SalesDate", ListSortDirection.Descending));
-
-            foreach (var salesOrder in SalesDisplay)
-            {
-                salesOrder.PropertyChanged += salesOrder_PropertyChanged;
-            }
         }
 
-        private void salesOrder_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (sender is SalesOrderDisplay salesOrder)
-            {
-                if (e.PropertyName == nameof(salesOrder.OrderStatus))
-                {
-                    // Save updated status to the database
-                    _salesDisplayRepo.UpdateAsync(salesOrder);
-                }
-            }
-        }
-
-        public void LoadOrderDetails(SalesOrderDisplay selectedOrder)
+        // SelectedOrderDetails is a separate collection
+        // LoadOrderDetails filters lines with SalesOrderID
+        public void LoadOrderDetails(SalesOrder selectedOrder)
         {
             // Clear old lines
             SelectedOrderDetails.Clear();
