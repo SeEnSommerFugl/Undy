@@ -483,7 +483,6 @@ CREATE OR ALTER PROCEDURE usp_Update_WholesaleOrder
 	@WholesaleOrderID UNIQUEIDENTIFIER,
 	@ExpectedDeliveryDate DATE,
 	@WholesaleOrderDate DATE,
-	@DeliveryDate DATE,
 	@OrderStatus NVARCHAR(255)
 AS
 BEGIN
@@ -507,7 +506,6 @@ BEGIN
 	SET 
 		ExpectedDeliveryDate = ISNULL(@ExpectedDeliveryDate, ExpectedDeliveryDate),
 		WholesaleOrderDate = ISNULL(@WholesaleOrderDate, WholesaleOrderDate),
-		DeliveryDate = ISNULL(@DeliveryDate, DeliveryDate),
 		OrderStatus = ISNULL(@OrderStatus, OrderStatus)
 	WHERE WholesaleOrderID = @WholesaleOrderID;
 END;
@@ -545,35 +543,52 @@ BEGIN
 		RETURN;
 	END
 
+	-- Update the line itself
+    UPDATE ProductWholesaleOrder
+    SET Quantity = @Quantity,
+        UnitPrice = @UnitPrice,
+        QuantityReceived = ISNULL(QuantityReceived, 0) + @QuantityReceived
+    WHERE WholesaleOrderID = @WholesaleOrderID
+      AND ProductID = @ProductID;
+
 	-- Update stock based on received quantity
 	UPDATE [Product]
 	SET NumberInStock = NumberInStock + @QuantityReceived
 	WHERE ProductID = @ProductID;
 
 		-- Check if all products are fully received
-	DECLARE @PendingItems INT;
+	DECLARE @PendingItems INT,
+			@ReceivedQuantity INT;
 	
-	SELECT @PendingItems = COUNT(*)
+	SELECT
+	    @PendingItems  = SUM(Quantity - ISNULL(QuantityReceived, 0)),
+	    @ReceivedQuantity = SUM(ISNULL(QuantityReceived, 0))
 	FROM ProductWholesaleOrder
-	WHERE WholesaleOrderID = @WholesaleOrderID
-	AND QuantityReceived < Quantity;
+	WHERE WholesaleOrderID = @WholesaleOrderID;
 
 	-- Update order status based on completion
-	IF @PendingItems = 0
+	IF @PendingQuantity = 0
 	BEGIN
-		UPDATE WholesaleOrder
-		SET OrderStatus = 'Modtaget', 
-		    DeliveryDate = GETDATE()
-		WHERE WholesaleOrderID = @WholesaleOrderID;
+	    UPDATE WholesaleOrder
+	    SET OrderStatus = 'Modtaget',
+	        DeliveryDate = CAST(GETDATE() AS date)
+	    WHERE WholesaleOrderID = @WholesaleOrderID;
+	END
+	ELSE IF @ReceivedQuantity = 0
+	BEGIN
+	    UPDATE WholesaleOrder
+	    SET OrderStatus = 'Afventer Modtagelse',
+	        DeliveryDate = NULL
+	    WHERE WholesaleOrderID = @WholesaleOrderID;
 	END
 	ELSE
 	BEGIN
-		UPDATE WholesaleOrder
-		SET OrderStatus = 'Delvist Modtaget'
-		WHERE WholesaleOrderID = @WholesaleOrderID;
+	    UPDATE WholesaleOrder
+	    SET OrderStatus = 'Delvist Modtaget',
+	        DeliveryDate = NULL
+	    WHERE WholesaleOrderID = @WholesaleOrderID;
 	END
 
-	
 END;
 GO
 
