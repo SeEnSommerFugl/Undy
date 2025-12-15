@@ -320,3 +320,103 @@ EXEC usp_Insert_Customer
     @City = 'Klitby',
     @PostalCode = 2500
 GO
+
+
+
+CREATE OR ALTER PROCEDURE usp_UpdatePartial_WholesaleOrder 
+	@WholesaleOrderNumber INT, 
+	@ProductNumber NVARCHAR(255),
+	@Quantity INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE @WholesaleOrderID UNIQUEIDENTIFIER;
+	
+	SELECT @WholesaleOrderID = WholesaleOrderID
+	FROM WholesaleOrder
+	WHERE WholesaleOrderNumber = @WholesaleOrderNumber;
+	
+	-- Validate Wholesale order exists
+	IF NOT EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
+	BEGIN
+		RAISERROR('Wholesale order does not exist', 16, 1);
+		RETURN;
+	END
+
+	-- Look up ProductID from ProductNumber
+	DECLARE @ProductID UNIQUEIDENTIFIER;
+	
+	SELECT @ProductID = ProductID
+	FROM [Product]
+	WHERE ProductNumber = @ProductNumber;
+	
+	IF @ProductID IS NULL
+	BEGIN
+		RAISERROR('Product with ProductNumber %s not found', 16, 1, @ProductNumber);
+		RETURN;
+	END
+
+	-- Validate product exists in Wholesale order
+	IF NOT EXISTS(SELECT 1 FROM ProductWholesaleOrder 
+	              WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID)
+	BEGIN
+		RAISERROR('Product %s is not in this Wholesale order', 16, 1, @ProductNumber);
+		RETURN;
+	END
+
+	-- Get current received quantity
+	DECLARE @ReceivedQuantity INT;
+	DECLARE @OrderedQuantity INT;
+	
+	SELECT 
+		@ReceivedQuantity = ISNULL(QuantityReceived, 0),
+		@OrderedQuantity = Quantity
+	FROM ProductWholesaleOrder
+	WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
+
+
+	-- Update stock based on received quantity
+	UPDATE [Product]
+	SET NumberInStock = NumberInStock + @Quantity
+	WHERE ProductID = @ProductID;
+
+	-- Update quantity received in Wholesale order
+	UPDATE ProductWholesaleOrder
+	SET QuantityReceived = QuantityReceived + @Quantity
+	WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
+
+	-- Check if all products are fully received
+	DECLARE @PendingItems INT;
+	
+	SELECT @PendingItems = COUNT(*)
+	FROM ProductWholesaleOrder
+	WHERE WholesaleOrderID = @WholesaleOrderID
+	AND QuantityReceived < Quantity;
+
+	-- Update order status based on completion
+	IF @PendingItems = 0
+	BEGIN
+		UPDATE WholesaleOrder
+		SET OrderStatus = 'Modtaget', 
+		    DeliveryDate = GETDATE()
+		WHERE WholesaleOrderID = @WholesaleOrderID;
+	END
+	ELSE
+	BEGIN
+		UPDATE WholesaleOrder
+		SET OrderStatus = 'Delvist Modtaget'
+		WHERE WholesaleOrderID = @WholesaleOrderID;
+	END
+END;
+GO
+
+CREATE OR ALTER TRIGGER trg_AfterInsert_ProductWholesaleOrder
+ON ProductWholesaleOrder
+AFTER UPDATE
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+
+END;

@@ -105,13 +105,14 @@ namespace Undy.Features.ViewModel
                 return;
 
             var newWholesaleOrderId = Guid.NewGuid();
+            var orderDate = DateOnly.FromDateTime(DateTime.Today);
 
             // Ordrehoved (kun det nødvendige)
             var wholesaleOrder = new WholesaleOrder
             {
                 WholesaleOrderID = newWholesaleOrderId,
-                WholesaleOrderDate = DateOnly.FromDateTime(DateTime.Today),
-                ExpectedDeliveryDate = DateOnly.FromDateTime(ExpectedDeliveryDate.Value),
+                WholesaleOrderDate = orderDate,
+                ExpectedDeliveryDate = orderDate.AddMonths(9),
                 OrderStatus = "Afventer Modtagelse"
             };
 

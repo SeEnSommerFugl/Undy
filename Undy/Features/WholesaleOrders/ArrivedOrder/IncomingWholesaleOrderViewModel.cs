@@ -7,6 +7,7 @@
         private readonly IBaseRepository<ProductWholesaleOrder, Guid> _productWholesaleOrderRepo;
 
         public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
+        public ObservableCollection<ProductWholesaleOrder> ProductWholesaleOrders => _productWholesaleOrderRepo.Items;
         public ICollectionView WholesaleView { get; }
         public ICollectionView LinesView { get; }
         public ObservableCollection<IncomingOrderLineViewModel> Lines { get; }
@@ -52,37 +53,6 @@
             }
         }
 
-        //public bool IsFullyReceived
-        //{
-        //    get => _isFullyReceived;
-        //    set
-        //    {
-        //        if (SetProperty(ref _isFullyReceived, value))
-        //        {
-        //            if (_isFullyReceived)
-        //            {
-
-        //                foreach (var line in Lines)
-        //                {
-        //                    var remaining = line.OrderedQuantity - line.AlreadyReceived;
-        //                    if (remaining < 0)
-        //                        remaining = 0;
-
-        //                    line.ReceivedQuantity = remaining;
-        //                }
-        //            }
-        //            else
-        //            {
-
-        //                foreach (var line in Lines)
-        //                {
-        //                    line.ReceivedQuantity = 0;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
         public string StatusMessage
         {
             get => _statusMessage;
@@ -127,55 +97,7 @@
             LinesView.Refresh();
         }
 
-
-        //private void LoadLinesForSelectedOrderAsync()
-        //{
-        //    Lines.Clear();
-        //    IsFullyReceived = false;
-
-        //    if (SelectedOrder == null)
-        //        return;
-
-        //    try
-        //    {
-        //        IsBusy = true;
-
-        //        // find alle linjer for den valgte ordre
-        //        var orderLines = _productWholesaleOrderRepo.Items
-        //            .Where(l => l.WholesaleOrderID == SelectedOrder.WholesaleOrderID);
-
-        //        foreach (var line in orderLines)
-        //        {
-        //            // slå produktet op for navn/nummer (hvis det findes)
-        //            var product = _productRepo.Items
-        //                .FirstOrDefault(p => p.ProductID == line.ProductID);
-
-        //            Lines.Add(new IncomingOrderLineViewModel
-        //            {
-        //                WholesaleOrderID = line.WholesaleOrderID,
-        //                ProductID = line.ProductID,
-        //                ProductNumber = product?.ProductNumber ?? string.Empty,
-        //                ProductName = product?.ProductName ?? string.Empty,
-        //                OrderedQuantity = line.Quantity,
-        //                AlreadyReceived = line.QuantityReceived,
-        //                ReceivedQuantity = 0
-        //            });
-        //        }
-
-        //        // er alle linjer allerede fuldt modtaget?
-        //        var allAlreadyReceived = Lines.All(l => l.OrderedQuantity <= l.AlreadyReceived);
-        //        IsFullyReceived = allAlreadyReceived;
-
-        //        StatusMessage = string.Empty;
-        //    }
-        //    finally
-        //    {
-        //        IsBusy = false;
-        //    }
-        //}
-
         // ---------- Bekræft varemodtagelse ----------
-
         private async Task ConfirmAsync()
         {
             if (SelectedOrder == null)
@@ -184,54 +106,61 @@
                 return;
             }
 
-            try
-            {
-                IsBusy = true;
 
-                // vi skal bruge de ekstra metoder på det KONKRETE repo
-                if (_wholesaleOrderRepo is not WholesaleOrderDBRepository concreteRepo)
-                {
-                    StatusMessage = "Kan ikke bekræfte varemodtagelse (forkert repo-type).";
-                    return;
-                }
+            //if (SelectedOrder == null)
+            //{
+            //    StatusMessage = "Vælg en ordre først.";
+            //    return;
+            //}
 
-                //if (IsFullyReceived)
-                //{
-                //    // fuld modtagelse
-                //    await concreteRepo.ConfirmFullReceiveAsync(SelectedOrder.WholesaleOrderNumber);
-                //}
-                else
-                {
-                    // delvis modtagelse 
-                    foreach (var line in Lines.Where(l => l.ReceivedQuantity > 0))
-                    {
-                        var maxRemaining = line.OrderedQuantity - line.AlreadyReceived;
-                        if (line.ReceivedQuantity > maxRemaining)
-                        {
-                            
-                            continue;
-                        }
+            //try
+            //{
+            //    IsBusy = true;
 
-                        await concreteRepo.ConfirmPartialReceiveAsync(
-                            SelectedOrder.WholesaleOrderNumber,
-                            line.ProductNumber,
-                            line.ReceivedQuantity);
-                    }
-                }
+            //    // vi skal bruge de ekstra metoder på det KONKRETE repo
+            //    if (_wholesaleOrderRepo is not WholesaleOrderDBRepository concreteRepo)
+            //    {
+            //        StatusMessage = "Kan ikke bekræfte varemodtagelse (forkert repo-type).";
+            //        return;
+            //    }
 
-                // reload data efter opdatering
-                WholesaleView.Refresh();
+            //    if (IsFullyReceived)
+            //    {
+            //        // fuld modtagelse
+            //        await concreteRepo.ConfirmFullReceiveAsync(SelectedOrder.WholesaleOrderNumber);
+            //    }
+            //    else
+            //    {
+            //        // delvis modtagelse 
+            //        foreach (var line in Lines.Where(l => l.ReceivedQuantity > 0))
+            //        {
+            //            var maxRemaining = line.OrderedQuantity - line.AlreadyReceived;
+            //            if (line.ReceivedQuantity > maxRemaining)
+            //            {
 
-                StatusMessage = "Varemodtagelse registreret.";
-            }
-            catch
-            {
-                StatusMessage = "Der opstod en fejl ved varemodtagelsen.";
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            //                continue;
+            //            }
+
+            //            await concreteRepo.ConfirmPartialReceiveAsync(
+            //                SelectedOrder.WholesaleOrderNumber,
+            //                line.ProductNumber,
+            //                line.ReceivedQuantity);
+            //        }
+            //    }
+
+            //    // reload data efter opdatering
+            //    WholesaleView.Refresh();
+
+            //    StatusMessage = "Varemodtagelse registreret.";
+            //}
+            //catch
+            //{
+            //    StatusMessage = "Der opstod en fejl ved varemodtagelsen.";
+            //}
+            //finally
+            //{
+            //    IsBusy = false;
+            //}
         }
     }
 }

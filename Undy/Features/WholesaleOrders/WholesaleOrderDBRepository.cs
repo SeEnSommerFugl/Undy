@@ -18,7 +18,6 @@
         protected override string SqlDeleteById => "usp_DeleteById_WholesaleOrder";
 
         // Stored procedure for partial orders
-        protected override string SqlPartialInsert => "usp_InsertPartial_WholesaleOrder";
 
         // Map data record to entity 
         protected override WholesaleOrder Map(IDataRecord r) => new WholesaleOrder
@@ -65,42 +64,42 @@
         // Get key from entity
         protected override Guid GetKey(WholesaleOrder e) => e.WholesaleOrderID;
 
-        public async Task ConfirmFullReceiveAsync(int wholesaleOrderNumber)
-        {
-            using var con = await DB.OpenConnection();
-            using var cmd = new SqlCommand("usp_Update_WholesaleOrder", con)
-            {
-                CommandType = CommandType.StoredProcedure
-            };
+        //public async Task ConfirmFullReceiveAsync(int wholesaleOrderNumber)
+        //{
+        //    using var con = await DB.OpenConnection();
+        //    using var cmd = new SqlCommand("usp_Update_WholesaleOrder", con)
+        //    {
+        //        CommandType = CommandType.StoredProcedure
+        //    };
 
-            cmd.Parameters.Add("@WholesaleOrderNumber", SqlDbType.Int)
-               .Value = wholesaleOrderNumber;
+        //    cmd.Parameters.Add("@WholesaleOrderNumber", SqlDbType.Int)
+        //       .Value = wholesaleOrderNumber;
 
-            await cmd.ExecuteNonQueryAsync();
-        }
+        //    await cmd.ExecuteNonQueryAsync();
+        //}
 
-        public async Task ConfirmPartialReceiveAsync(
-            int wholesaleOrderNumber,
-            string productNumber,
-            int quantity)
-        {
-            using var con = await DB.OpenConnection();
-            using var cmd = new SqlCommand("usp_UpdatePartial_WholesaleOrder", con)
-            {
-                CommandType = CommandType.StoredProcedure
-            };
+        //public async Task ConfirmPartialReceiveAsync(
+        //    int wholesaleOrderNumber,
+        //    string productNumber,
+        //    int quantity)
+        //{
+        //    using var con = await DB.OpenConnection();
+        //    using var cmd = new SqlCommand("usp_UpdatePartial_WholesaleOrder", con)
+        //    {
+        //        CommandType = CommandType.StoredProcedure
+        //    };
 
-            cmd.Parameters.Add("@WholesaleOrderNumber", SqlDbType.Int)
-                .Value = wholesaleOrderNumber;
+        //    cmd.Parameters.Add("@WholesaleOrderNumber", SqlDbType.Int)
+        //        .Value = wholesaleOrderNumber;
 
-            cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255)
-                .Value = productNumber;
+        //    cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255)
+        //        .Value = productNumber;
 
-            cmd.Parameters.Add("@Quantity", SqlDbType.Int)
-                .Value = quantity;
+        //    cmd.Parameters.Add("@Quantity", SqlDbType.Int)
+        //        .Value = quantity;
 
-            await cmd.ExecuteNonQueryAsync();
-        }
+        //    await cmd.ExecuteNonQueryAsync();
+        //}
     };
 }
 

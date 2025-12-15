@@ -27,7 +27,6 @@
         protected virtual string SqlInsert { get; }
         protected virtual string SqlUpdate { get; }
         protected virtual string SqlDeleteById { get; }
-        protected virtual string SqlPartialInsert { get; }
 
         // Mapping and bindings
         protected abstract T Map(IDataRecord r);

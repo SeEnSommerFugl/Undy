@@ -480,17 +480,14 @@ SELECT
 
 -- Update WholesaleOrder
 CREATE OR ALTER PROCEDURE usp_Update_WholesaleOrder 
-	@WholesaleOrderNumber INT 
+	@WholesaleOrderID UNIQUEIDENTIFIER,
+	@ExpectedDeliveryDate DATE,
+	@WholesaleOrderDate DATE,
+	@DeliveryDate DATE,
+	@OrderStatus NVARCHAR(255)
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	DECLARE @WholesaleOrderID UNIQUEIDENTIFIER;
-	
-	SELECT @WholesaleOrderID = WholesaleOrderID
-	FROM WholesaleOrder
-	WHERE WholesaleOrderNumber = @WholesaleOrderNumber;
-
 	
 	-- Validate Wholesale order exists
 	IF NOT EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
@@ -506,50 +503,26 @@ BEGIN
 		RETURN;
 	END
 
-	DECLARE @ReceivedQuantity INT;
-	DECLARE @OrderedQuantity INT;
-	
-	SELECT 
-		@ReceivedQuantity = ISNULL(QuantityReceived, 0),
-		@OrderedQuantity = Quantity
-	FROM ProductWholesaleOrder
-	WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
-
-	-- Update stock for each product in the order
-	UPDATE p
-	SET p.NumberInStock = p.NumberInStock + ppo.Quantity
-	FROM [Product] p
-	JOIN ProductWholesaleOrder ppo ON p.ProductID = ppo.ProductID
-	WHERE ppo.WholesaleOrderID = @WholesaleOrderID;
-
-	-- Update order status and delivery date
 	UPDATE WholesaleOrder
-	SET
-		DeliveryDate = GETDATE(),
-		OrderStatus = 'Modtaget'
-	WHERE WholesaleOrderID = @WholesaleOrderID;
-	
-	-- Update all products as fully received
-	UPDATE ProductWholesaleOrder
-	SET QuantityReceived = Quantity
+	SET 
+		ExpectedDeliveryDate = ISNULL(@ExpectedDeliveryDate, ExpectedDeliveryDate),
+		WholesaleOrderDate = ISNULL(@WholesaleOrderDate, WholesaleOrderDate),
+		DeliveryDate = ISNULL(@DeliveryDate, DeliveryDate),
+		OrderStatus = ISNULL(@OrderStatus, OrderStatus)
 	WHERE WholesaleOrderID = @WholesaleOrderID;
 END;
 GO
 
--- Update Partial WholesaleOrder
-CREATE OR ALTER PROCEDURE usp_UpdatePartial_WholesaleOrder 
-	@WholesaleOrderNumber INT, 
-	@ProductNumber NVARCHAR(255),
-	@Quantity INT
+-- Update ProductWholesaleOrder
+CREATE OR ALTER PROCEDURE usp_Update_ProductWholesaleOrder 
+	@WholesaleOrderID UNIQUEIDENTIFIER, 
+	@ProductID UNIQUEIDENTIFIER,
+	@Quantity INT,
+	@UnitPrice DECIMAL(10,2),
+	@QuantityReceived INT
 AS
 BEGIN
 	SET NOCOUNT ON;
-
-	DECLARE @WholesaleOrderID UNIQUEIDENTIFIER;
-	
-	SELECT @WholesaleOrderID = WholesaleOrderID
-	FROM WholesaleOrder
-	WHERE WholesaleOrderNumber = @WholesaleOrderNumber;
 	
 	-- Validate Wholesale order exists
 	IF NOT EXISTS(SELECT 1 FROM WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
@@ -557,17 +530,10 @@ BEGIN
 		RAISERROR('Wholesale order does not exist', 16, 1);
 		RETURN;
 	END
-
-	-- Look up ProductID from ProductNumber
-	DECLARE @ProductID UNIQUEIDENTIFIER;
-	
-	SELECT @ProductID = ProductID
-	FROM [Product]
-	WHERE ProductNumber = @ProductNumber;
 	
 	IF @ProductID IS NULL
 	BEGIN
-		RAISERROR('Product with ProductNumber %s not found', 16, 1, @ProductNumber);
+		RAISERROR('Product is not found', 16, 1);
 		RETURN;
 	END
 
@@ -575,32 +541,16 @@ BEGIN
 	IF NOT EXISTS(SELECT 1 FROM ProductWholesaleOrder 
 	              WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID)
 	BEGIN
-		RAISERROR('Product %s is not in this Wholesale order', 16, 1, @ProductNumber);
+		RAISERROR('Product is not in this Wholesale order', 16, 1);
 		RETURN;
 	END
 
-	-- Get current received quantity
-	DECLARE @ReceivedQuantity INT;
-	DECLARE @OrderedQuantity INT;
-	
-	SELECT 
-		@ReceivedQuantity = ISNULL(QuantityReceived, 0),
-		@OrderedQuantity = Quantity
-	FROM ProductWholesaleOrder
-	WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
-
-
 	-- Update stock based on received quantity
 	UPDATE [Product]
-	SET NumberInStock = NumberInStock + @Quantity
+	SET NumberInStock = NumberInStock + @QuantityReceived
 	WHERE ProductID = @ProductID;
 
-	-- Update quantity received in Wholesale order
-	UPDATE ProductWholesaleOrder
-	SET QuantityReceived = QuantityReceived + @Quantity
-	WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
-
-	-- Check if all products are fully received
+		-- Check if all products are fully received
 	DECLARE @PendingItems INT;
 	
 	SELECT @PendingItems = COUNT(*)
@@ -622,6 +572,8 @@ BEGIN
 		SET OrderStatus = 'Delvist Modtaget'
 		WHERE WholesaleOrderID = @WholesaleOrderID;
 	END
+
+	
 END;
 GO
 
