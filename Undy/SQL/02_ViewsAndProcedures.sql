@@ -63,6 +63,22 @@ BEGIN
 END
 GO
 
+CREATE OR ALTER PROCEDURE usp_SelectSalesOrderValidationInfo_BySalesOrderNumber
+    @SalesOrderNumber INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP (1)
+        so.SalesOrderID,
+        c.Email
+    FROM SalesOrder so
+    INNER JOIN Customers c ON c.CustomerID = so.CustomerID
+    WHERE so.SalesOrderNumber = @SalesOrderNumber;
+END
+GO
+
+
 
 /* =========================================================
    RETURN ORDER CRUD

@@ -15,17 +15,16 @@
             }
         }
 
-        private string _email;
+        private string _email = string.Empty;
         public string Email
         {
             get => _email;
             set
             {
                 if (SetProperty(ref _email, value)) ;
-
-
             }
         }
+
         private string? _reason;
         public string? Reason
         {
@@ -62,22 +61,48 @@
 
         private async void ConfirmAction(object? parameter)
         {
+            StatusMessage = string.Empty;
 
-            if (!Guid.TryParse(OrderNumber, out Guid salesOrderId))
+            // OrderNumber must be the human-readable SalesOrderNumber (INT), not SalesOrderID (GUID)
+            if (!int.TryParse(OrderNumber, out int salesOrderNumber))
             {
-                StatusMessage = "Ordrenummer er ikke gyldigt. Tjek at du har indtastet korrekt format.";
+                StatusMessage = "Ordrenummer er ikke gyldigt. Indtast et tal.";
                 return;
             }
 
-            // Logik til håndtering af bekræftelsen af ​​returordren
+            // Lookup SalesOrderID + Customer Email using the SalesOrderNumber
+            if (_salesOrderRepo is not SalesOrderDBRepository salesOrderDbRepo)
+            {
+                StatusMessage = "Intern fejl: SalesOrder repository er ikke korrekt konfigureret.";
+                return;
+            }
+
+            var (salesOrderId, customerEmail) = await salesOrderDbRepo.GetValidationInfoBySalesOrderNumberAsync(salesOrderNumber);
+
+            // If order number does not exist
+            if (salesOrderId == null)
+            {
+                StatusMessage = "Ordrenummeret findes ikke";
+                return;
+            }
+
+            // If email does not match the order's customer email
+            var inputEmail = (Email ?? string.Empty).Trim();
+            var dbEmail = (customerEmail ?? string.Empty).Trim();
+
+            if (!string.Equals(inputEmail, dbEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                StatusMessage = "E-mail stemmer ikke overens med det givne ordrenummer, ret venligst E-Mail addressen";
+                return;
+            }
+
+            // Create and store the return order (stores SalesOrderID GUID as FK)
             var newReturnOrder = new ReturnOrder
             {
                 ReturnOrderID = Guid.NewGuid(),
                 ReturnOrderDate = DateOnly.FromDateTime(DateTime.Now),
-                SalesOrderID = Guid.Parse(OrderNumber)
+                SalesOrderID = salesOrderId.Value
             };
-            //_tempReturnRepo.Add(newReturnOrder);
-            // Yderligere logik, såsom at underrette brugeren, kan tilføjes her.
 
             await _tempReturnRepo.AddAsync(newReturnOrder);
 
@@ -89,4 +114,3 @@
         }
     }
 }
-

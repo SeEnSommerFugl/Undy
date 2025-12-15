@@ -52,12 +52,34 @@
             cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
             cmd.Parameters.Add("@CustomerID", SqlDbType.UniqueIdentifier).Value = e.CustomerID;
         }
+
         // Parameter binding for update
         protected override void BindUpdate(SqlCommand cmd, SalesOrder e)
         {
             cmd.Parameters.Add("@SalesOrderID", SqlDbType.UniqueIdentifier).Value = e.SalesOrderID;
             cmd.Parameters.Add("@OrderStatus", SqlDbType.NVarChar, 255).Value = e.OrderStatus;
             cmd.Parameters.Add("@PaymentStatus", SqlDbType.NVarChar).Value = e.PaymentStatus;
+        }
+
+        public async Task<(Guid? SalesOrderId, string? CustomerEmail)> GetValidationInfoBySalesOrderNumberAsync(int salesOrderNumber)
+        {
+            using var con = await DB.OpenConnection();
+            using var cmd = new SqlCommand("usp_SelectSalesOrderValidationInfo_BySalesOrderNumber", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.Add("@SalesOrderNumber", SqlDbType.Int).Value = salesOrderNumber;
+
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            if (!await reader.ReadAsync())
+                return (null, null);
+
+            var salesOrderId = reader.GetGuid(reader.GetOrdinal("SalesOrderID"));
+            var email = reader.GetString(reader.GetOrdinal("Email"));
+
+            return (salesOrderId, email);
         }
 
         protected override Guid GetKey(SalesOrder e) => e.SalesOrderID;
