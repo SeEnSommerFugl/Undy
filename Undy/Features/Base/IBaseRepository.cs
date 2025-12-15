@@ -9,6 +9,6 @@
         Task UpdateAsync(T entity);
         Task DeleteAsync(TKey id);
         Task UpdateRangeAsync(IEnumerable<T> entities);
-        Task AddRangeAsync2(IEnumerable<T> entities);
+        Task AddRangeAsync(IEnumerable<T> entities);
     }
 }

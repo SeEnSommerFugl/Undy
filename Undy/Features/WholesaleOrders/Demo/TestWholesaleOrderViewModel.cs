@@ -127,7 +127,7 @@ namespace Undy.Features.ViewModel
                 QuantityReceived = 0
             });
 
-            await _productWholesaleOrderRepo.AddRangeAsync2(lines);
+            await _productWholesaleOrderRepo.AddRangeAsync(lines);
         }
     }
 }

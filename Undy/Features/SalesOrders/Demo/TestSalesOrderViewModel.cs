@@ -132,7 +132,7 @@
             });
 
             SalesOrderLineList.AddRange(salesOrderLineProducts);
-            await _productSalesOrderRepo.AddRangeAsync2(salesOrderLineProducts);
+            await _productSalesOrderRepo.AddRangeAsync(salesOrderLineProducts);
 
             SelectedCustomer = null;
             SelectedProduct = null;

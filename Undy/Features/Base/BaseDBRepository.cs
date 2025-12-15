@@ -71,7 +71,7 @@
 
             await ReloadItemsAsync();
         }
-        public async Task AddRangeAsync2(IEnumerable<T> entities)
+        public async Task AddRangeAsync(IEnumerable<T> entities)
         {
             var entitiesList = entities.ToList();
             if (!entitiesList.Any()) return;
