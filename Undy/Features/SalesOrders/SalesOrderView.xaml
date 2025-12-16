@@ -10,10 +10,11 @@
             Padding="20">
 
         <Grid>
+            <!-- LEFT gets more space; RIGHT still roomy -->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="560"/>
+                <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="24"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -23,38 +24,48 @@
 
             <!-- LEFT: Sales orders list -->
             <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
+
                 <TextBlock Text="Sales Orders"
-                           FontSize="26"
+                           FontSize="34"
                            FontWeight="Bold"
-                           Margin="0,0,0,12"
+                           Margin="0,0,0,14"
                            Foreground="{DynamicResource Brush.Text}" />
 
                 <ListView x:Name="SalesListView"
                           ItemsSource="{Binding SalesOrders}"
                           SelectedItem="{Binding SelectedSalesOrder}"
                           Style="{StaticResource ListView.Table}"
-                          Height="720"
+                          Height="900"
                           MouseDoubleClick="SalesListView_MouseDoubleClick"
                           SelectionMode="Single">
 
                     <ListView.View>
-                        <GridView>
+                        <GridView AllowsColumnReorder="False"
+                                  ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeader.Locked}">
 
                             <GridViewColumn Header="Order #"
                                             DisplayMemberBinding="{Binding SalesOrderNumber}"
-                                            Width="110"/>
+                                            Width="120"/>
 
                             <GridViewColumn Header="Status"
                                             DisplayMemberBinding="{Binding OrderStatus}"
-                                            Width="150"/>
+                                            Width="190"/>
 
                             <GridViewColumn Header="Total"
                                             DisplayMemberBinding="{Binding TotalPrice}"
-                                            Width="130"/>
+                                            Width="170"/>
 
                             <GridViewColumn Header="Customer"
                                             DisplayMemberBinding="{Binding CustomerName}"
-                                            Width="240"/>
+                                            Width="260"/>
+
+                            <GridViewColumn Header="Salgsdato"
+                                            DisplayMemberBinding="{Binding SalesDate}"
+                                            Width="160"/>
+
+                            <GridViewColumn Header="Afsendt"
+                                            DisplayMemberBinding="{Binding ShippedDate}"
+                                            Width="160"/>
 
                         </GridView>
                     </ListView.View>
@@ -64,20 +75,22 @@
 
             <!-- RIGHT: Selected order details -->
             <StackPanel Grid.Row="0" Grid.Column="2">
+
                 <TextBlock Text="Selected Order Details"
-                           FontSize="26"
+                           FontSize="34"
                            FontWeight="Bold"
-                           Margin="0,0,0,12"
+                           Margin="0,0,0,14"
                            Foreground="{DynamicResource Brush.Text}" />
 
+                <!-- Card -->
                 <Border Background="{DynamicResource Brush.Panel}"
-                        CornerRadius="10"
-                        Padding="14"
+                        CornerRadius="16"
+                        Padding="22"
                         Margin="0,0,0,16">
 
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="300"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
@@ -90,23 +103,87 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Order Number:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedSalesOrder.SalesOrderNumber}" Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Text="Order Number:"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding SelectedSalesOrder.SalesOrderNumber}"
+                                   FontSize="26"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Brush.Text}"
+                                   HorizontalAlignment="Right"/>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="E-Mail:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedSalesOrder.CustomerEmail}" Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                   Text="E-Mail:"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="1" Grid.Column="1"
+                                   Text="{Binding SelectedSalesOrder.CustomerEmail}"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Brush.Text}"
+                                   HorizontalAlignment="Right"/>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Order Date:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedSalesOrder.SalesDate}" Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="2" Grid.Column="0"
+                                   Text="Order Date:"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="2" Grid.Column="1"
+                                   Text="{Binding SelectedSalesOrder.SalesDate}"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Brush.Text}"
+                                   HorizontalAlignment="Right"/>
 
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Shipped Date:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedSalesOrder.ShippedDate}" Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="3" Grid.Column="0"
+                                   Text="Shipped Date:"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="3" Grid.Column="1"
+                                   Text="{Binding SelectedSalesOrder.ShippedDate}"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Brush.Text}"
+                                   HorizontalAlignment="Right"/>
 
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Total Price:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedSalesOrder.TotalPrice}" Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="4" Grid.Column="0"
+                                   Text="Total Price:"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="4" Grid.Column="1"
+                                   Text="{Binding SelectedSalesOrder.TotalPrice}"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Brush.Text}"
+                                   HorizontalAlignment="Right"/>
 
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Customer ID:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SelectedSalesOrder.CustomerNumber}" Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="5" Grid.Column="0"
+                                   Text="Customer Number:"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="5" Grid.Column="1"
+                                   Text="{Binding SelectedSalesOrder.CustomerNumber}"
+                                   Margin="0,14,0,0"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Brush.Text}"
+                                   HorizontalAlignment="Right"/>
                     </Grid>
 
                 </Border>
@@ -121,9 +198,9 @@
 
                 <TextBlock Grid.Row="0"
                            Text="Order Lines"
-                           FontSize="22"
+                           FontSize="28"
                            FontWeight="Bold"
-                           Margin="0,0,0,10"
+                           Margin="0,0,0,12"
                            Foreground="{DynamicResource Brush.Text}" />
 
                 <DataGrid Grid.Row="1"
@@ -132,7 +209,8 @@
                           Style="{StaticResource DataGrid.SalesOrder}"
                           IsReadOnly="True"
                           CanUserReorderColumns="False"
-                          CanUserResizeColumns="False">
+                          CanUserResizeColumns="False"
+                          MaxHeight="460">
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="*" />
