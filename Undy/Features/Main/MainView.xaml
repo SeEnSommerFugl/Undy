@@ -23,7 +23,7 @@
     </Window.Resources>-->
 
     <!-- Main Layout Grid -->
-    <Grid Margin="16" ShowGridLines="True">
+    <Grid Margin="16">
 
         <Grid.ColumnDefinitions>
             <!-- Venstre rail -->

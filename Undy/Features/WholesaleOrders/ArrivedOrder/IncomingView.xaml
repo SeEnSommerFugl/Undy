@@ -91,7 +91,6 @@
                               AutoGenerateColumns="False"
                               HeadersVisibility="Column"
                               AlternationCount="2"
-                              GridLinesVisibility="Horizontal"
                               RowBackground="White"
                               AlternatingRowBackground="#FFF5F5F5"
                               HorizontalGridLinesBrush="#FFE0E0E0"

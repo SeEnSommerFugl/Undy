@@ -10,8 +10,9 @@
             </Style>
         </Style.Resources>
 
-        <Setter Property="Background" Value="{StaticResource Brush.Panel}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+        <!-- Use DynamicResource to avoid UnsetValue when dictionaries are merged after this loads -->
+        <Setter Property="Background" Value="{DynamicResource Brush.Panel}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
         <Setter Property="GridLinesVisibility" Value="None"/>
@@ -44,6 +45,7 @@
         <Setter Property="RowStyle">
             <Setter.Value>
                 <Style TargetType="DataGridRow">
+                    <!-- Explicit defaults prevent transient UnsetValue states -->
                     <Setter Property="Background"  Value="Transparent"/>
                     <Setter Property="BorderBrush" Value="Transparent"/>
                     <Style.Triggers>
@@ -83,8 +85,8 @@
     <!-- ========= SMART HEADER TIL DATAGRIDS ========= -->
     <Style x:Key="DataGridHeader.Smart" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="#223044"/>
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="10,6"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
@@ -114,8 +116,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="ColumnHeaderHeight" Value="36"/>
         <Setter Property="FontSize" Value="16"/>
-        <!-- Her er den simple, lovlige reference til header-stylen -->
-        <Setter Property="ColumnHeaderStyle" Value="{StaticResource DataGridHeader.Smart}"/>
+        <Setter Property="ColumnHeaderStyle" Value="{DynamicResource DataGridHeader.Smart}"/>
         <Setter Property="MaxHeight" Value="520"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
@@ -123,11 +124,14 @@
     <Style x:Key="DataGridCellPill" TargetType="DataGridCell">
         <Setter Property="Padding" Value="0"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment"   Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
+                    <!-- FallbackValue prevents UnsetValue from crashing Border.Background -->
                     <Border x:Name="Pill"
                             Background="{TemplateBinding Background}"
                             CornerRadius="16"
@@ -144,15 +148,27 @@
     <Style x:Key="DataGridCellMoney"
            TargetType="DataGridCell"
            BasedOn="{StaticResource DataGridCellPill}">
+
+        <!-- DEFAULTS: prevents UnsetValue even if triggers don't apply or resources are missing -->
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource Brush.Text}"/>
+
         <Style.Triggers>
+
             <DataTrigger Binding="{Binding IsPositive}" Value="True">
-                <Setter Property="Background" Value="{StaticResource Amount.Positive.Bg}"/>
-                <Setter Property="Foreground" Value="{StaticResource Amount.Positive.Fg}"/>
+                <Setter Property="Background"
+                        Value="{DynamicResource Amount.Positive.Bg}"/>
+                <Setter Property="Foreground"
+                        Value="{DynamicResource Amount.Positive.Fg}"/>
             </DataTrigger>
+
             <DataTrigger Binding="{Binding IsPositive}" Value="False">
-                <Setter Property="Background" Value="{StaticResource Amount.Negative.Bg}"/>
-                <Setter Property="Foreground" Value="{StaticResource Amount.Negative.Fg}"/>
+                <Setter Property="Background"
+                        Value="{DynamicResource Amount.Negative.Bg}"/>
+                <Setter Property="Foreground"
+                        Value="{DynamicResource Amount.Negative.Fg}"/>
             </DataTrigger>
+
         </Style.Triggers>
     </Style>
 

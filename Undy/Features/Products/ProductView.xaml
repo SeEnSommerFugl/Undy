@@ -12,7 +12,6 @@
           HeadersVisibility="Column"
           CanUserAddRows="False"
           CanUserDeleteRows="False"
-          GridLinesVisibility="All"
           BorderThickness="1"
           BorderBrush="#CCCCCC"
           RowHeight="30"
