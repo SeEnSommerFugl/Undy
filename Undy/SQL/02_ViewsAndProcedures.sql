@@ -337,6 +337,350 @@ BEGIN
 END
 GO
 
+/* =========================================================
+   PRODUCTS + CUSTOMERS VIEWS (Used by DBRepositories)
+   ========================================================= */
+
+CREATE OR ALTER VIEW dbo.vw_Products
+AS
+SELECT
+    p.ProductID,
+    p.ProductNumber,
+    p.ProductName,
+    p.Price,
+    p.Size,
+    p.Colour,
+    p.NumberInStock
+FROM dbo.Product p;
+GO
+
+CREATE OR ALTER VIEW dbo.vw_Customers
+AS
+SELECT
+    c.CustomerID,
+    c.CustomerNumber,
+    c.DisplayCustomerNumber,
+    c.FirstName,
+    c.LastName,
+    (c.FirstName + N' ' + c.LastName) AS CustomerName,
+    c.Email,
+    c.PhoneNumber,
+    c.[Address],
+    c.City,
+    c.PostalCode
+FROM dbo.Customers c;
+GO
+
+
+/* =========================================================
+   WHOLESALE ORDER VIEWS (Header + Lines)
+   ========================================================= */
+
+CREATE OR ALTER VIEW dbo.vw_WholesaleOrderHeaders
+AS
+SELECT
+    wo.WholesaleOrderID,
+    wo.WholesaleOrderNumber,
+    wo.DisplayWholesaleOrderNumber,
+    wo.WholesaleOrderDate,
+    wo.ExpectedDeliveryDate,
+    wo.DeliveryDate,
+    wo.OrderStatus
+FROM dbo.WholesaleOrder wo;
+GO
+
+CREATE OR ALTER VIEW dbo.vw_WholesaleOrderLines
+AS
+SELECT
+    pwo.WholesaleOrderID,
+    wo.WholesaleOrderNumber,
+    wo.DisplayWholesaleOrderNumber,
+    pwo.ProductID,
+    p.ProductNumber,
+    p.ProductName,
+    pwo.Quantity,
+    pwo.UnitPrice,
+    pwo.QuantityReceived,
+    (pwo.Quantity - pwo.QuantityReceived) AS QuantityPending,
+    (pwo.Quantity * pwo.UnitPrice) AS LineTotal
+FROM dbo.ProductWholesaleOrder pwo
+JOIN dbo.WholesaleOrder wo ON wo.WholesaleOrderID = pwo.WholesaleOrderID
+JOIN dbo.Product p ON p.ProductID = pwo.ProductID;
+GO
+
+
+/* =========================================================
+   WHOLESALE ORDER LOOKUP (Human number -> GUID)
+   ========================================================= */
+
+CREATE OR ALTER PROCEDURE dbo.usp_SelectWholesaleOrderId_ByWholesaleOrderNumber
+    @WholesaleOrderNumber INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP (1)
+        wo.WholesaleOrderID
+    FROM dbo.WholesaleOrder wo
+    WHERE wo.WholesaleOrderNumber = @WholesaleOrderNumber;
+END
+GO
+
+
+/* =========================================================
+   WHOLESALE ORDER CRUD (Entity only, NO side effects)
+   ========================================================= */
+
+CREATE OR ALTER PROCEDURE dbo.usp_SelectById_WholesaleOrder
+    @WholesaleOrderID UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP (1)
+        WholesaleOrderID,
+        WholesaleOrderNumber,
+        DisplayWholesaleOrderNumber,
+        WholesaleOrderDate,
+        ExpectedDeliveryDate,
+        DeliveryDate,
+        OrderStatus
+    FROM dbo.vw_WholesaleOrderHeaders
+    WHERE WholesaleOrderID = @WholesaleOrderID;
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_Select_ProductWholesaleOrder_ByWholesaleOrderID
+    @WholesaleOrderID UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        WholesaleOrderID,
+        WholesaleOrderNumber,
+        DisplayWholesaleOrderNumber,
+        ProductID,
+        ProductNumber,
+        ProductName,
+        Quantity,
+        UnitPrice,
+        QuantityReceived,
+        QuantityPending,
+        LineTotal
+    FROM dbo.vw_WholesaleOrderLines
+    WHERE WholesaleOrderID = @WholesaleOrderID;
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_Insert_WholesaleOrder
+    @WholesaleOrderID UNIQUEIDENTIFIER,
+    @WholesaleOrderDate DATE,
+    @ExpectedDeliveryDate DATE,
+    @OrderStatus NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @ExpectedDeliveryDate < @WholesaleOrderDate
+    BEGIN
+        RAISERROR('Expected delivery date cannot be before wholesale order date', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO dbo.WholesaleOrder
+    (
+        WholesaleOrderID,
+        WholesaleOrderDate,
+        ExpectedDeliveryDate,
+        DeliveryDate,
+        OrderStatus
+    )
+    VALUES
+    (
+        @WholesaleOrderID,
+        @WholesaleOrderDate,
+        @ExpectedDeliveryDate,
+        NULL,
+        @OrderStatus
+    );
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_Insert_ProductWholesaleOrder
+    @WholesaleOrderID UNIQUEIDENTIFIER,
+    @ProductID UNIQUEIDENTIFIER,
+    @Quantity INT,
+    @UnitPrice DECIMAL(10,2)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM dbo.WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
+    BEGIN
+        RAISERROR('Wholesale order does not exist', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM dbo.Product WHERE ProductID = @ProductID)
+    BEGIN
+        RAISERROR('Product does not exist', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1
+               FROM dbo.ProductWholesaleOrder
+               WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID)
+    BEGIN
+        RAISERROR('Product already exists in this wholesale order', 16, 1);
+        RETURN;
+    END
+
+    IF @Quantity <= 0
+    BEGIN
+        RAISERROR('Quantity must be > 0', 16, 1);
+        RETURN;
+    END
+
+    IF @UnitPrice < 0
+    BEGIN
+        RAISERROR('Unit price cannot be negative', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO dbo.ProductWholesaleOrder
+    (
+        WholesaleOrderID,
+        ProductID,
+        Quantity,
+        UnitPrice,
+        QuantityReceived
+    )
+    VALUES
+    (
+        @WholesaleOrderID,
+        @ProductID,
+        @Quantity,
+        @UnitPrice,
+        0
+    );
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_Update_WholesaleOrder
+    @WholesaleOrderID UNIQUEIDENTIFIER,
+    @WholesaleOrderDate DATE,
+    @ExpectedDeliveryDate DATE,
+    @DeliveryDate DATE = NULL,
+    @OrderStatus NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM dbo.WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
+    BEGIN
+        RAISERROR('Wholesale order does not exist', 16, 1);
+        RETURN;
+    END
+
+    IF @ExpectedDeliveryDate < @WholesaleOrderDate
+    BEGIN
+        RAISERROR('Expected delivery date cannot be before wholesale order date', 16, 1);
+        RETURN;
+    END
+
+    UPDATE dbo.WholesaleOrder
+    SET
+        WholesaleOrderDate = @WholesaleOrderDate,
+        ExpectedDeliveryDate = @ExpectedDeliveryDate,
+        DeliveryDate = @DeliveryDate,
+        OrderStatus = @OrderStatus
+    WHERE WholesaleOrderID = @WholesaleOrderID;
+END
+GO
+
+
+/* =========================================================
+   WHOLESALE RECEIVING PROCESS (Business Logic, explicit)
+   - Updates QuantityReceived
+   - Updates Product stock (NumberInStock)
+   - Auto-updates Wholesale order status + DeliveryDate when fully received
+   ========================================================= */
+
+CREATE OR ALTER PROCEDURE dbo.usp_ProcessWholesaleReceipt_Line
+    @WholesaleOrderID UNIQUEIDENTIFIER,
+    @ProductID UNIQUEIDENTIFIER,
+    @ReceiveQuantity INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @ReceiveQuantity <= 0
+    BEGIN
+        RAISERROR('ReceiveQuantity must be > 0', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM dbo.WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
+    BEGIN
+        RAISERROR('Wholesale order does not exist', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1
+                   FROM dbo.ProductWholesaleOrder
+                   WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID)
+    BEGIN
+        RAISERROR('Product is not part of this wholesale order', 16, 1);
+        RETURN;
+    END
+
+    DECLARE @Qty INT;
+    DECLARE @QtyReceived INT;
+
+    SELECT
+        @Qty = Quantity,
+        @QtyReceived = QuantityReceived
+    FROM dbo.ProductWholesaleOrder
+    WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
+
+    IF (@QtyReceived + @ReceiveQuantity) > @Qty
+    BEGIN
+        RAISERROR('Cannot receive more than ordered quantity', 16, 1);
+        RETURN;
+    END
+
+    -- Update received quantity
+    UPDATE dbo.ProductWholesaleOrder
+    SET QuantityReceived = QuantityReceived + @ReceiveQuantity
+    WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID;
+
+    -- Update stock
+    UPDATE dbo.Product
+    SET NumberInStock = NumberInStock + @ReceiveQuantity
+    WHERE ProductID = @ProductID;
+
+    -- If fully received (all lines), close order and set DeliveryDate
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM dbo.ProductWholesaleOrder pwo
+        WHERE pwo.WholesaleOrderID = @WholesaleOrderID
+          AND pwo.QuantityReceived < pwo.Quantity
+    )
+    BEGIN
+        UPDATE dbo.WholesaleOrder
+        SET
+            OrderStatus = N'Modtaget',
+            DeliveryDate = ISNULL(DeliveryDate, CAST(GETDATE() AS date))
+        WHERE WholesaleOrderID = @WholesaleOrderID;
+    END
+END
+GO
 
 
 CREATE OR ALTER PROCEDURE dbo.usp_StartPage_WholesaleOnTheWay
@@ -387,19 +731,4 @@ BEGIN
     FROM dbo.SalesOrder so;
 END
 GO
-
-
-CREATE OR ALTER PROCEDURE dbo.usp_StartPage_AverageOrderValue
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT
-        CAST(
-            SUM(TotalPrice) / NULLIF(COUNT(SalesOrderID), 0)
-            AS DECIMAL(18,2)
-        ) AS AverageOrderValue
-    FROM dbo.SalesOrder
-    WHERE OrderStatus NOT IN ('Cancelled');
-END
 
