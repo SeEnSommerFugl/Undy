@@ -20,6 +20,7 @@
     <None Remove="Styles\Images\pause-circleBlue.png" />
     <None Remove="Styles\Images\picking-boxBlue.png" />
     <None Remove="Styles\Images\shopping-cartBlue.png" />
+    <None Remove="Styles\Images\Undy_logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +46,9 @@
     <Resource Include="Styles\Images\pause-circleBlue.png" />
     <Resource Include="Styles\Images\picking-boxBlue.png" />
     <Resource Include="Styles\Images\shopping-cartBlue.png" />
+    <Resource Include="Styles\Images\Undy_logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
