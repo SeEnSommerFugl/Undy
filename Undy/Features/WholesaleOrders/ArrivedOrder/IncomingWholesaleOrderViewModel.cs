@@ -9,8 +9,12 @@ namespace Undy.Features.ViewModel
         private readonly IBaseRepository<WholesaleOrder, Guid> _wholesaleOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly WholesaleOrderLineDBRepository _wholesaleOrderLineRepo;
+        public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
 
-        private WholesaleOrder? _selectedWholesaleOrder;
+        public ICollectionView WholesaleView { get; }
+        public ICollectionView LinesView { get; }
+
+
 
         public IncomingWholesaleOrderViewModel(
             IBaseRepository<WholesaleOrder, Guid> wholesaleOrderRepo,
@@ -21,20 +25,20 @@ namespace Undy.Features.ViewModel
             _productRepo = productRepo;
             _wholesaleOrderLineRepo = wholesaleOrderLineRepo;
 
+            WholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
+
+
             SelectedOrderLines = new ObservableCollection<WholesaleOrderLine>();
+            LinesView = CollectionViewSource.GetDefaultView(SelectedOrderLines);
         }
 
-        public ObservableCollection<WholesaleOrder> WholesaleOrders => _wholesaleOrderRepo.Items;
-
+        private WholesaleOrder? _selectedWholesaleOrder;
         public WholesaleOrder? SelectedWholesaleOrder
         {
             get => _selectedWholesaleOrder;
             set
             {
-                if (_selectedWholesaleOrder == value) return;
-                _selectedWholesaleOrder = value;
-                OnPropertyChanged();
-
+                if (SetProperty(ref _selectedWholesaleOrder, value))
                 _ = LoadSelectedOrderLinesAsync();
             }
         }
