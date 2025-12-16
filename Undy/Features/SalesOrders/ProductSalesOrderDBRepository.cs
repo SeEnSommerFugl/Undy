@@ -21,9 +21,7 @@
         protected override ProductSalesOrder Map(IDataRecord r) => new ProductSalesOrder
         {
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
-            SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
             ProductID = r.GetGuid(r.GetOrdinal("ProductID")),
-            ProductNumber = r["ProductNumber"].ToString(),
             Quantity = r.GetInt32(r.GetOrdinal("Quantity")),
             UnitPrice = r.GetDecimal(r.GetOrdinal("UnitPrice"))
         };
