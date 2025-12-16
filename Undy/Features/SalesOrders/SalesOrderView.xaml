@@ -34,6 +34,7 @@
                           SelectedItem="{Binding SelectedSalesOrder}"
                           Style="{StaticResource ListView.Table}"
                           Height="720"
+                          MouseDoubleClick="SalesListView_MouseDoubleClick"
                           SelectionMode="Single">
 
                     <ListView.View>
@@ -96,7 +97,7 @@
                         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedSalesOrder.CustomerEmail}" Foreground="{DynamicResource Brush.Text}" />
 
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Order Date:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedSalesOrder.OrderDate}" Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedSalesOrder.SalesDate}" Foreground="{DynamicResource Brush.Text}" />
 
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="Shipped Date:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedSalesOrder.ShippedDate}" Foreground="{DynamicResource Brush.Text}" />
@@ -105,7 +106,7 @@
                         <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedSalesOrder.TotalPrice}" Foreground="{DynamicResource Brush.Text}" />
 
                         <TextBlock Grid.Row="5" Grid.Column="0" Text="Customer ID:" FontWeight="SemiBold" Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SelectedSalesOrder.CustomerID}" Foreground="{DynamicResource Brush.Text}" />
+                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SelectedSalesOrder.CustomerNumber}" Foreground="{DynamicResource Brush.Text}" />
                     </Grid>
 
                 </Border>
