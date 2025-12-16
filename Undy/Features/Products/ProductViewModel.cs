@@ -1,84 +1,85 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿// Fil: Undy/Undy/Features/Products/ProductViewModel.cs
+
+using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
+using Undy.Data.Repository;
+using Undy.Features.Helpers;
+using Undy.Models;
 
-namespace Undy.Views
+namespace Undy.Features.ViewModel
 {
-    public class ProductViewModel : BaseViewModel
+    public sealed class ProductViewModel : BaseViewModel
     {
-        private readonly IProductRepository _productRepo;
+        private readonly IBaseRepository<Product, Guid> _productRepo;
 
-        public ObservableCollection<Product> Products { get; } = new();
+        // DataGrid binder typisk til dette via CollectionView (sort/filter-friendly)
+        private readonly ICollectionView _productView;
+        public ICollectionView ProductView => _productView;
+
+        // Underliggende collection (kommer fra dit BaseDBRepository-pattern)
+        public System.Collections.ObjectModel.ObservableCollection<Product> Products => _productRepo.Items;
 
         private Product? _editingProduct;
         public Product? EditingProduct
         {
             get => _editingProduct;
-            private set => SetField(ref _editingProduct, value);
+            private set => SetProperty(ref _editingProduct, value);
         }
 
         public ICommand BeginEditQuantityCommand { get; }
         public ICommand CommitEditedQuantityCommand { get; }
-        public ICommand OpenAddProductDialogCommand { get; }
 
-        public ProductViewModel(IProductRepository productRepo)
+        public ProductViewModel(IBaseRepository<Product, Guid> productRepo)
         {
             _productRepo = productRepo;
 
-            BeginEditQuantityCommand = new RelayCommand<Product>(BeginEditQuantity);
-            CommitEditedQuantityCommand = new RelayCommand(async () => await CommitEditedQuantityAsync());
+            _productView = CollectionViewSource.GetDefaultView(Products);
+            _productView.SortDescriptions.Add(
+                new SortDescription(nameof(Product.ProductNumber), ListSortDirection.Ascending));
 
-            _ = LoadAsync();
+            BeginEditQuantityCommand = new RelayCommand(p =>
+            {
+                if (p is Product prod)
+                    EditingProduct = prod;
+            });
+
+            CommitEditedQuantityCommand = new RelayCommand(_ =>
+            {
+                _ = CommitEditedQuantityAsync();
+            });
         }
 
-        private async Task LoadAsync()
+        // Kald denne når VM oprettes (fx fra App.xaml.cs composition)
+        public async Task InitializeAsync()
         {
-            Products.Clear();
-            var items = await _productRepo.GetAllAsync();
-            foreach (var p in items)
-                Products.Add(p);
-        }
-
-        private void BeginEditQuantity(Product? product)
-        {
-            if (product is null) return;
-            EditingProduct = product;
-
-            // View handles focus/start-edit; VM only tracks which row is being edited.
-            // (We keep this simple and robust)
+            await _productRepo.InitializeAsync();
         }
 
         private async Task CommitEditedQuantityAsync()
         {
             if (EditingProduct is null) return;
 
-            // Validation: must be >= 0 (adjust if your domain allows negative)
+            // Simple validation: negative stock not allowed
             if (EditingProduct.NumberInStock < 0)
             {
-                // revert by reload (simple + safe)
-                await LoadAsync();
+                await _productRepo.InitializeAsync(); // revert to DB state
                 return;
             }
 
-            await _productRepo.UpdateStockAsync(EditingProduct.ProductID, EditingProduct.NumberInStock);
-        }
-
-        private void OpenAddProductDialog()
-        {
-            var vm = new AddProductDialogViewModel(async created =>
+            try
             {
-                await _productRepo.InsertAsync(created);
-                Products.Add(created);
-            });
-
-            var dialog = new AddProductDialog
+                // Opdaterer hele product-row via eksisterende usp_Update_Product / repo
+                await _productRepo.UpdateAsync(EditingProduct);
+            }
+            catch
             {
-                DataContext = vm
-            };
-
-            dialog.ShowDialog();
+                // Hvis DB-update fejler, reload fra DB så UI ikke står med forkert tal
+                await _productRepo.InitializeAsync();
+                throw;
+            }
         }
     }
 }
