@@ -40,7 +40,7 @@
                                Margin="0,0,0,10"/>
 
                     <ListView ItemsSource="{Binding WholesaleView}"
-                              SelectedItem="{Binding SelectedOrder}">
+                              SelectedItem="{Binding SelectedWholesaleOrder}">
                         <ListView.Resources>
                             <Style TargetType="GridViewColumnHeader">
                                 <Setter Property="Foreground" Value="#333"/>
@@ -110,7 +110,7 @@
                         <DataGrid.Columns>
                             <!-- Produkt -->
                             <DataGridTextColumn Header="Produkt"
-                                                Binding="{Binding ProductName}"
+                                                Binding="{Binding WholesaleOrderID}"
                                                 Width="*"/>
 
                             <!-- Modtaget (til venstre, låses når Fuldt modtaget = true) -->
@@ -118,13 +118,13 @@
                                                     Width="80">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding ReceivedQuantity}"
+                                        <TextBlock Text="{Binding QuantityReceived}"
                                                    HorizontalAlignment="Center"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                                 <DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
-                                        <TextBox Text="{Binding ReceivedQuantity, UpdateSourceTrigger=PropertyChanged}"
+                                        <TextBox Text="{Binding QuantityReceived, UpdateSourceTrigger=PropertyChanged}"
                                                  HorizontalContentAlignment="Center"
                                                  IsReadOnly="{Binding DataContext.IsFullyReceived,
                                                                       RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
@@ -134,21 +134,21 @@
 
                             <!-- Bestilt (kun læsning) -->
                             <DataGridTextColumn Header="Allerede modtaget"
-                                                Binding="{Binding AlreadyReceived}"
+                                                Binding="{Binding Quantity}"
                                                 Width="120"
                                                 ElementStyle="{StaticResource NumericCellStyle}"
                                                 IsReadOnly="True"/>
 
                             <!-- Bestilt (kun læsning) -->
                             <DataGridTextColumn Header="Bestilt"
-                                                Binding="{Binding OrderedQuantity}"
+                                                Binding="{Binding UnitPrice}"
                                                 Width="80"
                                                 ElementStyle="{StaticResource NumericCellStyle}"
                                                 IsReadOnly="True"/>
 
                             <!-- Difference (kun læsning) -->
                             <DataGridTextColumn Header="Difference"
-                                                Binding="{Binding Difference}"
+                                                Binding="{Binding ProductID}"
                                                 Width="80"
                                                 ElementStyle="{StaticResource NumericCellStyle}"
                                                 IsReadOnly="True"/>
