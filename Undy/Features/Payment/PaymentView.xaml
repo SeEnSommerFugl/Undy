@@ -50,7 +50,8 @@
                 </ListView.Resources>
 
                 <ListView.View>
-                    <GridView>
+                    <GridView AllowsColumnReorder="False"
+                                  ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeader.Locked}">
 
                         <!-- Ordrenummer -->
                         <GridViewColumn Header="Ordrenummer" Width="120"

@@ -52,7 +52,8 @@
                         </ListView.Resources>
 
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False"
+                                  ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeader.Locked}">
                                 <GridViewColumn Header="Ordrenr."
                                                 DisplayMemberBinding="{Binding DisplayWholesaleOrderNumber}"
                                                 Width="120"/>
