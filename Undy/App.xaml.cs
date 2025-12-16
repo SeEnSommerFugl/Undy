@@ -1,8 +1,13 @@
-﻿namespace Undy
+﻿using System.Globalization;
+using System.Threading;
+using System.Windows;
+using System.Windows.Markup;
+using Undy.Data.Repository;
+using Undy.Features.ViewModel;
+using Undy.Models;
+
+namespace Undy
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         protected override async void OnStartup(StartupEventArgs e)
@@ -12,15 +17,12 @@
             // ----- Culture Info ----- //
             var culture = new CultureInfo("da-DK");
 
-            // For the current thread
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
 
-            // For any threads created later
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
 
-            // Tell WPF bindings to use the same culture (important for decimal comma etc.)
             FrameworkElement.LanguageProperty.OverrideMetadata(
                 typeof(FrameworkElement),
                 new FrameworkPropertyMetadata(
@@ -32,52 +34,56 @@
             IBaseRepository<ReturnOrder, Guid> returnOrderRepo = new ReturnOrderDBRepository();
 
             IBaseRepository<WholesaleOrderDisplay, Guid> wholesaleOrderDisplayRepo = new WholesaleOrderDisplayDBRepository();
-            IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo = new ProductWholesaleOrderDBRepository();
-            IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo = new ProductSalesOrderDBRepository();
 
             IBaseRepository<Customer, Guid> customerRepo = new CustomerDBRepository();
-            IBaseRepository<CustomerSalesOrder, Guid> customerSalesOrderRepo = new CustomerSalesOrderDBRepository();
             IBaseRepository<Product, Guid> productRepo = new ProductDBRepository();
+
+            // Display projection repo (vw_CustomerSalesOrders)
+            IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderDisplayRepo =
+                new CustomerSalesOrderDisplayDBRepository();
+
+            // Line repos (composite keys -> no IBaseRepository<Guid>)
+            var salesOrderLineRepo = new SalesOrderLineDBRepository();
+            var wholesaleOrderLineRepo = new WholesaleOrderLineDBRepository();
 
             // ----- ViewModels ----- //
             var startPageVM = new StartPageViewModel();
 
             var wholesaleOrderVM = new WholesaleOrderViewModel(
                 wholesaleOrderDisplayRepo,
-                productRepo,
-                productWholesaleOrderRepo);
+                productRepo);
 
 
             var incomingWholesaleOrderVM = new IncomingWholesaleOrderViewModel(
                 wholesaleOrderRepo,
                 productRepo,
-                productWholesaleOrderRepo);
+                wholesaleOrderLineRepo);
 
             // IMPORTANT:
-            // SalesOrderVM og TestSalesOrderVM skal bruge SAMME salesOrderRepo instance,
-            // ellers virker "live" opdatering ikke.
+            // SalesOrderVM and TestSalesOrderVM must share the same salesOrderRepo instance.
             var salesOrderVM = new SalesOrderViewModel(
                 salesOrderRepo,
-                productSalesOrderRepo);
+                salesOrderLineRepo);
 
             var paymentVM = new PaymentViewModel(
                 salesOrderRepo,
-                customerSalesOrderRepo);
+                customerSalesOrderDisplayRepo);
 
             var testReturnOrderVM = new TestReturnOrderViewModel(
                 returnOrderRepo,
-                salesOrderRepo);
+                salesOrderRepo,
+                salesOrderLineRepo);
 
             var testSalesOrderVM = new TestSalesOrderViewModel(
                 salesOrderRepo,
                 productRepo,
-                productSalesOrderRepo,
+                salesOrderLineRepo,
                 customerRepo);
 
             var testWholesaleOrderVM = new TestWholesaleOrderViewModel(
                 wholesaleOrderRepo,
                 productRepo,
-                productWholesaleOrderRepo);
+                wholesaleOrderLineRepo);
 
             var productVM = new ProductViewModel(productRepo);
 
@@ -98,18 +104,29 @@
             mainWindow.Show();
 
             // ----- Load data from DB ----- //
-            await productRepo.InitializeAsync();
-            await customerRepo.InitializeAsync();
+            try
+            {
+                await productRepo.InitializeAsync();
+                await customerRepo.InitializeAsync();
 
-            await wholesaleOrderRepo.InitializeAsync();
-            await productWholesaleOrderRepo.InitializeAsync();
-            await wholesaleOrderDisplayRepo.InitializeAsync();
+                await wholesaleOrderRepo.InitializeAsync();
+                await wholesaleOrderDisplayRepo.InitializeAsync();
 
-            await salesOrderRepo.InitializeAsync();
-            await productSalesOrderRepo.InitializeAsync();
-            await customerSalesOrderRepo.InitializeAsync();
+                await salesOrderRepo.InitializeAsync();
+                await customerSalesOrderDisplayRepo.InitializeAsync();
 
-            await returnOrderRepo.InitializeAsync();
+                await returnOrderRepo.InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    ex.ToString(),
+                    "Startup error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                Shutdown(-1);
+            }
         }
     }
 }

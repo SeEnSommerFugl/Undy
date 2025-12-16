@@ -1,26 +1,19 @@
-﻿namespace Undy.Features.ViewModel
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
+using Undy.Data.Repository;
+using Undy.Models;
+
+namespace Undy.Features.ViewModel
 {
     public class WholesaleOrderViewModel : BaseViewModel
     {
         private readonly IBaseRepository<WholesaleOrderDisplay, Guid> _wholesaleOrderDisplayRepo;
-        private readonly IBaseRepository<ProductWholesaleOrder, Guid> _productWholesaleOrderRepo;
         private readonly IBaseRepository<Product, Guid> _productRepo;
         private readonly ICollectionView _wholesaleView;
 
         public ObservableCollection<WholesaleOrderDisplay> WholesaleOrders => _wholesaleOrderDisplayRepo.Items;
         public ICollectionView WholesaleView => _wholesaleView;
-
-        public WholesaleOrderViewModel(IBaseRepository<WholesaleOrderDisplay, Guid> wholesaleOrderDisplayRepo, IBaseRepository<Product, Guid> productRepo, IBaseRepository<ProductWholesaleOrder, Guid> productWholesaleOrderRepo)
-        {
-            _wholesaleOrderDisplayRepo = wholesaleOrderDisplayRepo;
-            _productWholesaleOrderRepo = productWholesaleOrderRepo;
-            _productRepo = productRepo;
-
-
-            _wholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
-            _wholesaleView.SortDescriptions.Add(new SortDescription(nameof(WholesaleOrder.WholesaleOrderDate), ListSortDirection.Descending));
-
-        }
 
         private int? _productNumberSearch;
         public int? ProductNumberSearch
@@ -29,7 +22,7 @@
             set
             {
                 if (SetProperty(ref _productNumberSearch, value))
-                    _wholesaleView?.Refresh();
+                    _wholesaleView.Refresh();
             }
         }
 
@@ -40,7 +33,7 @@
             set
             {
                 if (SetProperty(ref _supplierSearch, value))
-                    _wholesaleView?.Refresh();
+                    _wholesaleView.Refresh();
             }
         }
 
@@ -51,9 +44,43 @@
             set
             {
                 if (SetProperty(ref _productNameSearch, value))
-                    _wholesaleView?.Refresh();
+                    _wholesaleView.Refresh();
             }
         }
 
+        public WholesaleOrderViewModel(
+            IBaseRepository<WholesaleOrderDisplay, Guid> wholesaleOrderDisplayRepo,
+            IBaseRepository<Product, Guid> productRepo)
+        {
+            _wholesaleOrderDisplayRepo = wholesaleOrderDisplayRepo;
+            _productRepo = productRepo;
+
+            _wholesaleView = CollectionViewSource.GetDefaultView(WholesaleOrders);
+            _wholesaleView.SortDescriptions.Add(
+                new SortDescription(nameof(WholesaleOrderDisplay.WholesaleOrderDate), ListSortDirection.Descending));
+            _wholesaleView.Filter = FilterWholesaleOrders;
+        }
+
+        private bool FilterWholesaleOrders(object obj)
+        {
+            if (obj is not WholesaleOrderDisplay wo)
+                return false;
+
+            if (ProductNumberSearch.HasValue)
+            {
+                if (!int.TryParse(wo.ProductNumber, out var pn) || pn != ProductNumberSearch.Value)
+                    return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(ProductNameSearch))
+            {
+                if (wo.ProductName is null ||
+                    !wo.ProductName.Contains(ProductNameSearch, System.StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
+
+            // SupplierSearch has no matching column in WholesaleOrderDisplay right now, so it is intentionally ignored.
+            return true;
+        }
     }
 }

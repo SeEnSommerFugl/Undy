@@ -2,31 +2,37 @@
    SALES ORDER VIEWS
    ========================================================= */
 
-CREATE OR ALTER VIEW vw_SalesOrderHeaders
+CREATE OR ALTER VIEW dbo.vw_SalesOrderHeaders
 AS
 SELECT
     so.SalesOrderID,
-    so.SalesOrderNumber,
-    so.OrderDate,
-    so.OrderStatus,
     so.CustomerID,
-    c.FirstName + ' ' + c.LastName AS CustomerName
-FROM SalesOrder so
-JOIN Customers c ON c.CustomerID = so.CustomerID;
+    so.SalesOrderNumber,
+    so.OrderStatus,
+    so.PaymentStatus,
+    so.SalesDate,
+    so.ShippedDate,
+    so.TotalPrice,
+    (c.FirstName + ' ' + c.LastName) AS CustomerName,
+    c.City
+FROM dbo.SalesOrder so
+JOIN dbo.Customers c ON c.CustomerID = so.CustomerID;
 GO
 
 
-CREATE OR ALTER VIEW vw_SalesOrderLines
+CREATE OR ALTER VIEW dbo.vw_SalesOrderLines
 AS
 SELECT
-    pso.ProductSalesOrderID,
     pso.SalesOrderID,
+    so.SalesOrderNumber,
     pso.ProductID,
     p.ProductName,
     pso.Quantity,
-    pso.UnitPrice
-FROM ProductSalesOrder pso
-JOIN Product p ON p.ProductID = pso.ProductID;
+    pso.UnitPrice,
+    (pso.Quantity * pso.UnitPrice) AS LineTotal
+FROM dbo.ProductSalesOrder pso
+JOIN dbo.SalesOrder so ON so.SalesOrderID = pso.SalesOrderID
+JOIN dbo.Product p ON p.ProductID = pso.ProductID;
 GO
 
 
@@ -34,36 +40,38 @@ GO
    RETURN ORDER VIEW
    ========================================================= */
 
-CREATE OR ALTER VIEW vw_ReturnOrders
+CREATE OR ALTER VIEW dbo.vw_ReturnOrders
 AS
 SELECT
     ro.ReturnOrderID,
     ro.ReturnOrderDate,
     ro.SalesOrderID,
+    ro.ReturnTotalPrice,
     so.SalesOrderNumber
-FROM ReturnOrder ro
-JOIN SalesOrder so ON so.SalesOrderID = ro.SalesOrderID;
+FROM dbo.ReturnOrder ro
+JOIN dbo.SalesOrder so ON so.SalesOrderID = ro.SalesOrderID;
 GO
 
 
 /* =========================================================
-   SALES ORDER LOOKUP (Human Order number to  GUID)
+   SALES ORDER LOOKUP (Human Order number to GUID)
    ========================================================= */
 
-CREATE OR ALTER PROCEDURE usp_SelectSalesOrderId_BySalesOrderNumber
+CREATE OR ALTER PROCEDURE dbo.usp_SelectSalesOrderId_BySalesOrderNumber
     @SalesOrderNumber INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
     SELECT TOP (1)
-        SalesOrderID
-    FROM SalesOrder
-    WHERE SalesOrderNumber = @SalesOrderNumber;
+        so.SalesOrderID
+    FROM dbo.SalesOrder so
+    WHERE so.SalesOrderNumber = @SalesOrderNumber;
 END
 GO
 
-CREATE OR ALTER PROCEDURE usp_SelectSalesOrderValidationInfo_BySalesOrderNumber
+
+CREATE OR ALTER PROCEDURE dbo.usp_SelectSalesOrderValidationInfo_BySalesOrderNumber
     @SalesOrderNumber INT
 AS
 BEGIN
@@ -72,19 +80,91 @@ BEGIN
     SELECT TOP (1)
         so.SalesOrderID,
         c.Email
-    FROM SalesOrder so
-    INNER JOIN Customers c ON c.CustomerID = so.CustomerID
+    FROM dbo.SalesOrder so
+    INNER JOIN dbo.Customers c ON c.CustomerID = so.CustomerID
     WHERE so.SalesOrderNumber = @SalesOrderNumber;
 END
 GO
 
+
+/* =========================================================
+   SALES ORDER CRUD
+   ========================================================= */
+
+CREATE OR ALTER PROCEDURE dbo.usp_SelectById_SalesOrder
+    @SalesOrderID UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT TOP (1)
+        SalesOrderID,
+        CustomerID,
+        SalesOrderNumber,
+        OrderStatus,
+        PaymentStatus,
+        SalesDate,
+        ShippedDate,
+        TotalPrice,
+        CustomerName,
+        City
+    FROM dbo.vw_SalesOrderHeaders
+    WHERE SalesOrderID = @SalesOrderID;
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_Update_SalesOrder
+    @SalesOrderID UNIQUEIDENTIFIER,
+    @OrderStatus NVARCHAR(255),
+    @PaymentStatus NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE dbo.SalesOrder
+    SET
+        OrderStatus = @OrderStatus,
+        PaymentStatus = @PaymentStatus,
+        ShippedDate =
+            CASE
+                WHEN @OrderStatus = 'Afsendt' THEN ISNULL(ShippedDate, CAST(GETDATE() AS date))
+                ELSE NULL
+            END
+    WHERE SalesOrderID = @SalesOrderID;
+END
+GO
+
+
+/* =========================================================
+   SALES ORDER LINES (Filtered retrieval for UI / preview)
+   ========================================================= */
+
+CREATE OR ALTER PROCEDURE dbo.usp_Select_ProductSalesOrder_BySalesOrderID
+    @SalesOrderID UNIQUEIDENTIFIER
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        SalesOrderID,
+        SalesOrderNumber,
+        ProductID,
+        ProductName,
+        Quantity,
+        UnitPrice,
+        LineTotal
+    FROM dbo.vw_SalesOrderLines
+    WHERE SalesOrderID = @SalesOrderID;
+END
+GO
 
 
 /* =========================================================
    RETURN ORDER CRUD
    ========================================================= */
 
-CREATE OR ALTER PROCEDURE usp_Insert_ReturnOrder
+CREATE OR ALTER PROCEDURE dbo.usp_Insert_ReturnOrder
     @ReturnOrderID UNIQUEIDENTIFIER,
     @ReturnOrderDate DATE,
     @SalesOrderID UNIQUEIDENTIFIER
@@ -92,33 +172,43 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO ReturnOrder (
+    DECLARE @TotalPrice DECIMAL(10,2);
+
+    SELECT @TotalPrice = so.TotalPrice
+    FROM dbo.SalesOrder so
+    WHERE so.SalesOrderID = @SalesOrderID;
+
+    INSERT INTO dbo.ReturnOrder (
         ReturnOrderID,
         ReturnOrderDate,
-        SalesOrderID
+        SalesOrderID,
+        ReturnTotalPrice
     )
     VALUES (
         @ReturnOrderID,
         @ReturnOrderDate,
-        @SalesOrderID
+        @SalesOrderID,
+        ISNULL(@TotalPrice, 0)
     );
 END
 GO
 
 
-CREATE OR ALTER PROCEDURE usp_SelectById_ReturnOrder
+CREATE OR ALTER PROCEDURE dbo.usp_SelectById_ReturnOrder
     @ReturnOrderID UNIQUEIDENTIFIER
 AS
 BEGIN
     SET NOCOUNT ON;
 
     SELECT
-        ReturnOrderID,
-        ReturnOrderDate,
-        SalesOrderID,
-        SalesOrderNumber
-    FROM vw_ReturnOrders
-    WHERE ReturnOrderID = @ReturnOrderID;
+        ro.ReturnOrderID,
+        ro.ReturnOrderDate,
+        ro.SalesOrderID,
+        ro.ReturnTotalPrice,
+        so.SalesOrderNumber
+    FROM dbo.ReturnOrder ro
+    JOIN dbo.SalesOrder so ON so.SalesOrderID = ro.SalesOrderID
+    WHERE ro.ReturnOrderID = @ReturnOrderID;
 END
 GO
 
@@ -127,7 +217,7 @@ GO
    UPDATE = entity only (NO side effects)
    ========================================================= */
 
-CREATE OR ALTER PROCEDURE usp_Update_ReturnOrder
+CREATE OR ALTER PROCEDURE dbo.usp_Update_ReturnOrder
     @ReturnOrderID UNIQUEIDENTIFIER,
     @ReturnOrderDate DATE,
     @SalesOrderID UNIQUEIDENTIFIER
@@ -135,7 +225,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    UPDATE ReturnOrder
+    UPDATE dbo.ReturnOrder
     SET
         ReturnOrderDate = @ReturnOrderDate,
         SalesOrderID = @SalesOrderID
@@ -144,13 +234,13 @@ END
 GO
 
 
-CREATE OR ALTER PROCEDURE usp_DeleteById_ReturnOrder
+CREATE OR ALTER PROCEDURE dbo.usp_DeleteById_ReturnOrder
     @ReturnOrderID UNIQUEIDENTIFIER
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DELETE FROM ReturnOrder
+    DELETE FROM dbo.ReturnOrder
     WHERE ReturnOrderID = @ReturnOrderID;
 END
 GO
@@ -160,7 +250,7 @@ GO
    RETURN PROCESS (Business Logic, explicit)
    ========================================================= */
 
-CREATE OR ALTER PROCEDURE usp_ProcessReturnOrder
+CREATE OR ALTER PROCEDURE dbo.usp_ProcessReturnOrder
     @SalesOrderID UNIQUEIDENTIFIER
 AS
 BEGIN
@@ -173,8 +263,110 @@ BEGIN
         - Audit / logging
     */
 
-    UPDATE SalesOrder
+    UPDATE dbo.SalesOrder
     SET OrderStatus = 'Returned'
     WHERE SalesOrderID = @SalesOrderID;
+END
+GO
+
+
+/* =========================================================
+   StartPage graphics Metrics (Business Logic, explicit)
+   ========================================================= */
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_PackedToday
+    @Today DATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS PackedToday
+    FROM dbo.SalesOrder
+    WHERE OrderStatus = 'Afsendt'
+      AND ShippedDate = @Today;
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_ReadyToPick
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS ReadyToPick
+    FROM dbo.SalesOrder
+    WHERE OrderStatus = 'Afventer';
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_PackedTotal
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS PackedTotal
+    FROM dbo.SalesOrder
+    WHERE OrderStatus = 'Afsendt';
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_AverageCustomerValue
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        CAST((SELECT COUNT(*) FROM dbo.Customers) AS DECIMAL(18,4))
+        / NULLIF((SELECT SUM(TotalPrice) FROM dbo.SalesOrder), 0) AS AverageCustomerValue;
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_WholesaleOnTheWay
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS WholesaleOnTheWay
+    FROM dbo.WholesaleOrder
+    WHERE OrderStatus = 'Pending';
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_TotalReturnRate
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        CAST((SELECT COUNT(*) FROM dbo.ReturnOrder) AS DECIMAL(18,4))
+        / NULLIF((SELECT COUNT(*) FROM dbo.SalesOrder), 0) AS TotalReturnRate;
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_OutstandingPayments
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS OutstandingPayments
+    FROM dbo.SalesOrder
+    WHERE OrderStatus = 'Afsendt'
+      AND PaymentStatus = 'Afventer';
+END
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_UniqueCustomers
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT COUNT(*) AS UniqueCustomers
+    FROM dbo.Customers;
 END
 GO

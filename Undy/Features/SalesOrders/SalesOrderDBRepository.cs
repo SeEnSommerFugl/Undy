@@ -26,6 +26,7 @@
         protected override SalesOrder Map(IDataRecord r) => new SalesOrder
         {
             // Very important: None of these fields are ever permitted to be null during runtime.
+            // 
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
             CustomerName = r.GetString(r.GetOrdinal("CustomerName")),
             City = r.GetString(r.GetOrdinal("City")),
@@ -34,7 +35,12 @@
             OrderStatus = r.GetString(r.GetOrdinal("OrderStatus")),
             PaymentStatus = r.GetString(r.GetOrdinal("PaymentStatus")),
             SalesDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("SalesDate"))),
+            ShippedDate = r.IsDBNull(r.GetOrdinal("ShippedDate"))
+        ? null
+        : DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ShippedDate"))),
             TotalPrice = r.GetDecimal(r.GetOrdinal("TotalPrice"))
+
+
         };
 
         // Parameter binding for id

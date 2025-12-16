@@ -69,6 +69,10 @@
                             <GridViewColumn Header="Ordrestatus"
                     DisplayMemberBinding="{Binding OrderStatus}" />
 
+                            <GridViewColumn Header="Afsendt dato"
+                     DisplayMemberBinding="{Binding ShippedDate, StringFormat={}{0:dd-MM-yyyy}}" />
+
+
                             <GridViewColumn Header="Betalingsstatus"
                     DisplayMemberBinding="{Binding PaymentStatus}" />
 

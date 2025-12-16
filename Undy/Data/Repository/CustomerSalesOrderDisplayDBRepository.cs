@@ -1,10 +1,19 @@
-﻿namespace Undy.Data.Repository
+﻿using System.Data;
+using Undy.Models;
+
+namespace Undy.Data.Repository
 {
-    public class CustomerSalesOrderDBRepository : BaseDBRepository<CustomerSalesOrder, Guid>
+    /// <summary>
+    /// Read-only projection repository based on vw_CustomerSalesOrders.
+    /// Used for UI lists (payments etc.), not for CRUD.
+    /// </summary>
+    public class CustomerSalesOrderDisplayDBRepository
+        : BaseDBRepository<CustomerSalesOrderDisplay, Guid>
     {
         protected override string SqlSelectAll => "SELECT * FROM vw_CustomerSalesOrders";
 
-        protected override CustomerSalesOrder Map(IDataRecord r) => new CustomerSalesOrder {
+        protected override CustomerSalesOrderDisplay Map(IDataRecord r) => new CustomerSalesOrderDisplay
+        {
             SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
             SalesOrderNumber = r.GetInt32(r.GetOrdinal("SalesOrderNumber")),
             DisplaySalesOrderNumber = r.GetString(r.GetOrdinal("DisplaySalesOrderNumber")),
@@ -19,6 +28,6 @@
             FullName = r.GetString(r.GetOrdinal("FullName"))
         };
 
-        protected override Guid GetKey(CustomerSalesOrder e) => e.SalesOrderID;
+        protected override Guid GetKey(CustomerSalesOrderDisplay e) => e.SalesOrderID;
     }
 }

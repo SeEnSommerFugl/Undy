@@ -1,38 +1,51 @@
-﻿namespace Undy.Features.ViewModel
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+using Undy.Features.ViewModel;
+using Undy.Models;
+using Undy.Data.Repository;
+
+namespace Undy.Features.ViewModel
 {
     public class TestReturnOrderViewModel : BaseViewModel
     {
-        private IBaseRepository<ReturnOrder, Guid> _tempReturnRepo;
-        private IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
+        private readonly IBaseRepository<ReturnOrder, Guid> _tempReturnRepo;
+        private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
+        private readonly SalesOrderLineDBRepository _productSalesOrderRepo;
 
         private string? _orderNumber;
         public string? OrderNumber
         {
             get => _orderNumber;
-            set
-            {
-                if (SetProperty(ref _orderNumber, value)) ;
-            }
+            set => SetProperty(ref _orderNumber, value);
         }
 
         private string _email = string.Empty;
         public string Email
         {
             get => _email;
-            set
-            {
-                if (SetProperty(ref _email, value)) ;
-            }
+            set => SetProperty(ref _email, value);
         }
 
         private string? _reason;
         public string? Reason
         {
             get => _reason;
-            set
-            {
-                if (SetProperty(ref _reason, value)) ;
-            }
+            set => SetProperty(ref _reason, value);
+        }
+
+        private string _orderTotalPrice = string.Empty;
+        public string OrderTotalPrice
+        {
+            get => _orderTotalPrice;
+            set => SetProperty(ref _orderTotalPrice, value);
+        }
+
+        private decimal _orderTotal;
+        public decimal OrderTotal
+        {
+            get => _orderTotal;
+            set => SetProperty(ref _orderTotal, value);
         }
 
         private string? _statusMessage;
@@ -42,12 +55,18 @@
             set => SetProperty(ref _statusMessage, value);
         }
 
+        public ObservableCollection<SalesOrderLine> OrderLines { get; } = new();
+
         public ICommand ConfirmCommand { get; }
 
-        public TestReturnOrderViewModel(IBaseRepository<ReturnOrder, Guid> tempReturnRepo, IBaseRepository<SalesOrder, Guid> salesOrderRepo)
+        public TestReturnOrderViewModel(
+            IBaseRepository<ReturnOrder, Guid> tempReturnRepo,
+            IBaseRepository<SalesOrder, Guid> salesOrderRepo,
+            SalesOrderLineDBRepository productSalesOrderRepo)
         {
             _tempReturnRepo = tempReturnRepo;
             _salesOrderRepo = salesOrderRepo;
+            _productSalesOrderRepo = productSalesOrderRepo;
 
             ConfirmCommand = new RelayCommand(ConfirmAction, CanConfirm);
         }
@@ -77,16 +96,15 @@
                 return;
             }
 
-            var (salesOrderId, customerEmail) = await salesOrderDbRepo.GetValidationInfoBySalesOrderNumberAsync(salesOrderNumber);
+            var (salesOrderId, customerEmail) =
+                await salesOrderDbRepo.GetValidationInfoBySalesOrderNumberAsync(salesOrderNumber);
 
-            // If order number does not exist
             if (salesOrderId == null)
             {
                 StatusMessage = "Ordrenummeret findes ikke";
                 return;
             }
 
-            // If email does not match the order's customer email
             var inputEmail = (Email ?? string.Empty).Trim();
             var dbEmail = (customerEmail ?? string.Empty).Trim();
 
@@ -96,7 +114,21 @@
                 return;
             }
 
-            // Create and store the return order (stores SalesOrderID GUID as FK)
+            // Load order header for total
+            var salesOrder = await _salesOrderRepo.GetByIdAsync(salesOrderId.Value);
+
+            // Load order lines (ProductSalesOrder) for preview ListView
+            OrderLines.Clear();
+            var orderLines = await _productSalesOrderRepo.GetBySalesOrderIdAsync(salesOrderId.Value);
+            foreach (var line in orderLines)
+            {
+                OrderLines.Add(line);
+            }
+
+            OrderTotal = salesOrder.TotalPrice;
+            OrderTotalPrice = OrderTotal.ToString("0.00");
+
+            // Create and store the return order (ReturnTotalPrice is snapshotted in SQL on insert)
             var newReturnOrder = new ReturnOrder
             {
                 ReturnOrderID = Guid.NewGuid(),
@@ -111,6 +143,9 @@
             OrderNumber = string.Empty;
             Email = string.Empty;
             Reason = string.Empty;
+            OrderTotalPrice = string.Empty;
+            OrderTotal = 0;
+            OrderLines.Clear();
         }
     }
 }

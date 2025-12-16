@@ -1,58 +1,65 @@
-﻿namespace Undy.Features.ViewModel
+﻿using System.Collections.ObjectModel;
+using Undy.Data.Repository;
+using Undy.Models;
+
+namespace Undy.Features.ViewModel
 {
+    /// <summary>
+    /// ViewModel for displaying existing sales orders and their lines.
+    /// Creation/editing is handled in TestSalesOrderViewModel.
+    /// </summary>
     public class SalesOrderViewModel : BaseViewModel
     {
-        // Repository for sales order display rows
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
+        private readonly SalesOrderLineDBRepository _salesOrderLineRepo;
 
-        // Repository for product lines on sales orders
-        private readonly IBaseRepository<ProductSalesOrder, Guid> _productSalesOrderRepo;
+        private SalesOrder? _selectedSalesOrder;
 
-        // All sales orders for the ListView
-        public ObservableCollection<SalesOrder> SalesDisplay => _salesOrderRepo.Items;
-
-        // View for sorting and filtering
-        public ICollectionView SaleView { get; }
-
-        // Lines for the selected order (shown in the DataGrid)
-        public ObservableCollection<ProductSalesOrder> SelectedOrderDetails { get; }
-            = new ObservableCollection<ProductSalesOrder>();
-
-        // Order status options used in the view
-        public List<string> OrderStatusOptions { get; } = new() { "Afventer", "Afsendt" };
-
-        // 
-        // SaleView binds directly to Repository
         public SalesOrderViewModel(
-            IBaseRepository<SalesOrder, Guid> salesDisplayRepo,
-            IBaseRepository<ProductSalesOrder, Guid> productSalesOrderRepo)
+            IBaseRepository<SalesOrder, Guid> salesOrderRepo,
+            SalesOrderLineDBRepository salesOrderLineRepo)
         {
-            _salesOrderRepo = salesDisplayRepo;
-            _productSalesOrderRepo = productSalesOrderRepo;
+            _salesOrderRepo = salesOrderRepo;
+            _salesOrderLineRepo = salesOrderLineRepo;
 
-            SaleView = CollectionViewSource.GetDefaultView(SalesDisplay);
-            SaleView.SortDescriptions.Add(new SortDescription("SalesDate", ListSortDirection.Descending));
+            SelectedOrderLines = new ObservableCollection<SalesOrderLine>();
         }
 
-        // SelectedOrderDetails is a separate collection
-        // LoadOrderDetails filters lines with SalesOrderID
-        public void LoadOrderDetails(SalesOrder selectedOrder)
+        /// <summary>
+        /// Backed by SalesOrderDBRepository.Items (loaded in App.xaml.cs).
+        /// </summary>
+        public ObservableCollection<SalesOrder> SalesOrders => _salesOrderRepo.Items;
+
+        public SalesOrder? SelectedSalesOrder
         {
-            // Clear old lines
-            SelectedOrderDetails.Clear();
-
-            if (selectedOrder == null)
+            get => _selectedSalesOrder;
+            set
             {
-                return;
+                if (_selectedSalesOrder == value)
+                    return;
+
+                _selectedSalesOrder = value;
+                OnPropertyChanged();
             }
+        }
 
-            // Find all product lines for this order
-            var lines = _productSalesOrderRepo.Items
-                .Where(l => l.SalesOrderID == selectedOrder.SalesOrderID);
+        /// <summary>
+        /// Lines for the currently selected order.
+        /// Loaded explicitly (double-click in the view).
+        /// </summary>
+        public ObservableCollection<SalesOrderLine> SelectedOrderLines { get; }
 
+        /// <summary>
+        /// Loads order lines for a specific sales order.
+        /// </summary>
+        public async Task LoadOrderDetailsAsync(SalesOrder order)
+        {
+            SelectedOrderLines.Clear();
+
+            var lines = await _salesOrderLineRepo.GetBySalesOrderIdAsync(order.SalesOrderID);
             foreach (var line in lines)
             {
-                SelectedOrderDetails.Add(line);
+                SelectedOrderLines.Add(line);
             }
         }
     }

@@ -22,9 +22,10 @@
         {
             ReturnOrderID = r.GetGuid(r.GetOrdinal("ReturnOrderID")),
             ReturnOrderDate = DateOnly.FromDateTime(r.GetDateTime(r.GetOrdinal("ReturnOrderDate"))),
-            SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID"))
-            //missing db.null check for ProductID?
+            SalesOrderID = r.GetGuid(r.GetOrdinal("SalesOrderID")),
+            ReturnTotalPrice = r.GetDecimal(r.GetOrdinal("ReturnTotalPrice"))
         };
+
 
         // Parameter binding for id
         protected override void BindId(SqlCommand cmd, Guid id)

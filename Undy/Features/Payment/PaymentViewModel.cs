@@ -3,10 +3,10 @@
     public class PaymentViewModel : BaseViewModel
     {
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
-        private readonly IBaseRepository<CustomerSalesOrder, Guid> _customerSalesOrderRepo;
+        private readonly IBaseRepository<CustomerSalesOrderDisplay, Guid> _customerSalesOrderRepo;
 
         // Liste med ALLE ordrer 
-        public ObservableCollection<CustomerSalesOrder> Orders => _customerSalesOrderRepo.Items;
+        public ObservableCollection<CustomerSalesOrderDisplay> Orders => _customerSalesOrderRepo.Items;
 
         // Viewet som UI binder til
         public ICollectionView PaymentView { get; }
@@ -19,8 +19,8 @@
         private HashSet<Guid> _selectedSalesOrderIds = new HashSet<Guid>();
 
         // Info om valgt ordre 
-        private CustomerSalesOrder _selectedOrder;
-        public CustomerSalesOrder SelectedOrder
+        private CustomerSalesOrderDisplay _selectedOrder;
+        public CustomerSalesOrderDisplay SelectedOrder
         {
             get => _selectedOrder;
             set
@@ -51,14 +51,14 @@
         // Constructor
         public PaymentViewModel(
             IBaseRepository<SalesOrder, Guid> salesOrderRepo,
-            IBaseRepository<CustomerSalesOrder, Guid> customerSalesOrderRepo)
+            IBaseRepository<CustomerSalesOrderDisplay, Guid> customerSalesOrderRepo)
         {
             _salesOrderRepo = salesOrderRepo;
             _customerSalesOrderRepo = customerSalesOrderRepo;
 
             PaymentView = CollectionViewSource.GetDefaultView(Orders);
             PaymentView.SortDescriptions.Add(new SortDescription("SalesDate", ListSortDirection.Descending));
-            PaymentView.Filter = po => po is CustomerSalesOrder paymentOrder && paymentOrder.PaymentStatus != "Betalt";
+            PaymentView.Filter = po => po is CustomerSalesOrderDisplay paymentOrder && paymentOrder.PaymentStatus != "Betalt";
 
             ConfirmPaymentCommand = new RelayCommand(
                 async _ => await ConfirmPaymentAsync(),
@@ -79,7 +79,7 @@
 
         
         // Vis info om valgt ordre
-        private void LoadSelectedOrderInfo(CustomerSalesOrder order)
+        private void LoadSelectedOrderInfo(CustomerSalesOrderDisplay order)
         {
             if (order == null)
             {

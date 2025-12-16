@@ -66,6 +66,7 @@ CREATE TABLE SalesOrder (
 	OrderStatus NVARCHAR(255) NOT NULL,
 	PaymentStatus NVARCHAR(255) NOT NULL,
 	SalesDate DATE NOT NULL,
+	ShippedDate DATE NULL,
 	TotalPrice DECIMAL(10,2) NOT NULL DEFAULT 0,
 	CONSTRAINT FK_Customer_SalesOrder
 		FOREIGN KEY(CustomerID)
@@ -92,8 +93,10 @@ CREATE TABLE ReturnOrder(
 	ReturnOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	ReturnOrderDate DATE NOT NULL,
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL,
+    ReturnTotalPrice DECIMAL(10,2) NOT NULL DEFAULT 0,
 	CONSTRAINT FK_SalesOrder_ReturnOrder
 		FOREIGN KEY(SalesOrderID)
 		REFERENCES SalesOrder(SalesOrderID)
 );
+
 GO

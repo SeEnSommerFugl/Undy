@@ -3,12 +3,12 @@
     public class SalesOrderService
     {
         private readonly SalesOrderDBRepository _salesOrderRepo;
-        private readonly ProductSalesOrderDBRepository _productSalesOrderRepo;
+        private readonly SalesOrderLineDBRepository _productSalesOrderRepo;
 
         public SalesOrderService()
         {
             _salesOrderRepo = new SalesOrderDBRepository();
-            _productSalesOrderRepo = new ProductSalesOrderDBRepository();
+            _productSalesOrderRepo = new SalesOrderLineDBRepository();
         }
 
         //public async Task CreateSalesOrderWithProducts(SalesOrder salesOrder, List<ProductSalesOrder> productSalesOrderLines)

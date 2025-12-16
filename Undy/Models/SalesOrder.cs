@@ -8,6 +8,7 @@
         public string OrderStatus { get; set; }
         public string PaymentStatus { get; set; }
         public DateOnly SalesDate { get; set; }
+        public DateOnly? ShippedDate { get; set; }
         public decimal TotalPrice { get; set; }
         public string DisplaySalesOrderNumber { get; set; }
 
