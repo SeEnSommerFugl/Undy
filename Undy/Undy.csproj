@@ -12,6 +12,10 @@
     <None Remove="Styles\Images\chart-histogramBlue.png" />
     <None Remove="Styles\Images\checkBlue.png" />
     <None Remove="Styles\Images\exclamationBlue.png" />
+    <None Remove="Styles\Images\icon_aov.png" />
+    <None Remove="Styles\Images\icon_return_rate.png" />
+    <None Remove="Styles\Images\icon_unique_customers.png" />
+    <None Remove="Styles\Images\IncomingWholeSaleOrder.png" />
     <None Remove="Styles\Images\out-of-stockBlue.png" />
     <None Remove="Styles\Images\pause-circleBlue.png" />
     <None Remove="Styles\Images\picking-boxBlue.png" />
@@ -28,6 +32,15 @@
     <Resource Include="Styles\Images\chart-histogramBlue.png" />
     <Resource Include="Styles\Images\checkBlue.png" />
     <Resource Include="Styles\Images\exclamationBlue.png" />
+    <Resource Include="Styles\Images\icon_aov.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Styles\Images\icon_unique_customers.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Styles\Images\IncomingWholeSaleOrder.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Styles\Images\out-of-stockBlue.png" />
     <Resource Include="Styles\Images\pause-circleBlue.png" />
     <Resource Include="Styles\Images\picking-boxBlue.png" />

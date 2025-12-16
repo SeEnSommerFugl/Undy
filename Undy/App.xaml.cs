@@ -47,7 +47,9 @@ namespace Undy
             var wholesaleOrderLineRepo = new WholesaleOrderLineDBRepository();
 
             // ----- ViewModels ----- //
-            var startPageVM = new StartPageViewModel();
+            var startPageRepo = new StartPageDBRepository();
+            var startPageVM = new StartPageViewModel(startPageRepo);
+
 
             var wholesaleOrderVM = new WholesaleOrderViewModel(
                 wholesaleOrderDisplayRepo,

@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using System.Globalization;
 using Microsoft.Data.SqlClient;
 using Undy.Data.Database;
 
@@ -20,7 +22,8 @@ namespace Undy.Data.Repository
 
             cmd.Parameters.Add("@Today", SqlDbType.Date).Value = today.ToDateTime(TimeOnly.MinValue);
 
-            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            var raw = await cmd.ExecuteScalarAsync();
+            return raw == null || raw == DBNull.Value ? 0 : Convert.ToInt32(raw);
         }
 
         public async Task<int> GetReadyToPickAsync()
@@ -31,7 +34,8 @@ namespace Undy.Data.Repository
                 CommandType = CommandType.StoredProcedure
             };
 
-            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            var raw = await cmd.ExecuteScalarAsync();
+            return raw == null || raw == DBNull.Value ? 0 : Convert.ToInt32(raw);
         }
 
         public async Task<int> GetPackedTotalAsync()
@@ -42,7 +46,8 @@ namespace Undy.Data.Repository
                 CommandType = CommandType.StoredProcedure
             };
 
-            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            var raw = await cmd.ExecuteScalarAsync();
+            return raw == null || raw == DBNull.Value ? 0 : Convert.ToInt32(raw);
         }
 
         /// <summary>
@@ -62,7 +67,21 @@ namespace Undy.Data.Repository
             if (raw == null || raw == DBNull.Value) return "0";
 
             var value = Convert.ToDecimal(raw);
-            return value.ToString("0.####");
+            return value.ToString("0.####", CultureInfo.InvariantCulture);
+        }
+
+        public async Task<decimal> GetAverageOrderValueAsync()
+        {
+            using var con = await DB.OpenConnection();
+            using var cmd = new SqlCommand("dbo.usp_StartPage_AverageOrderValue", con)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            var raw = await cmd.ExecuteScalarAsync();
+            if (raw == null || raw == DBNull.Value) return 0m;
+
+            return Convert.ToDecimal(raw);
         }
 
         public async Task<int> GetWholesaleOnTheWayAsync()
@@ -73,7 +92,8 @@ namespace Undy.Data.Repository
                 CommandType = CommandType.StoredProcedure
             };
 
-            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            var raw = await cmd.ExecuteScalarAsync();
+            return raw == null || raw == DBNull.Value ? 0 : Convert.ToInt32(raw);
         }
 
         public async Task<string> GetTotalReturnRateAsync()
@@ -88,7 +108,7 @@ namespace Undy.Data.Repository
             if (raw == null || raw == DBNull.Value) return "0%";
 
             var rate = Convert.ToDecimal(raw) * 100m;
-            return rate.ToString("0.##") + "%";
+            return rate.ToString("0.##", CultureInfo.InvariantCulture) + "%";
         }
 
         public async Task<int> GetOutstandingPaymentsAsync()
@@ -99,7 +119,8 @@ namespace Undy.Data.Repository
                 CommandType = CommandType.StoredProcedure
             };
 
-            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            var raw = await cmd.ExecuteScalarAsync();
+            return raw == null || raw == DBNull.Value ? 0 : Convert.ToInt32(raw);
         }
 
         public async Task<int> GetUniqueCustomersAsync()
@@ -110,7 +131,8 @@ namespace Undy.Data.Repository
                 CommandType = CommandType.StoredProcedure
             };
 
-            return Convert.ToInt32(await cmd.ExecuteScalarAsync());
+            var raw = await cmd.ExecuteScalarAsync();
+            return raw == null || raw == DBNull.Value ? 0 : Convert.ToInt32(raw);
         }
     }
 }

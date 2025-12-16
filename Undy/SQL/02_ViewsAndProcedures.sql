@@ -287,6 +287,19 @@ BEGIN
 END
 GO
 
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_AverageOrderValue
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        CAST(SUM(so.TotalPrice) AS DECIMAL(18,2))
+        / NULLIF(COUNT(so.SalesOrderID), 0) AS AverageOrderValue
+    FROM dbo.SalesOrder so;
+END
+GO
+
+
 
 CREATE OR ALTER PROCEDURE dbo.usp_StartPage_ReadyToPick
 AS
@@ -318,10 +331,12 @@ BEGIN
     SET NOCOUNT ON;
 
     SELECT
-        CAST((SELECT COUNT(*) FROM dbo.Customers) AS DECIMAL(18,4))
-        / NULLIF((SELECT SUM(TotalPrice) FROM dbo.SalesOrder), 0) AS AverageCustomerValue;
+        CAST(SUM(so.TotalPrice) AS DECIMAL(18,2))
+        / NULLIF(COUNT(DISTINCT so.CustomerID), 0) AS AverageCustomerValue
+    FROM dbo.SalesOrder so;
 END
 GO
+
 
 
 CREATE OR ALTER PROCEDURE dbo.usp_StartPage_WholesaleOnTheWay
@@ -331,9 +346,10 @@ BEGIN
 
     SELECT COUNT(*) AS WholesaleOnTheWay
     FROM dbo.WholesaleOrder
-    WHERE OrderStatus = 'Pending';
+    WHERE OrderStatus IN (N'Afventer', N'Pending', N'Klar til udpakning');
 END
 GO
+
 
 
 CREATE OR ALTER PROCEDURE dbo.usp_StartPage_TotalReturnRate
@@ -355,10 +371,11 @@ BEGIN
 
     SELECT COUNT(*) AS OutstandingPayments
     FROM dbo.SalesOrder
-    WHERE OrderStatus = 'Afsendt'
-      AND PaymentStatus = 'Afventer';
+    WHERE OrderStatus = N'Afsendt'
+      AND PaymentStatus IN (N'Afventer', N'Afventer Betaling');
 END
 GO
+
 
 
 CREATE OR ALTER PROCEDURE dbo.usp_StartPage_UniqueCustomers
@@ -366,7 +383,23 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT COUNT(*) AS UniqueCustomers
-    FROM dbo.Customers;
+    SELECT COUNT(DISTINCT so.CustomerID) AS UniqueCustomers
+    FROM dbo.SalesOrder so;
 END
 GO
+
+
+CREATE OR ALTER PROCEDURE dbo.usp_StartPage_AverageOrderValue
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        CAST(
+            SUM(TotalPrice) / NULLIF(COUNT(SalesOrderID), 0)
+            AS DECIMAL(18,2)
+        ) AS AverageOrderValue
+    FROM dbo.SalesOrder
+    WHERE OrderStatus NOT IN ('Cancelled');
+END
+
