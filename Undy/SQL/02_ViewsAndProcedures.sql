@@ -664,14 +664,30 @@ BEGIN
     SET NumberInStock = NumberInStock + @ReceiveQuantity
     WHERE ProductID = @ProductID;
 
-    -- If fully received (all lines), close order and set DeliveryDate
-    IF NOT EXISTS
-    (
-        SELECT 1
-        FROM dbo.ProductWholesaleOrder pwo
-        WHERE pwo.WholesaleOrderID = @WholesaleOrderID
-          AND pwo.QuantityReceived < pwo.Quantity
-    )
+    /* -----------------------------
+       Update WholesaleOrder status
+       - Fully received => Modtaget + DeliveryDate
+       - Partially received => Delvist modtaget
+       - None received => keep current status (e.g., Afventer)
+       ----------------------------- */
+
+    DECLARE @HasAnyReceived BIT =
+        CASE WHEN EXISTS (
+            SELECT 1
+            FROM dbo.ProductWholesaleOrder pwo
+            WHERE pwo.WholesaleOrderID = @WholesaleOrderID
+              AND pwo.QuantityReceived > 0
+        ) THEN 1 ELSE 0 END;
+
+    DECLARE @AllFullyReceived BIT =
+        CASE WHEN NOT EXISTS (
+            SELECT 1
+            FROM dbo.ProductWholesaleOrder pwo
+            WHERE pwo.WholesaleOrderID = @WholesaleOrderID
+              AND pwo.QuantityReceived < pwo.Quantity
+        ) THEN 1 ELSE 0 END;
+
+    IF (@AllFullyReceived = 1)
     BEGIN
         UPDATE dbo.WholesaleOrder
         SET
@@ -679,6 +695,14 @@ BEGIN
             DeliveryDate = ISNULL(DeliveryDate, CAST(GETDATE() AS date))
         WHERE WholesaleOrderID = @WholesaleOrderID;
     END
+    ELSE IF (@HasAnyReceived = 1)
+    BEGIN
+        UPDATE dbo.WholesaleOrder
+        SET
+            OrderStatus = N'Delvist modtaget'
+        WHERE WholesaleOrderID = @WholesaleOrderID;
+    END
+
 END
 GO
 
