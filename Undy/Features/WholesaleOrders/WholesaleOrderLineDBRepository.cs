@@ -1,66 +1,19 @@
 ﻿namespace Undy.Data.Repository
 {
-    /// <summary>
-    /// Wholesale order line repository (composite key in DB: WholesaleOrderID + ProductID).
-    /// Kept as a small query/command repository (no BaseDBRepository<Guid> inheritance).
-    /// </summary>
-    public class WholesaleOrderLineDBRepository
+    public class WholesaleOrderLineDBRepository : BaseDBRepository<WholesaleOrderLine, Guid>
     {
-        public async Task<IEnumerable<WholesaleOrderLine>> GetByWholesaleOrderIdAsync(Guid wholesaleOrderId)
-        {
-            var result = new List<WholesaleOrderLine>();
+        protected override string SqlSelectAll => "SELECT * FROM vw_WholesaleOrderLines";
 
-            using var con = await DB.OpenConnection();
-            using var cmd = new SqlCommand(
-                "SELECT WholesaleOrderID, ProductID, Quantity, UnitPrice, QuantityReceived " +
-                "FROM dbo.ProductWholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID",
-                con);
+        protected override string SqlSelectById => "usp_Select_ProductWholesaleOrder_ByWholesaleOrderID";
 
-            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = wholesaleOrderId;
+        protected override string SqlInsert => "usp_Insert_WholesaleOrderLine";
 
-            using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                result.Add(Map(reader));
-            }
+        protected override string SqlUpdate => "usp_Update_WholesaleOrderLine";
 
-            return result;
-        }
+        protected override string SqlDeleteById => "usp_DeleteById_WholesaleOrderLine";
 
-        public async Task AddRangeAsync(IEnumerable<WholesaleOrderLine> lines)
-        {
-            using var con = await DB.OpenConnection();
-            using var tx = con.BeginTransaction();
-
-            try
-            {
-                foreach (var line in lines)
-                {
-                    using var cmd = new SqlCommand(
-                        "INSERT INTO dbo.ProductWholesaleOrder (WholesaleOrderID, ProductID, Quantity, UnitPrice, QuantityReceived) " +
-                        "VALUES (@WholesaleOrderID, @ProductID, @Quantity, @UnitPrice, @QuantityReceived)",
-                        con,
-                        tx);
-
-                    cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = line.WholesaleOrderID;
-                    cmd.Parameters.Add("@ProductID", SqlDbType.UniqueIdentifier).Value = line.ProductID;
-                    cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = line.Quantity;
-                    cmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal).Value = line.UnitPrice;
-                    cmd.Parameters.Add("@QuantityReceived", SqlDbType.Int).Value = line.QuantityReceived;
-
-                    await cmd.ExecuteNonQueryAsync();
-                }
-
-                await tx.CommitAsync();
-            }
-            catch
-            {
-                await tx.RollbackAsync();
-                throw;
-            }
-        }
-
-        private static WholesaleOrderLine Map(IDataRecord r) => new WholesaleOrderLine
+        // Map data record to entity
+        protected override WholesaleOrderLine Map(IDataRecord r) => new WholesaleOrderLine
         {
             WholesaleOrderID = r.GetGuid(r.GetOrdinal("WholesaleOrderID")),
             ProductID = r.GetGuid(r.GetOrdinal("ProductID")),
@@ -68,5 +21,44 @@
             UnitPrice = r.GetDecimal(r.GetOrdinal("UnitPrice")),
             QuantityReceived = r.GetInt32(r.GetOrdinal("QuantityReceived"))
         };
+
+        // Bind ID
+        protected override void BindId(SqlCommand cmd, Guid id)
+        {
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = id;
+        }
+
+        // Bind insert params 
+        protected override void BindInsert(SqlCommand cmd, WholesaleOrderLine e)
+        {
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
+            cmd.Parameters.Add("@ProductID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
+            cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
+
+            var p = cmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal);
+            p.Precision = 10;
+            p.Scale = 2;
+            p.Value = e.UnitPrice;
+
+            cmd.Parameters.Add("@QuantityReceived", SqlDbType.Int).Value = e.QuantityReceived;
+        }
+
+        // Bind update params (needs both key columns too)
+        protected override void BindUpdate(SqlCommand cmd, WholesaleOrderLine e)
+        {
+            cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
+            cmd.Parameters.Add("@ProductID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
+            cmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = e.Quantity;
+
+            var p = cmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal);
+            p.Precision = 10;
+            p.Scale = 2;
+            p.Value = e.UnitPrice;
+
+            cmd.Parameters.Add("@QuantityReceived", SqlDbType.Int).Value = e.QuantityReceived;
+        }
+
+        // Get composite key from entity
+        protected override Guid GetKey(WholesaleOrderLine e) => (e.WholesaleOrderID);
     }
 }

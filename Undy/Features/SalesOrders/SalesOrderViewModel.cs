@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Undy.Features.SalesOrders;
 
 namespace Undy.Features.ViewModel
 {
@@ -11,7 +12,7 @@ namespace Undy.Features.ViewModel
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
         private readonly SalesOrderLineDBRepository _salesOrderLineRepo;
 
-        private SalesOrder? _selectedSalesOrder;
+
 
         public SalesOrderViewModel(
             IBaseRepository<SalesOrder, Guid> salesOrderRepo,
@@ -28,29 +29,15 @@ namespace Undy.Features.ViewModel
         /// Backed by SalesOrderDBRepository.Items (loaded in App.xaml.cs).
         /// </summary>
         public ObservableCollection<SalesOrder> SalesOrders => _salesOrderRepo.Items;
-
+        private SalesOrder? _selectedSalesOrder;
         public SalesOrder? SelectedSalesOrder
         {
             get => _selectedSalesOrder;
             set
             {
-                if (_selectedSalesOrder == value)
-                    return;
-
-                _selectedSalesOrder = value;
-                OnPropertyChanged();
-
-                SelectedOrderDetails.Clear();
-
-                if (_selectedSalesOrder != null)
-                {
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Ordrenummer:", _selectedSalesOrder.SalesOrderNumber));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("E-Mail:", _selectedSalesOrder.CustomerEmail));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Købsdato:", _selectedSalesOrder.SalesDate));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Afsendt:", _selectedSalesOrder.ShippedDate));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Total pris:", _selectedSalesOrder.TotalPrice));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Kundenummer:", _selectedSalesOrder.CustomerNumber));
-                }
+                if (SetProperty(ref _selectedSalesOrder, value))
+                    _ = LoadOrderDetailsAsync();
+                    LoadSelectedOrderDetails();
             }
         }
 
@@ -68,27 +55,35 @@ namespace Undy.Features.ViewModel
         /// <summary>
         /// Loads order lines for a specific sales order.
         /// </summary>
-        public async Task LoadOrderDetailsAsync(SalesOrder order)
+        public async Task LoadOrderDetailsAsync()
         {
             SelectedOrderLines.Clear();
 
-            var lines = await _salesOrderLineRepo.GetBySalesOrderIdAsync(order.SalesOrderID);
+            if (SelectedSalesOrder is null)
+                return;
+
+            var lines = await _salesOrderLineRepo.GetByIdsAsync([SelectedSalesOrder.SalesOrderID]);
             foreach (var line in lines)
             {
                 SelectedOrderLines.Add(line);
             }
         }
-    }
 
-    public sealed class SalesOrderDetailRow
-    {
-        public string Label { get; }
-        public object? Value { get; }
-
-        public SalesOrderDetailRow(string label, object? value)
+        public void LoadSelectedOrderDetails()
         {
-            Label = label;
-            Value = value;
+            SelectedOrderDetails.Clear();
+
+            if (_selectedSalesOrder != null)
+            {
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Ordrenummer:", _selectedSalesOrder.SalesOrderNumber));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("E-Mail:", _selectedSalesOrder.CustomerEmail));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Købsdato:", _selectedSalesOrder.SalesDate));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Afsendt:", _selectedSalesOrder.ShippedDate));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Total pris:", _selectedSalesOrder.TotalPrice));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Kundenummer:", _selectedSalesOrder.CustomerNumber));
+            }
         }
     }
 }
+
+
