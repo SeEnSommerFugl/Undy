@@ -11,7 +11,7 @@ namespace Undy.Features.ViewModel
         private readonly IBaseRepository<SalesOrder, Guid> _salesOrderRepo;
         private readonly SalesOrderLineDBRepository _salesOrderLineRepo;
 
-        private SalesOrder? _selectedSalesOrder;
+
 
         public SalesOrderViewModel(
             IBaseRepository<SalesOrder, Guid> salesOrderRepo,
@@ -28,12 +28,16 @@ namespace Undy.Features.ViewModel
         /// Backed by SalesOrderDBRepository.Items (loaded in App.xaml.cs).
         /// </summary>
         public ObservableCollection<SalesOrder> SalesOrders => _salesOrderRepo.Items;
-
+        private SalesOrder? _selectedSalesOrder;
         public SalesOrder? SelectedSalesOrder
         {
             get => _selectedSalesOrder;
             set
             {
+                if (SetProperty(ref _selectedSalesOrder, value))
+                    _ = LoadOrderDetailsAsync();
+            }
+        }
                 if (_selectedSalesOrder == value)
                     return;
 
@@ -68,11 +72,14 @@ namespace Undy.Features.ViewModel
         /// <summary>
         /// Loads order lines for a specific sales order.
         /// </summary>
-        public async Task LoadOrderDetailsAsync(SalesOrder order)
+        public async Task LoadOrderDetailsAsync()
         {
             SelectedOrderLines.Clear();
 
-            var lines = await _salesOrderLineRepo.GetBySalesOrderIdAsync(order.SalesOrderID);
+            if (SelectedSalesOrder is null)
+                return;
+
+            var lines = await _salesOrderLineRepo.GetByIdsAsync([SelectedSalesOrder.SalesOrderID]);
             foreach (var line in lines)
             {
                 SelectedOrderLines.Add(line);

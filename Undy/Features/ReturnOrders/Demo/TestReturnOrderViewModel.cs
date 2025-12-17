@@ -112,7 +112,7 @@
 
             // Load order lines (ProductSalesOrder) for preview ListView
             OrderLines.Clear();
-            var orderLines = await _productSalesOrderRepo.GetBySalesOrderIdAsync(salesOrderId.Value);
+            var orderLines = await _productSalesOrderRepo.GetByIdsAsync([salesOrderId.Value]);
             foreach (var line in orderLines)
             {
                 OrderLines.Add(line);

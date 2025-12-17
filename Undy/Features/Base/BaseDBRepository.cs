@@ -57,6 +57,32 @@
             using var rd = await cmd.ExecuteReaderAsync();
             return await rd.ReadAsync() ? Map(rd) : null;
         }
+        public async Task<List<T>> GetByIdsAsync(IEnumerable<TKey> ids)
+        {
+            var list = new List<T>();
+            var idList = ids.ToList();
+
+            if (idList.Count == 0)
+                return list;
+
+            using var con = await DB.OpenConnection();
+
+            foreach (var id in idList)
+            {
+                using var cmd = new SqlCommand(SqlSelectById, con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                BindId(cmd, id);
+
+                using var rd = await cmd.ExecuteReaderAsync();
+                while (await rd.ReadAsync())
+                {
+                    list.Add(Map(rd));
+                }
+            }
+
+            return list;
+        }
 
         public async Task AddAsync(T entity)
         {

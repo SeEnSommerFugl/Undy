@@ -60,5 +60,6 @@ namespace Undy.Features.Products
             cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 255).Value = e.Colour;
             cmd.Parameters.Add("@NumberInStock", SqlDbType.Int).Value = e.NumberInStock;
         }
+
     }
 }

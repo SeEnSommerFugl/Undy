@@ -48,7 +48,7 @@
             if (SelectedWholesaleOrder is null)
                 return;
 
-            var lines = await _wholesaleOrderLineRepo.GetByWholesaleOrderIdAsync(SelectedWholesaleOrder.WholesaleOrderID);
+            var lines = await _wholesaleOrderLineRepo.GetByIdsAsync([SelectedWholesaleOrder.WholesaleOrderID]);
             foreach (var line in lines)
             {
                 SelectedOrderLines.Add(line);
