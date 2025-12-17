@@ -57,6 +57,8 @@ namespace Undy.Features.ViewModel
             AddProductCommand = new RelayCommand(_ => AddProduct(), _ => CanAddProduct());
             RemoveWholesaleOrderLineCommand = new RelayCommand(line =>
                 RemoveWholesaleOrderLine(line as TestWholesaleOrderLineEntryViewModel));
+
+            ExpectedDeliveryDate ??= DateTime.Today;
         }
 
         private bool CanAddProduct()
@@ -102,7 +104,7 @@ namespace Undy.Features.ViewModel
                 WholesaleOrderDate = DateOnly.FromDateTime(DateTime.Now),
                 ExpectedDeliveryDate = ExpectedDeliveryDate.HasValue
                     ? DateOnly.FromDateTime(ExpectedDeliveryDate.Value)
-                    : DateOnly.FromDateTime(DateTime.Now.AddDays(7)),
+                    : DateOnly.FromDateTime(DateTime.Now.AddMonths(9)),
                 OrderStatus = "Pending"
             };
 
@@ -122,7 +124,7 @@ namespace Undy.Features.ViewModel
             WholesaleOrderLines.Clear();
             SelectedProduct = null;
             Quantity = 0;
-            ExpectedDeliveryDate = null;
+            ExpectedDeliveryDate = DateTime.Today;
         }
 
         // Public because WholesaleOrderLines is public and bound in XAML.
