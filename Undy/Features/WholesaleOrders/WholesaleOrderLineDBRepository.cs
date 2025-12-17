@@ -8,7 +8,8 @@ namespace Undy.Data.Repository
     /// Wholesale order line repository (composite key in DB: WholesaleOrderID + ProductID).
     /// Kept as a small query/command repository (no BaseDBRepository<Guid> inheritance).
     /// </summary>
-    public class WholesaleOrderLineDBRepository
+    /// 
+    public class WholesaleOrderLineDBRepository : BaseDBRepository<WholesaleOrderLine, (Guid WholesaleOrderID, Guid ProductID)>
     {
         public async Task<IEnumerable<WholesaleOrderLine>> GetByWholesaleOrderIdAsync(Guid wholesaleOrderId)
         {
