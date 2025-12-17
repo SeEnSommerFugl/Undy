@@ -10,8 +10,8 @@
     <SolidColorBrush x:Key="Brush.Text" Color="White" />
     <SolidColorBrush x:Key="Brush.TextSelected" Color="White" />
 
-
-    <!-- LISTVIEW ITEM STYLE (ingen Template!) -->
+    
+    <!-- LISTVIEW ITEM STYLE (no template!) -->
     <Style x:Key="ListViewItem.Table" TargetType="ListViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="Padding" Value="12,8"/>
@@ -23,8 +23,6 @@
         <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-
-
         <Style.Triggers>
             <!-- Hover -->
             <Trigger Property="IsMouseOver" Value="True">
@@ -58,10 +56,10 @@
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
 
-        <!-- Alternating rows kræver AlternationCount -->
+        <!-- Alternating rows requires AlternationCount -->
         <Setter Property="AlternationCount" Value="2"/>
 
-        <!-- Brug vores ListViewItem-style -->
+        <!-- Use our ListViewItem-style -->
         <Setter Property="ItemContainerStyle"
                 Value="{StaticResource ListViewItem.Table}" />
 
@@ -87,10 +85,22 @@
         <Setter Property="BorderThickness" Value="0,0,0,1" />
     </Style>
 
-
-
-
-
-
-
+    <!-- Locked GridView headers (removes resize gripper) -->
+    <Style x:Key="GridViewColumnHeader.Locked"
+       TargetType="GridViewColumnHeader"
+       BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GridViewColumnHeader">
+                    <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

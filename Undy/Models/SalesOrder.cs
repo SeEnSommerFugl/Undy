@@ -11,6 +11,9 @@
         public DateOnly? ShippedDate { get; set; }
         public decimal TotalPrice { get; set; }
         public string DisplaySalesOrderNumber { get; set; }
+        public int CustomerNumber { get; set; }
+        public string CustomerEmail { get; set; } = "";
+
 
         // Comes from View/Join - For display purposes only
         public string? CustomerName { get; set; }

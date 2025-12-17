@@ -85,7 +85,8 @@
               Margin="0,5,0,5">
 
                     <ListView.View>
-                        <GridView>
+                        <GridView AllowsColumnReorder="False"
+                                  ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeader.Locked}">
 
                             <GridViewColumn Header="Produkt"
                                 DisplayMemberBinding="{Binding ProductName}" />

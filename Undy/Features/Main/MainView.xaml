@@ -13,15 +13,6 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize">
 
-    <!--<Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                --><!-- Fix: Use relative path for ResourceDictionary Source --><!--
-                <ResourceDictionary Source="Styles.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>-->
-
     <!-- Main Layout Grid -->
     <Grid Margin="16">
 
@@ -39,16 +30,16 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0">
-            <TextBlock Text="Undy"
-                       TextWrapping="Wrap"
-                       FontSize="50"
-                       FontWeight="Bold"
-                       TextAlignment="Center"/>
+            <Image Source="/Styles/Images/Undy_logo.png"
+                       Height="300"  Width="300"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Margin="0,-75,0,40"
+                       Stretch="Fill"/>
 
             <ListBox ItemsSource="{Binding Nav.Items}"
                      SelectedItem="{Binding Nav.Selected}"
                      Style="{StaticResource NavListBox}"
-                     Margin="0,75,0,0"/>
+                     Margin="0,0,0,0"/>
         </StackPanel>
 
         <!-- Indholdet binder direkte til Navigation -->

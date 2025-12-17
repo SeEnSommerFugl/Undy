@@ -7,6 +7,7 @@ AS
 SELECT
     so.SalesOrderID,
     so.CustomerID,
+    c.CustomerNumber,              -- NEW: business-facing ID
     so.SalesOrderNumber,
     so.OrderStatus,
     so.PaymentStatus,
@@ -14,10 +15,12 @@ SELECT
     so.ShippedDate,
     so.TotalPrice,
     (c.FirstName + ' ' + c.LastName) AS CustomerName,
+    c.Email AS CustomerEmail,      -- NEW: for Selected Order Details
     c.City
 FROM dbo.SalesOrder so
 JOIN dbo.Customers c ON c.CustomerID = so.CustomerID;
 GO
+
 
 
 CREATE OR ALTER VIEW dbo.vw_SalesOrderLines
@@ -370,6 +373,29 @@ SELECT
     c.PostalCode
 FROM dbo.Customers c;
 GO
+
+/* =========================================================
+   CUSTOMER VIEW (Used by CustomerDBRepository)
+   ========================================================= */
+
+CREATE OR ALTER VIEW dbo.vw_Customers
+AS
+SELECT
+    c.CustomerID,
+    c.CustomerNumber,
+    c.DisplayCustomerNumber,
+    c.FirstName,
+    c.LastName,
+    (c.FirstName + ' ' + c.LastName) AS FullName,  -- IMPORTANT: matches CustomerDBRepository.Map(...)
+    c.Email,
+    c.PhoneNumber,
+    c.[Address],
+    c.City,
+    c.PostalCode
+FROM dbo.Customers c;
+GO
+
+
 
 
 /* =========================================================
