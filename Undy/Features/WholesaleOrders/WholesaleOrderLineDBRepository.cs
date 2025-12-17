@@ -1,17 +1,10 @@
-﻿using static Undy.Models.WholesaleOrderLine;
-
-namespace Undy.Data.Repository
+﻿namespace Undy.Data.Repository
 {
-    /// <summary>
-    /// Wholesale order line repository (composite key in DB: WholesaleOrderID + ProductID).
-    /// Kept as a small query/command repository (no BaseDBRepository<Guid> inheritance).
-    /// </summary>
-    /// 
     public class WholesaleOrderLineDBRepository : BaseDBRepository<WholesaleOrderLine, Guid>
     {
         protected override string SqlSelectAll => "SELECT * FROM vw_WholesaleOrderLines";
 
-        protected override string SqlSelectById => "usp_SelectById_WholesaleOrderLine";
+        protected override string SqlSelectById => "usp_Select_ProductWholesaleOrder_ByWholesaleOrderID";
 
         protected override string SqlInsert => "usp_Insert_WholesaleOrderLine";
 
