@@ -5,5 +5,6 @@
         public Guid ReturnOrderID { get; set; }
         public DateOnly ReturnOrderDate { get; set; }
         public Guid SalesOrderID { get; set; }
+        public decimal ReturnTotalPrice { get; set; }
     }
 }

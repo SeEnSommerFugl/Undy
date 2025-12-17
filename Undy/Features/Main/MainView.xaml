@@ -1,0 +1,50 @@
+﻿<Window x:Class="Undy.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Undy.Views"
+        xmlns:views="clr-namespace:Undy.Views"
+        mc:Ignorable="d"
+        d:DesignWidth="1920" d:DesignHeight="1080"
+        MaxWidth="1920" MaxHeight="1080"
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize">
+
+    <!-- Main Layout Grid -->
+    <Grid Margin="16">
+
+        <Grid.ColumnDefinitions>
+            <!-- Venstre rail -->
+            <ColumnDefinition Width="180"/>
+            <!-- Venstre mellemrum -->
+            <ColumnDefinition Width="16"/>
+            <!-- Indhold -->
+            <ColumnDefinition Width="*"/>
+            <!-- Højre mellemrum (spejl) -->
+            <ColumnDefinition Width="16"/>
+            <!-- Højre gutter (spejl af venstre rail) -->
+            <ColumnDefinition Width="180"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0">
+            <Image Source="/Styles/Images/Undy_logo.png"
+                       Height="300"  Width="300"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Margin="0,-75,0,40"
+                       Stretch="Fill"/>
+
+            <ListBox ItemsSource="{Binding Nav.Items}"
+                     SelectedItem="{Binding Nav.Selected}"
+                     Style="{StaticResource NavListBox}"
+                     Margin="0,0,0,0"/>
+        </StackPanel>
+
+        <!-- Indholdet binder direkte til Navigation -->
+        <ContentControl Grid.Column="2"
+                Content="{Binding Nav.CurrentView}"/>
+
+    </Grid>
+</Window>

@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="Undy.Views.ProductView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Undy.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top actions -->
+        <DockPanel Grid.Row="0" LastChildFill="False">
+            <Button Content="Tilføj produkt"
+                    Padding="16,8"
+                    HorizontalAlignment="Right"
+                    DockPanel.Dock="Right"
+                    Command="{Binding OpenAddProductDialogCommand}"/>
+        </DockPanel>
+
+        <!-- Products table -->
+        <DataGrid x:Name="ProductsGrid"
+                  Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding ProductView}"
+                  HeadersVisibility="Column"
+                  Style="{StaticResource DataGrid.Table}"
+
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="False"
+                  CanUserResizeRows="False"
+
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow">
+
+            <DataGrid.Columns>
+
+                <DataGridTextColumn Header="Produktnummer"
+                                    Binding="{Binding ProductNumber}"
+                                    Width="*" />
+
+                <DataGridTextColumn Header="Produktnavn"
+                                    Binding="{Binding ProductName}"
+                                    Width="*" />
+
+                <DataGridTextColumn Header="Pris"
+                                    Binding="{Binding Price}"
+                                    Width="Auto" />
+
+                <DataGridTextColumn Header="Størrelse"
+                                    Binding="{Binding Size}"
+                                    Width="Auto" />
+
+                <DataGridTextColumn Header="Farve"
+                                    Binding="{Binding Colour}"
+                                    Width="Auto" />
+
+                <!-- Quantity (read-only by default; Edit button will trigger edit in code-behind/VM) -->
+                <DataGridTextColumn x:Name="NumberInStockColumn"
+                                    Header="Antal på lager"
+                                    Binding="{Binding NumberInStock, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                    Width="Auto" />
+
+                <!-- Per-row Edit button -->
+                <DataGridTemplateColumn Header=""
+                                        Width="Auto"
+                                        MinWidth="70">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Edit"
+                                    Padding="14,6"
+                                    Background="#2E9E49"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Command="{Binding DataContext.BeginEditQuantityCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

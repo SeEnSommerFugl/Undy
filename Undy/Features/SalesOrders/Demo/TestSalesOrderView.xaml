@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="Undy.Views.TestSalesOrderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Undy.Views"
+             mc:Ignorable="d" 
+             MaxWidth="1920" MaxHeight="1080"
+             Background="White">
+
+    <Border Style="{DynamicResource Card}">
+        <Grid Margin="40">
+            <Grid.RowDefinitions>
+                <!-- Title -->
+                <RowDefinition Height="Auto"/>  
+                <!-- Subtitle -->
+                <RowDefinition Height="Auto"/>  
+                <!-- Fields -->
+                <RowDefinition Height="Auto"/>  
+                <!-- Add + List/DataGrid -->
+                <RowDefinition Height="Auto"/>  
+                <!-- Confirm button -->
+                <RowDefinition Height="Auto"/>  
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       Text="Opret Salgsordre"
+                       Style="{DynamicResource H2}"/>
+
+            <!-- Subtitle -->
+            <TextBlock Grid.Row="1"
+                       Text="Indtast kundenavn, vælg produkt og angiv antal for det valgte produkt."
+                       Style="{DynamicResource H3}"
+                       HorizontalAlignment="Center"
+                       Foreground="Red"/>
+
+            <!-- Fields (headers above controls) -->
+            <Grid Grid.Row="2"
+      Margin="0,30"
+      HorizontalAlignment="Center"
+      Width="700">
+                <!-- Product area wide, small column for quantity -->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <!-- KundeID + Produkt -->
+                    <ColumnDefinition Width="70"/>
+                    <!-- Antal (smal kasse) -->
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <!-- KundeID header -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- KundeID combo -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- spacer -->
+                    <RowDefinition Height="20"/>
+                    <!-- Produkt / Antal headers -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Produkt combo + Antal textbox -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Tilføj Produkt knap -->
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- ========== KundeID ========== -->
+
+                <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+               Text="Kunde"
+               Style="{DynamicResource H3}"
+               HorizontalAlignment="Center" />
+
+                <ComboBox Grid.Row="1" Grid.ColumnSpan="2"
+          ItemsSource="{Binding SortedCustomers}"
+          SelectedItem="{Binding SelectedCustomer}"
+          Style="{StaticResource CustomerMultiColumnComboBoxStyle}" />
+
+
+
+                <!-- ========== Produkt + Antal ========== -->
+
+                <!-- Headers -->
+                <TextBlock Grid.Row="3" Grid.Column="0"
+               Text="Produkt"
+               Style="{DynamicResource H3}"
+               HorizontalAlignment="Center" />
+
+                <TextBlock Grid.Row="3" Grid.Column="1"
+               Text="Antal"
+               Style="{DynamicResource H3}"
+               HorizontalAlignment="Center" />
+
+                <!-- Produkt combobox -->
+                <ComboBox Grid.Row="4" Grid.Column="0"
+              ItemsSource="{Binding Products}"
+              SelectedItem="{Binding SelectedProduct}"
+              Style="{StaticResource ProductMultiColumnComboBoxStyle}" />
+
+                <!-- Antal textbox: small, with a bit of spacing, centered number -->
+                <TextBox Grid.Row="4" Grid.Column="1"
+             Width="50"
+             Margin="10,0,0,0"            
+                    Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+             HorizontalContentAlignment="Center"
+             VerticalContentAlignment="Center" />
+
+                    <!-- ========== Add Product button ========== -->
+                    <Button Grid.Row="5" Grid.ColumnSpan="2"
+            Content="Tilføj Produkt"
+            Style="{DynamicResource ButtonBase}"
+            Command="{Binding AddProductCommand}"
+            HorizontalAlignment="Center"
+            Margin="0,10,0,0"/>
+            </Grid>
+
+
+
+            <!-- Add Product + ListView/DataGrid -->
+            <StackPanel Grid.Row="3"
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Center">
+
+                <!-- ListView Of SalesOrderLines -->
+                <ListView ItemsSource="{Binding SalesOrderLines}" Height="300" Width="700">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Product.ProductName}" Width="150"/>
+                                <TextBlock Text="{Binding Product.Size}" Width="50"/>
+                                <TextBlock Text="{Binding Quantity}" Width="50"/>
+                                <TextBlock Text="{Binding UnitPrice}" Width="80"/>
+                                <Button Content="X"
+                                        Command="{Binding DataContext.RemoveSalesOrderLineCommand,
+                                                  RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+
+            <!-- Confirm Sale Button -->
+            <Button Grid.Row="5"
+                    Content="Bekræft ordre"
+                    Command="{Binding ConfirmCommand}"
+                    Style="{DynamicResource ButtonBase}"
+                    HorizontalAlignment="Center"
+                    Margin="0,10,0,0"/>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,245 @@
+﻿<!-- Fil: Undy/Undy/Features/StartPage/StartPageView.xaml -->
+
+<UserControl x:Class="Undy.Views.StartPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Undy.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="1020" d:DesignWidth="1980">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top grid -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- PackedToday -->
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="0,0,10,0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/checkBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding PackedToday, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Pakket i dag" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- ReadyToPick -->
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="0,0,10,0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/picking-boxBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding ReadyToPick, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Klar til pluk" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- PackedTotal -->
+            <Border Grid.Column="2" Style="{DynamicResource Card}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/shopping-cartBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding PackedTotal, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Pakket total" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Middle grid -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- AverageCustomerValue -->
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="0,10,10,0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/chart-histogramBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding AverageCustomerValue, StringFormat={}{0:C}, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Gns. kundeværdi" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- OutstandingPayments -->
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="0,10,10,0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/exclamationBlue.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding OutstandingPayments, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Udestående" Style="{DynamicResource H1Right}"/>
+                            <TextBlock Text="betalinger" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- WholesaleOnTheWay -->
+            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="0,10,0,0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/IncomingWholeSaleOrder.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding WholesaleOnTheWay, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Indkøb på vej" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Bottom grid -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- TotalReturnRate -->
+            <Border Grid.Column="0" Style="{DynamicResource Card}" Margin="0,10,10,0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/icon_return_rate.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding TotalReturnRate, StringFormat={}{0:P2}, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Samlet returrate" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- UniqueCustomers -->
+            <Border Grid.Column="1" Style="{DynamicResource Card}" Margin="0,10,10,0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/icon_unique_customers.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding UniqueCustomers, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Unikke kunder" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- AverageOrderValue (AOV) -->
+            <Border Grid.Column="2" Style="{DynamicResource Card}" Margin="0,10,0,0">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Image Source="pack://application:,,,/Styles/Images/icon_aov.png" Width="128" Height="128"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBox Text="{Binding AverageOrderValue, StringFormat={}{0:C}, Mode=OneWay}"
+                                     Style="{DynamicResource TextBoxNoEditNoBorder}"/>
+                            <TextBlock Text="Gns. ordreværdi (AOV)" Style="{DynamicResource H1Right}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
