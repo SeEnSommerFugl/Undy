@@ -1,81 +1,57 @@
 ﻿<UserControl x:Class="Undy.Views.IncomingWholesaleOrderView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Background="White">
-
-
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Border Style="{DynamicResource Card}">
-        
         <Grid Margin="20">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Titel -->
-            <TextBlock Grid.Row="0" 
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
                        Text="Varemodtagelse"
-                       Style="{DynamicResource H2}"
+                       Style="{DynamicResource TitleLeft}"
+                       Margin="0,0,0,14"
                        HorizontalAlignment="Center"/>
 
-            <TextBlock Grid.Row="1"
-                       Text="Registrér modtagelse af indkøbsordrer."
-                       Style="{DynamicResource H3}"
-                       HorizontalAlignment="Center"
-                       Margin="0,10,0,20"
-                       Foreground="Red"/>
-
-            <!-- Indhold -->
-            <Grid Grid.Row="2">
+            <!-- Main: left list + right lines -->
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="5*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- ORDRER (venstre) -->
+                <!-- LEFT: orders -->
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="Indkøbsordrer"
                                Style="{DynamicResource TitleLeft}"
                                Margin="0,0,0,10"/>
 
                     <ListView ItemsSource="{Binding WholesaleView}"
-                              SelectedItem="{Binding SelectedWholesaleOrder}">
-                        <ListView.Resources>
-                            <Style TargetType="GridViewColumnHeader">
-                                <Setter Property="Foreground" Value="#333"/>
-                                <Setter Property="FontWeight" Value="Bold"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                <Setter Property="FontSize" Value="14"/>
-                                <Setter Property="Padding" Value="4"/>
-                            </Style>
-                        </ListView.Resources>
-
+                              SelectedItem="{Binding SelectedWholesaleOrder}"
+                              Style="{StaticResource ListView.Table}">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False"
-                                  ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeader.Locked}">
+                                      ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeader.Locked}">
                                 <GridViewColumn Header="Ordrenr."
                                                 DisplayMemberBinding="{Binding DisplayWholesaleOrderNumber}"
-                                                Width="120"/>
-
+                                                Width="130"/>
                                 <GridViewColumn Header="Dato"
                                                 DisplayMemberBinding="{Binding WholesaleOrderDate}"
                                                 Width="120"/>
-
                                 <GridViewColumn Header="Status"
                                                 DisplayMemberBinding="{Binding OrderStatus}"
-                                                Width="120"/>
+                                                Width="160"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </StackPanel>
 
-                <!-- (midterkolonne – tom eller brug den til separator) -->
-
-                <!-- LINJER (højre) -->
+                <!-- RIGHT: lines (ListView) -->
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -83,99 +59,61 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Fuldt modtaget -->
                     <CheckBox Grid.Row="0"
-                              Content="Fuldt modtaget"
-                              IsChecked="{Binding IsFullyReceived, Mode=TwoWay}"
-                              Margin="0,0,0,10"/>
+              Content="Fuldt modtaget"
+              IsChecked="{Binding IsFullyReceived, Mode=TwoWay}"
+              Margin="0,0,0,10"/>
 
-                    <!-- DataGrid for linjer -->
-                    <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding LinesView}"
-                              AutoGenerateColumns="False"
-                              HeadersVisibility="Column"
-                              AlternationCount="2"
-                              RowBackground="White"
-                              AlternatingRowBackground="#FFF5F5F5"
-                              HorizontalGridLinesBrush="#FFE0E0E0"
-                              CanUserAddRows="False"
-                              CanUserDeleteRows="False"
-                              IsReadOnly="False"
-                              Margin="0,0,0,10">
+                    <ListView Grid.Row="1"
+              ItemsSource="{Binding LinesView}"
+              Style="{StaticResource ListView.Table}"
+              Margin="0,0,0,10">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="False"
+                      ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeader.Locked}">
 
-                        <DataGrid.Resources>
-                            <!-- Style til talceller -->
-                            <Style x:Key="NumericCellStyle" TargetType="TextBlock">
-                                <Setter Property="HorizontalAlignment" Value="Center"/>
-                            </Style>
-                        </DataGrid.Resources>
+                                <GridViewColumn Header="Varenr." Width="120"
+                                DisplayMemberBinding="{Binding ProductNumber}"/>
 
-                        <DataGrid.Columns>
-                            <!-- Produkt -->
-                            <DataGridTextColumn Header="Produkt"
-                                                Binding="{Binding WholesaleOrderID}"
-                                                Width="*"/>
+                                <GridViewColumn Header="Navn" Width="Auto"
+                                DisplayMemberBinding="{Binding ProductName}"/>
 
-                            <!-- Modtaget (til venstre, låses når Fuldt modtaget = true) -->
-                            <DataGridTemplateColumn Header="Modtaget"
-                                                    Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding QuantityReceived}"
-                                                   HorizontalAlignment="Center"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                                <DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <TextBox Text="{Binding QuantityReceived, UpdateSourceTrigger=PropertyChanged}"
-                                                 HorizontalContentAlignment="Center"
-                                                 IsReadOnly="{Binding DataContext.IsFullyReceived,
-                                                                      RelativeSource={RelativeSource AncestorType=DataGrid}}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellEditingTemplate>
-                            </DataGridTemplateColumn>
+                                <GridViewColumn Header="Bestilt" Width="90"
+                                DisplayMemberBinding="{Binding OrderedQuantity}"/>
 
-                            <!-- Bestilt (kun læsning) -->
-                            <DataGridTextColumn Header="Allerede modtaget"
-                                                Binding="{Binding Quantity}"
-                                                Width="120"
-                                                ElementStyle="{StaticResource NumericCellStyle}"
-                                                IsReadOnly="True"/>
+                                <GridViewColumn Header="Allerede modtaget" Width="150"
+                                DisplayMemberBinding="{Binding AlreadyReceived}"/>
 
-                            <!-- Bestilt (kun læsning) -->
-                            <DataGridTextColumn Header="Bestilt"
-                                                Binding="{Binding UnitPrice}"
-                                                Width="80"
-                                                ElementStyle="{StaticResource NumericCellStyle}"
-                                                IsReadOnly="True"/>
+                                <!-- Skrivbar kolonne -->
+                                <GridViewColumn Header="Modtaget" Width="110">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding ReceivedQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource TextBox.TableEditNumeric}"
+                                     IsReadOnly="{Binding DataContext.IsFullyReceived, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
 
-                            <!-- Difference (kun læsning) -->
-                            <DataGridTextColumn Header="Difference"
-                                                Binding="{Binding ProductID}"
-                                                Width="80"
-                                                ElementStyle="{StaticResource NumericCellStyle}"
-                                                IsReadOnly="True"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                                <GridViewColumn Header="Difference" Width="110"
+                                DisplayMemberBinding="{Binding Difference}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
 
-                    <!-- Bekræft knap -->
                     <Button Grid.Row="2"
-                            Content="Bekræft modtagelse"
-                            Command="{Binding ConfirmOrderCommand}"
-                            Style="{DynamicResource ButtonBase}"
-                            Margin="0,10,0,0"
-                            Width="200"/>
+            Content="Bekræft modtagelse"
+            Command="{Binding ConfirmOrderCommand}"
+            Style="{DynamicResource ButtonBase}"
+            Width="220"/>
                 </Grid>
-            </Grid>
 
-            <!-- Status-besked -->
-            <TextBlock Grid.Row="3"
+
+                <TextBlock Grid.Row="2"
                        Text="{Binding StatusMessage}"
-                       Foreground="Red"
                        HorizontalAlignment="Center"
-                       Margin="0,20,0,0"
-                       FontSize="18"
-                       FontWeight="Bold"/>
+                       Margin="0,14,0,0"/>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

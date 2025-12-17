@@ -20,7 +20,7 @@ CREATE TABLE [Product](
 CREATE TABLE WholesaleOrder(
 	WholesaleOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	WholesaleOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
-	DisplayWholesaleOrderNumber AS 'KØB-' + RIGHT('000000000' + CAST(WholesaleOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
+	DisplayWholesaleOrderNumber AS 'KØB-' + RIGHT(CAST(WholesaleOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
 	WholesaleOrderDate DATE NOT NULL,
 	ExpectedDeliveryDate DATE NOT NULL,
 	DeliveryDate DATE NULL,
@@ -47,7 +47,7 @@ CREATE TABLE ProductWholesaleOrder(
 CREATE TABLE Customers(
 	CustomerID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	CustomerNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
-	DisplayCustomerNumber AS 'KUND-' + RIGHT('000000000' + CAST(CustomerNumber AS NVARCHAR(10)), 10) PERSISTED,
+	DisplayCustomerNumber AS 'KUND-' + RIGHT(CAST(CustomerNumber AS NVARCHAR(10)), 10) PERSISTED,
 	FirstName NVARCHAR(255) NOT NULL,
 	LastName NVARCHAR(255) NOT NULL,
 	Email NVARCHAR(255) NOT NULL UNIQUE,
@@ -62,7 +62,7 @@ CREATE TABLE SalesOrder (
 	SalesOrderID UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	CustomerID UNIQUEIDENTIFIER NOT NULL,
 	SalesOrderNumber INT IDENTITY(1,1) NOT NULL UNIQUE,
-	DisplaySalesOrderNumber AS 'SALG-' + RIGHT('000000000' + CAST(SalesOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
+	DisplaySalesOrderNumber AS 'SALG-' + RIGHT(CAST(SalesOrderNumber AS NVARCHAR(10)), 10) PERSISTED,
 	OrderStatus NVARCHAR(255) NOT NULL,
 	PaymentStatus NVARCHAR(255) NOT NULL,
 	SalesDate DATE NOT NULL,

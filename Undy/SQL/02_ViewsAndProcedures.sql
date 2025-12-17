@@ -507,7 +507,7 @@ AS
 SELECT
     wo.WholesaleOrderID,
     wo.WholesaleOrderNumber,
-    wo.DisplayWholesaleOrderNumber,
+    CONCAT(N'KØB-', CAST(wo.WholesaleOrderNumber AS varchar(20))) AS DisplayWholesaleOrderNumber,
     wo.WholesaleOrderDate,
     wo.ExpectedDeliveryDate,
     wo.DeliveryDate,
@@ -515,12 +515,13 @@ SELECT
 FROM dbo.WholesaleOrder wo;
 GO
 
+
 CREATE OR ALTER VIEW dbo.vw_WholesaleOrderLines
 AS
 SELECT
     pwo.WholesaleOrderID,
     wo.WholesaleOrderNumber,
-    wo.DisplayWholesaleOrderNumber,
+    CONCAT(N'KØB-', CAST(wo.WholesaleOrderNumber AS varchar(20))) AS DisplayWholesaleOrderNumber,
     pwo.ProductID,
     p.ProductNumber,
     p.ProductName,
@@ -533,6 +534,7 @@ FROM dbo.ProductWholesaleOrder pwo
 JOIN dbo.WholesaleOrder wo ON wo.WholesaleOrderID = pwo.WholesaleOrderID
 JOIN dbo.Product p ON p.ProductID = pwo.ProductID;
 GO
+
 
 
 /* =========================================================
