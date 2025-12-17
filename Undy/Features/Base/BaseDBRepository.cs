@@ -75,8 +75,10 @@
                 BindId(cmd, id);
 
                 using var rd = await cmd.ExecuteReaderAsync();
-                if (await rd.ReadAsync())
+                while (await rd.ReadAsync())
+                {
                     list.Add(Map(rd));
+                }
             }
 
             return list;
