@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Undy.Features.SalesOrders;
 
 namespace Undy.Features.ViewModel
 {
@@ -36,25 +37,7 @@ namespace Undy.Features.ViewModel
             {
                 if (SetProperty(ref _selectedSalesOrder, value))
                     _ = LoadOrderDetailsAsync();
-            }
-        }
-                if (_selectedSalesOrder == value)
-                    return;
-
-                _selectedSalesOrder = value;
-                OnPropertyChanged();
-
-                SelectedOrderDetails.Clear();
-
-                if (_selectedSalesOrder != null)
-                {
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Ordrenummer:", _selectedSalesOrder.SalesOrderNumber));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("E-Mail:", _selectedSalesOrder.CustomerEmail));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Købsdato:", _selectedSalesOrder.SalesDate));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Afsendt:", _selectedSalesOrder.ShippedDate));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Total pris:", _selectedSalesOrder.TotalPrice));
-                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Kundenummer:", _selectedSalesOrder.CustomerNumber));
-                }
+                    LoadSelectedOrderDetails();
             }
         }
 
@@ -85,17 +68,22 @@ namespace Undy.Features.ViewModel
                 SelectedOrderLines.Add(line);
             }
         }
-    }
 
-    public sealed class SalesOrderDetailRow
-    {
-        public string Label { get; }
-        public object? Value { get; }
-
-        public SalesOrderDetailRow(string label, object? value)
+        public void LoadSelectedOrderDetails()
         {
-            Label = label;
-            Value = value;
+            SelectedOrderDetails.Clear();
+
+            if (_selectedSalesOrder != null)
+            {
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Ordrenummer:", _selectedSalesOrder.SalesOrderNumber));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("E-Mail:", _selectedSalesOrder.CustomerEmail));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Købsdato:", _selectedSalesOrder.SalesDate));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Afsendt:", _selectedSalesOrder.ShippedDate));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Total pris:", _selectedSalesOrder.TotalPrice));
+                SelectedOrderDetails.Add(new SalesOrderDetailRow("Kundenummer:", _selectedSalesOrder.CustomerNumber));
+            }
         }
     }
 }
+
+

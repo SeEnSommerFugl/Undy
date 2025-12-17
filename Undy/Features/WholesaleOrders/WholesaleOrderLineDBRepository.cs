@@ -22,13 +22,13 @@
             QuantityReceived = r.GetInt32(r.GetOrdinal("QuantityReceived"))
         };
 
-        // Bind composite key for GetById/Delete
+        // Bind ID
         protected override void BindId(SqlCommand cmd, Guid id)
         {
             cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = id;
         }
 
-        // Bind insert params (includes composite PK columns)
+        // Bind insert params 
         protected override void BindInsert(SqlCommand cmd, WholesaleOrderLine e)
         {
             cmd.Parameters.Add("@WholesaleOrderID", SqlDbType.UniqueIdentifier).Value = e.WholesaleOrderID;
