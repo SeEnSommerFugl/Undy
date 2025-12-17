@@ -36,7 +36,6 @@
                           SelectedItem="{Binding SelectedSalesOrder}"
                           Style="{StaticResource ListView.Table}"
                           Height="900"
-                          MouseDoubleClick="SalesListView_MouseDoubleClick"
                           SelectionMode="Single">
 
                     <ListView.View>

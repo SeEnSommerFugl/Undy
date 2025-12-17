@@ -68,24 +68,5 @@
             _lastSortProperty = property;
             _lastSortDirection = direction;
         }
-
-        // Double-click loads the selected order's lines
-        private async void SalesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (DataContext is not SalesOrderViewModel vm)
-                return;
-
-            if (SalesListView.SelectedItem is not SalesOrder order)
-                return;
-
-            try
-            {
-                await vm.LoadOrderDetailsAsync(order);
-            }
-            catch
-            {
-                // Keep view stable even if SQL call fails; handle/log if you have a logger
-            }
-        }
     }
 }
