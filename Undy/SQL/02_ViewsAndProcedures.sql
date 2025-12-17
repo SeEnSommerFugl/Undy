@@ -1,5 +1,5 @@
 /* =========================================================
-   SALES ORDER VIEWS
+   AREA: SALES ORDER VIEWS
    ========================================================= */
 
 CREATE OR ALTER VIEW dbo.vw_SalesOrderHeaders
@@ -40,7 +40,7 @@ GO
 
 
 /* =========================================================
-   RETURN ORDER VIEW
+   AREA: RETURN ORDER VIEW
    ========================================================= */
 
 CREATE OR ALTER VIEW dbo.vw_ReturnOrders
@@ -57,7 +57,7 @@ GO
 
 
 /* =========================================================
-   SALES ORDER LOOKUP (Human Order number to GUID)
+   AREA: SALES ORDER LOOKUP (Human Order number to GUID)
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_SelectSalesOrderId_BySalesOrderNumber
@@ -91,7 +91,7 @@ GO
 
 
 /* =========================================================
-   SALES ORDER CRUD
+   AREA: SALES ORDER CRUD
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_SelectById_SalesOrder
@@ -140,7 +140,7 @@ GO
 
 
 /* =========================================================
-   SALES ORDER LINES (Filtered retrieval for UI / preview)
+   AREA: SALES ORDER LINES (Filtered retrieval for UI / preview)
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_Select_ProductSalesOrder_BySalesOrderID
@@ -164,7 +164,7 @@ GO
 
 
 /* =========================================================
-   RETURN ORDER CRUD
+   AREA: RETURN ORDER CRUD
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_Insert_ReturnOrder
@@ -217,7 +217,7 @@ GO
 
 
 /* =========================================================
-   UPDATE = entity only (NO side effects)
+   AREA: RETURN UPDATE = entity only (NO side effects)
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_Update_ReturnOrder
@@ -250,7 +250,7 @@ GO
 
 
 /* =========================================================
-   RETURN PROCESS (Business Logic, explicit)
+   AREA: RETURN PROCESS (Business Logic, explicit)
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_ProcessReturnOrder
@@ -262,6 +262,7 @@ BEGIN
     /*
         Business / domain logic ONLY:
         - Restock products
+        - This return is going off on the assumption, that the product is NOT sell-able - With more time, we'd have implemented a feature to add "sellable" products back into the database.
         - Update order status
         - Audit / logging
     */
@@ -274,7 +275,7 @@ GO
 
 
 /* =========================================================
-   StartPage graphics Metrics (Business Logic, explicit)
+   AREA: StartPage graphics Metrics (Business Logic, explicit)
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_StartPage_PackedToday
@@ -341,7 +342,7 @@ END
 GO
 
 /* =========================================================
-   PRODUCTS + CUSTOMERS VIEWS (Used by DBRepositories)
+   AREA: PRODUCTS + AREA: CUSTOMERS VIEWS (Used by DBRepositories)
    ========================================================= */
 
 CREATE OR ALTER VIEW dbo.vw_Products
@@ -374,8 +375,107 @@ SELECT
 FROM dbo.Customers c;
 GO
 
+
+
 /* =========================================================
-   CUSTOMER VIEW (Used by CustomerDBRepository)
+   AREA: PRODUCTS - When creating a product, this proc will create a @ProductID
+   ========================================================= */
+CREATE OR ALTER PROCEDURE dbo.usp_Insert_Product
+    @ProductID UNIQUEIDENTIFIER,
+    @ProductNumber NVARCHAR(255),
+    @ProductName NVARCHAR(255),
+    @Price DECIMAL(10,2),
+    @Size NVARCHAR(255),
+    @Colour NVARCHAR(255),
+    @NumberInStock INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (SELECT 1 FROM dbo.Product WHERE ProductNumber = @ProductNumber)
+    BEGIN
+        RAISERROR('ProductNumber %s er allerede i brug', 16, 1, @ProductNumber);
+        RETURN;
+    END
+
+    IF @Price < 0
+    BEGIN
+        RAISERROR('Prisen kan ikke være negativ', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO dbo.Product
+    (
+        ProductID, ProductNumber, ProductName, Price, Size, Colour, NumberInStock
+    )
+    VALUES
+    (
+        @ProductID, @ProductNumber, @ProductName, @Price, @Size, @Colour, @NumberInStock
+    );
+END
+GO
+
+    /* =========================================================
+   AREA: PRODUCTS - Updating/Editting a Product - Same proc as above, however it LookUps for @ProductID, rather than making it.
+   ========================================================= */
+
+CREATE OR ALTER PROCEDURE dbo.usp_Update_Product
+    @ProductID UNIQUEIDENTIFIER,
+    @ProductNumber NVARCHAR(255),
+    @ProductName NVARCHAR(255),
+    @Price DECIMAL(10,2),
+    @Size NVARCHAR(255),
+    @Colour NVARCHAR(255),
+    @NumberInStock INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM dbo.Product WHERE ProductID = @ProductID)
+    BEGIN
+        RAISERROR('Product does not exist', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (
+        SELECT 1
+        FROM dbo.Product
+        WHERE ProductNumber = @ProductNumber
+          AND ProductID <> @ProductID
+    )
+    BEGIN
+        RAISERROR('ProductNumber %s is already in use', 16, 1, @ProductNumber);
+        RETURN;
+    END
+
+    IF @Price < 0
+    BEGIN
+        RAISERROR('Price cannot be negative', 16, 1);
+        RETURN;
+    END
+
+    IF @NumberInStock < 0
+    BEGIN
+        RAISERROR('NumberInStock cannot be negative', 16, 1);
+        RETURN;
+    END
+
+    UPDATE dbo.Product
+    SET
+        ProductNumber   = @ProductNumber,
+        ProductName     = @ProductName,
+        Price           = @Price,
+        Size            = @Size,
+        Colour          = @Colour,
+        NumberInStock   = @NumberInStock
+    WHERE ProductID = @ProductID;
+END
+GO
+
+
+
+/* =========================================================
+   AREA: CUSTOMER VIEW (Used by CustomerDBRepository)
    ========================================================= */
 
 CREATE OR ALTER VIEW dbo.vw_Customers
@@ -399,7 +499,7 @@ GO
 
 
 /* =========================================================
-   WHOLESALE ORDER VIEWS (Header + Lines)
+   AREA: WHOLESALE ORDER VIEWS (Header + Lines)
    ========================================================= */
 
 CREATE OR ALTER VIEW dbo.vw_WholesaleOrderHeaders
@@ -436,7 +536,7 @@ GO
 
 
 /* =========================================================
-   WHOLESALE ORDER LOOKUP (Human number -> GUID)
+   AREA: WHOLESALE ORDER LOOKUP (Human number -> GUID)
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_SelectWholesaleOrderId_ByWholesaleOrderNumber
@@ -454,7 +554,7 @@ GO
 
 
 /* =========================================================
-   WHOLESALE ORDER CRUD (Entity only, NO side effects)
+   AREA: WHOLESALE ORDER CRUD (Entity only, NO side effects)
    ========================================================= */
 
 CREATE OR ALTER PROCEDURE dbo.usp_SelectById_WholesaleOrder
@@ -631,7 +731,7 @@ GO
 
 
 /* =========================================================
-   WHOLESALE RECEIVING PROCESS (Business Logic, explicit)
+   AREA: WHOLESALE RECEIVING PROCESS (Business Logic, explicit)
    - Updates QuantityReceived
    - Updates Product stock (NumberInStock)
    - Auto-updates Wholesale order status + DeliveryDate when fully received
@@ -691,7 +791,7 @@ BEGIN
     WHERE ProductID = @ProductID;
 
     /* -----------------------------
-       Update WholesaleOrder status
+       AREA: Update WholesaleOrder status
        - Fully received => Modtaget + DeliveryDate
        - Partially received => Delvist modtaget
        - None received => keep current status (e.g., Afventer)

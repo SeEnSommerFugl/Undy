@@ -40,8 +40,12 @@ namespace Undy.Features.ViewModel
 
                 _selectedSalesOrder = value;
                 OnPropertyChanged();
+
+
             }
         }
+
+        
 
         /// <summary>
         /// Lines for the currently selected order.

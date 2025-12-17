@@ -1,4 +1,10 @@
-﻿namespace Undy.Features.Products
+﻿using System;
+using System.Data;
+using Microsoft.Data.SqlClient;
+using Undy.Data.Repository;
+using Undy.Models;
+
+namespace Undy.Features.Products
 {
     public sealed class ProductDBRepository : BaseDBRepository<Product, Guid>
     {
@@ -14,8 +20,8 @@
             ProductNumber = r.GetString(r.GetOrdinal("ProductNumber")),
             ProductName = r.GetString(r.GetOrdinal("ProductName")),
             Price = r.GetDecimal(r.GetOrdinal("Price")),
-            Size = r.IsDBNull(r.GetOrdinal("Size")) ? string.Empty : r.GetString(r.GetOrdinal("Size")),
-            Colour = r.IsDBNull(r.GetOrdinal("Colour")) ? string.Empty : r.GetString(r.GetOrdinal("Colour")),
+            Size = r.IsDBNull(r.GetOrdinal("Size")) ? "" : r.GetString(r.GetOrdinal("Size")),
+            Colour = r.IsDBNull(r.GetOrdinal("Colour")) ? "" : r.GetString(r.GetOrdinal("Colour")),
             NumberInStock = r.GetInt32(r.GetOrdinal("NumberInStock"))
         };
 
@@ -23,7 +29,6 @@
         {
             cmd.CommandType = CommandType.StoredProcedure;
 
-            // SQL Parametres
             cmd.Parameters.Add("@ProductID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
             cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255).Value = e.ProductNumber;
             cmd.Parameters.Add("@ProductName", SqlDbType.NVarChar, 255).Value = e.ProductName;
@@ -33,74 +38,27 @@
             pPrice.Scale = 2;
             pPrice.Value = e.Price;
 
-            cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 255).Value = (object?)e.Size ?? DBNull.Value;
-            cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 255).Value = (object?)e.Colour ?? DBNull.Value;
+            cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 255).Value = e.Size;
+            cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 255).Value = e.Colour;
             cmd.Parameters.Add("@NumberInStock", SqlDbType.Int).Value = e.NumberInStock;
         }
 
-        // Fallback-only. When ProductNumber is editable, UI needs to use UpdateByProductNumberAsync(...)
-        // So we can send the "old key" + "New value" correctly.
         protected override void BindUpdate(SqlCommand cmd, Product e)
         {
             cmd.CommandType = CommandType.StoredProcedure;
 
+            cmd.Parameters.Add("@ProductID", SqlDbType.UniqueIdentifier).Value = e.ProductID;
             cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255).Value = e.ProductNumber;
-            cmd.Parameters.Add("@NewProductNumber", SqlDbType.NVarChar, 255).Value = DBNull.Value;
-
-            cmd.Parameters.Add("@ProductName", SqlDbType.NVarChar, 255).Value = (object?)e.ProductName ?? DBNull.Value;
+            cmd.Parameters.Add("@ProductName", SqlDbType.NVarChar, 255).Value = e.ProductName;
 
             var pPrice = cmd.Parameters.Add("@Price", SqlDbType.Decimal);
             pPrice.Precision = 10;
             pPrice.Scale = 2;
             pPrice.Value = e.Price;
 
-            cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 255).Value = (object?)e.Size ?? DBNull.Value;
-            cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 255).Value = (object?)e.Colour ?? DBNull.Value;
+            cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 255).Value = e.Size;
+            cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 255).Value = e.Colour;
             cmd.Parameters.Add("@NumberInStock", SqlDbType.Int).Value = e.NumberInStock;
-        }
-
-        /// <summary>
-        /// Matches the current SQL Database.
-        /// usp_Update_Product(
-        ///   @ProductNumber, @NewProductNumber = NULL,
-        ///   @ProductName = NULL, @Price = NULL, @Size = NULL, @Colour = NULL, @NumberInStock = NULL
-        /// )
-        /// </summary>
-        public async Task UpdateByProductNumberAsync(string oldProductNumber, Product updated)
-        {
-            using var con = await DB.OpenConnection();
-            using var cmd = new SqlCommand(SqlUpdate, con)
-            {
-                CommandType = CommandType.StoredProcedure
-            };
-
-            cmd.Parameters.Add("@ProductNumber", SqlDbType.NVarChar, 255).Value = oldProductNumber;
-
-            if (!string.Equals(oldProductNumber, updated.ProductNumber, StringComparison.Ordinal))
-                cmd.Parameters.Add("@NewProductNumber", SqlDbType.NVarChar, 255).Value = updated.ProductNumber;
-            else
-                cmd.Parameters.Add("@NewProductNumber", SqlDbType.NVarChar, 255).Value = DBNull.Value;
-
-            cmd.Parameters.Add("@ProductName", SqlDbType.NVarChar, 255).Value =
-                string.IsNullOrWhiteSpace(updated.ProductName) ? DBNull.Value : updated.ProductName;
-
-            var pPrice = cmd.Parameters.Add("@Price", SqlDbType.Decimal);
-            pPrice.Precision = 10;
-            pPrice.Scale = 2;
-            pPrice.Value = updated.Price;
-
-            cmd.Parameters.Add("@Size", SqlDbType.NVarChar, 255).Value =
-                string.IsNullOrWhiteSpace(updated.Size) ? DBNull.Value : updated.Size;
-
-            cmd.Parameters.Add("@Colour", SqlDbType.NVarChar, 255).Value =
-                string.IsNullOrWhiteSpace(updated.Colour) ? DBNull.Value : updated.Colour;
-
-            cmd.Parameters.Add("@NumberInStock", SqlDbType.Int).Value = updated.NumberInStock;
-
-            await cmd.ExecuteNonQueryAsync();
-
-            // Refresh UI list from vw_Products
-            await ReloadItemsAsync();
         }
     }
 }

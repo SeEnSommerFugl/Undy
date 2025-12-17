@@ -1,92 +1,68 @@
-﻿namespace Undy.Features.ViewModel
+﻿using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
+using Undy.Data.Repository;
+using Undy.Features.Helpers;
+using Undy.Features.Products.Dialog;
+using Undy.Models;
+
+namespace Undy.Features.ViewModel
 {
     public sealed class ProductViewModel : BaseViewModel
     {
-        private readonly IBaseRepository<Product, Guid> _productRepo;
-        private readonly IAddProductDialogService _addProductDialogService;
+        private readonly IBaseRepository<Product, Guid> _repo;
 
         private readonly ICollectionView _productView;
         public ICollectionView ProductView => _productView;
 
-        public System.Collections.ObjectModel.ObservableCollection<Product> Products => _productRepo.Items;
+        public System.Collections.ObjectModel.ObservableCollection<Product> Products => _repo.Items;
 
-        public ICommand OpenAddProductDialogCommand { get; }
-        public ICommand OpenEditProductDialogCommand { get; }
+        public ICommand OpenAddCommand { get; }
+        public ICommand OpenEditCommand { get; }
 
-        public ProductViewModel(IBaseRepository<Product, Guid> productRepo)
-            : this(productRepo, new AddProductDialogService())
+        public ProductViewModel(IBaseRepository<Product, Guid> repo)
         {
-        }
-
-        public ProductViewModel(IBaseRepository<Product, Guid> productRepo, IAddProductDialogService addProductDialogService)
-        {
-            _productRepo = productRepo;
-            _addProductDialogService = addProductDialogService;
+            _repo = repo;
 
             _productView = CollectionViewSource.GetDefaultView(Products);
             _productView.SortDescriptions.Add(new SortDescription(nameof(Product.ProductNumber), ListSortDirection.Ascending));
 
-            OpenAddProductDialogCommand = new RelayCommand(_ => _ = OpenAddProductDialogAsync());
-            OpenEditProductDialogCommand = new RelayCommand(p =>
+            OpenAddCommand = new RelayCommand(_ => _ = OpenProductDialogAsync(ProductDialogMode.Add, null));
+            OpenEditCommand = new RelayCommand(p =>
             {
                 if (p is Product prod)
-                    _ = OpenEditProductDialogAsync(prod);
+                    _ = OpenProductDialogAsync(ProductDialogMode.Edit, prod);
             });
         }
 
         public async Task InitializeAsync()
         {
-            await _productRepo.InitializeAsync();
+            await _repo.InitializeAsync();
         }
 
-        private async Task OpenAddProductDialogAsync()
+        private async Task OpenProductDialogAsync(ProductDialogMode mode, Product? product)
         {
-            var created = _addProductDialogService.ShowDialog(Application.Current?.MainWindow);
-            if (created is null) return;
-
-            try
+            if (_repo is not ProductDBRepository productRepo)
             {
-                await _productRepo.AddAsync(created);
+                MessageBox.Show("Product repository er ikke ProductDBRepo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
-            catch (Exception ex)
-            {
-                await _productRepo.InitializeAsync();
-                MessageBox.Show(ex.Message, "Insert failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
-        private async Task OpenEditProductDialogAsync(Product product)
-        {
-            var dialog = new EditProductDialog(product)
+            var dlg = new ProductDialog(
+                mode,
+                product,
+                addAsync: async created => await productRepo.AddAsync(created),
+                editAsync: async updated => await productRepo.UpdateAsync(updated))
+
             {
                 Owner = Application.Current?.MainWindow
             };
 
-            var ok = dialog.ShowDialog();
-            if (ok != true) return;
-
-            var updated = dialog.UpdatedProduct;
-            if (updated is null) return;
-
-            try
-            {
-                // update for SQL contract (lookup by old ProductNumber + optional NewProductNumber)
-                if (_productRepo is ProductDBRepository productRepo)
-                {
-                    await productRepo.UpdateByProductNumberAsync(dialog.OriginalProductNumber, updated);
-                }
-                else
-                {
-                    // fallback
-                    await _productRepo.UpdateAsync(updated);
-                    await _productRepo.InitializeAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                await _productRepo.InitializeAsync();
-                MessageBox.Show(ex.Message, "Update failed", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            dlg.ShowDialog();
+            await Task.CompletedTask;
         }
     }
 }

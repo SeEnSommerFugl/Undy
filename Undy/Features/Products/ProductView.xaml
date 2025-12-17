@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Undy.Views"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="900">
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -14,40 +13,30 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Top actions -->
         <DockPanel Grid.Row="0" LastChildFill="False">
             <Button Content="Tilføj produkt"
                     Padding="16,8"
-                    HorizontalAlignment="Right"
                     DockPanel.Dock="Right"
-                    Command="{Binding OpenAddProductDialogCommand}"/>
+                    Command="{Binding OpenAddCommand}" />
         </DockPanel>
 
-        <!-- Products list (read-only) + Edit dialog per row -->
         <ListView Grid.Row="2"
                   ItemsSource="{Binding ProductView}"
                   BorderThickness="0"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-
             <ListView.View>
-                <GridView AllowsColumnReorder="False">
-
-                    <GridViewColumn Header="Produktnummer" Width="160"
+                <GridView>
+                    <GridViewColumn Header="Produktnr." Width="140"
                                     DisplayMemberBinding="{Binding ProductNumber}" />
-
-                    <GridViewColumn Header="Produktnavn" Width="260"
+                    <GridViewColumn Header="Navn" Width="260"
                                     DisplayMemberBinding="{Binding ProductName}" />
-
-                    <GridViewColumn Header="Pris" Width="80"
+                    <GridViewColumn Header="Pris" Width="90"
                                     DisplayMemberBinding="{Binding Price}" />
-
-                    <GridViewColumn Header="Størrelse" Width="80"
+                    <GridViewColumn Header="Str." Width="70"
                                     DisplayMemberBinding="{Binding Size}" />
-
-                    <GridViewColumn Header="Farve" Width="110"
+                    <GridViewColumn Header="Farve" Width="120"
                                     DisplayMemberBinding="{Binding Colour}" />
-
-                    <GridViewColumn Header="Antal på lager" Width="120"
+                    <GridViewColumn Header="Lager" Width="80"
                                     DisplayMemberBinding="{Binding NumberInStock}" />
 
                     <GridViewColumn Header="" Width="90">
@@ -55,15 +44,11 @@
                             <DataTemplate>
                                 <Button Content="Edit"
                                         Padding="14,6"
-                                        Background="#2E9E49"
-                                        Foreground="White"
-                                        BorderThickness="0"
-                                        Command="{Binding DataContext.OpenEditProductDialogCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        Command="{Binding DataContext.OpenEditCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                         CommandParameter="{Binding}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-
                 </GridView>
             </ListView.View>
         </ListView>
