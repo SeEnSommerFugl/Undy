@@ -59,7 +59,6 @@
         }
 
         protected override Guid GetKey(Product e) => e.ProductID;
-        protected override void SetKey(Product e, Guid id) => e.ProductID = id;
 
     }
 }

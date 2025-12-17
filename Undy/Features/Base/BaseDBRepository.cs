@@ -45,7 +45,6 @@
 
         // Key helpers
         protected abstract TKey GetKey(T entity);
-        protected abstract void SetKey(T entity, Guid id);
 
         public async Task<T?> GetByIdAsync(TKey id)
         {
