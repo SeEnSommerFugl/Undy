@@ -11,7 +11,7 @@
     <SolidColorBrush x:Key="Brush.Danger"      Color="#DC2626"/>
     <SolidColorBrush x:Key="Brush.Fg.Primary"  Color="#FF1F2937"/>
 
-    <!-- Money tints -->
+    <!-- Used for negative/positive/neutral tint - Example: -100 is Red, 200 is Green. -->
     <SolidColorBrush x:Key="Amount.Positive.Bg" Color="#14532D"/>
     <SolidColorBrush x:Key="Amount.Positive.Fg" Color="#ECFDF5"/>
     <SolidColorBrush x:Key="Amount.Negative.Bg" Color="#7F1D1D"/>

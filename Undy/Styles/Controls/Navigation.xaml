@@ -3,7 +3,7 @@
 
     <!-- ============ NAVIGATION (ListBox-baseret) ============ -->
 
-    <!-- Hvad der står på “knappen” -->
+    <!-- Text to stand on the Navigation button (Whatever it's bound to) -->
     <DataTemplate x:Key="NavItemTemplate">
         <TextBlock Text="{Binding Title}"
                Foreground="White"
@@ -13,9 +13,8 @@
                VerticalAlignment="Center"/>
     </DataTemplate>
 
-    <!-- Hver post opfører sig som en rund “knap” -->
+    <!-- Every Nav item will default to a rounded shape -->
     <Style x:Key="NavListBoxItem" TargetType="ListBoxItem">
-        <!-- flise-størrelse/margins som dine knapper -->
         <Setter Property="Height" Value="40"/>
         <Setter Property="Margin" Value="0,0,0,10"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -33,12 +32,12 @@
                                       VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <!-- Hover som dine knapper -->
+                        <!-- Mousehover triggers.  -->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Card" Property="Background"  Value="{DynamicResource Brush.AccentHover}"/>
                             <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource Brush.AccentHover}"/>
                         </Trigger>
-                        <!-- Valgt = grøn -->
+                        <!-- Selected Nav Item colouring -->
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="Card" Property="Background"  Value="{DynamicResource Amount.Positive.Bg}"/>
                             <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource Amount.Positive.Bg}"/>
@@ -53,7 +52,7 @@
         </Setter>
     </Style>
 
-    <!-- Selve ListBox’en (rammeløs, ingen scrollbar i venstre rail) -->
+    <!-- THe ListBox itself - No frame/boarders, no scrollbars.  -->
     <Style x:Key="NavListBox" TargetType="ListBox">
         <Setter Property="ItemTemplate" Value="{DynamicResource NavItemTemplate}"/>
         <Setter Property="ItemContainerStyle" Value="{DynamicResource NavListBoxItem}"/>

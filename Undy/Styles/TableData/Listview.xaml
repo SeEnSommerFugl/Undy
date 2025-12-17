@@ -18,7 +18,6 @@
         <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
-        <!-- No HorizontalAlignment per requirement -->
     </Style>
 
     <!-- GRIDVIEW COLUMN HEADER STYLE (template ensures Background actually shows) -->
