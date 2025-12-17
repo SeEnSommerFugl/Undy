@@ -1,20 +1,27 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using Undy.Models;
-
-namespace Undy.Views
+﻿namespace Undy.Views
 {
     public partial class EditProductDialog : Window
     {
         private readonly Product _original;
 
+        /// <summary>
+        /// The ProductNumber value the product had when the dialog was opened.
+        /// Needed because your SQL update uses ProductNumber as the lookup key.
+        /// </summary>
+        public string OriginalProductNumber { get; }
+
+        /// <summary>
+        /// The updated product returned when the user clicks Save.
+        /// </summary>
         public Product? UpdatedProduct { get; private set; }
 
+        // ctor = constructor (konstruktør-metoden). Den kører når du laver: new EditProductDialog(product)
         public EditProductDialog(Product product)
         {
             InitializeComponent();
+
             _original = product ?? throw new ArgumentNullException(nameof(product));
+            OriginalProductNumber = _original.ProductNumber;
 
             ProductNumberBox.Text = _original.ProductNumber;
             ProductNameBox.Text = _original.ProductName;
@@ -33,22 +40,38 @@ namespace Undy.Views
 
             if (string.IsNullOrWhiteSpace(productNumber) || string.IsNullOrWhiteSpace(productName))
             {
-                MessageBox.Show("Produktnummer og produktnavn skal udfyldes.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Produktnummer og produktnavn skal udfyldes.",
+                    "Validation",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
             if (!TryParseDecimal(PriceBox.Text, out var price) || price < 0)
             {
-                MessageBox.Show("Pris skal være et gyldigt tal (>= 0).", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Pris skal være et gyldigt tal (>= 0).",
+                    "Validation",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
-            if (!int.TryParse((NumberInStockBox.Text ?? string.Empty).Trim(), NumberStyles.Integer, CultureInfo.CurrentCulture, out var stock) || stock < 0)
+            if (!int.TryParse((NumberInStockBox.Text ?? string.Empty).Trim(),
+                              NumberStyles.Integer,
+                              CultureInfo.CurrentCulture,
+                              out var stock) || stock < 0)
             {
-                MessageBox.Show("Antal på lager skal være et gyldigt heltal (>= 0).", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Antal på lager skal være et gyldigt heltal (>= 0).",
+                    "Validation",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
+            // Create a new Product instance with same ProductID, but updated fields.
             UpdatedProduct = new Product
             {
                 ProductID = _original.ProductID,
@@ -66,8 +89,11 @@ namespace Undy.Views
         private static bool TryParseDecimal(string? input, out decimal value)
         {
             var s = (input ?? string.Empty).Trim();
+
+            // CurrentCulture først (DK: 139,00) + fallback til invariant (139.00)
             if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.CurrentCulture, out value))
                 return true;
+
             return decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out value);
         }
     }
