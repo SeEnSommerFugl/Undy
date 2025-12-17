@@ -1,4 +1,6 @@
-﻿namespace Undy.Features.ViewModel
+﻿using System.Collections.ObjectModel;
+
+namespace Undy.Features.ViewModel
 {
     /// <summary>
     /// ViewModel for displaying existing sales orders and their lines.
@@ -19,6 +21,7 @@
             _salesOrderLineRepo = salesOrderLineRepo;
 
             SelectedOrderLines = new ObservableCollection<SalesOrderLine>();
+            SelectedOrderDetails = new ObservableCollection<SalesOrderDetailRow>();
         }
 
         /// <summary>
@@ -37,11 +40,24 @@
                 _selectedSalesOrder = value;
                 OnPropertyChanged();
 
+                SelectedOrderDetails.Clear();
 
+                if (_selectedSalesOrder != null)
+                {
+                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Ordrenummer:", _selectedSalesOrder.SalesOrderNumber));
+                    SelectedOrderDetails.Add(new SalesOrderDetailRow("E-Mail:", _selectedSalesOrder.CustomerEmail));
+                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Købsdato:", _selectedSalesOrder.SalesDate));
+                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Afsendt:", _selectedSalesOrder.ShippedDate));
+                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Total pris:", _selectedSalesOrder.TotalPrice));
+                    SelectedOrderDetails.Add(new SalesOrderDetailRow("Kundenummer:", _selectedSalesOrder.CustomerNumber));
+                }
             }
         }
 
-        
+        /// <summary>
+        /// Rows for the Selected Order Details ListView.
+        /// </summary>
+        public ObservableCollection<SalesOrderDetailRow> SelectedOrderDetails { get; }
 
         /// <summary>
         /// Lines for the currently selected order.
@@ -61,6 +77,18 @@
             {
                 SelectedOrderLines.Add(line);
             }
+        }
+    }
+
+    public sealed class SalesOrderDetailRow
+    {
+        public string Label { get; }
+        public object? Value { get; }
+
+        public SalesOrderDetailRow(string label, object? value)
+        {
+            Label = label;
+            Value = value;
         }
     }
 }

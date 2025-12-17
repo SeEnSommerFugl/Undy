@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignWidth="1652" d:DesignHeight="1048">
     
-    <Grid ShowGridLines="False">
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="12"/>
@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Style="{DynamicResource Card}">
-            <Grid Margin="0,30"
+            <Grid 
       HorizontalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <!-- Labels -->

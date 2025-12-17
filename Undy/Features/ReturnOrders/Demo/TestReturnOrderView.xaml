@@ -5,7 +5,7 @@
              Background="White">
 
     <Border Style="{DynamicResource Card}">
-        <Grid Margin="40">
+        <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

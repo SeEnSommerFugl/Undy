@@ -4,32 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignWidth="1280" d:DesignHeight="720">
+             d:DesignWidth="1920" d:DesignHeight="1080">
 
-    <Border Background="{DynamicResource Brush.Background}"
-            Padding="20">
+    <Border Style="{DynamicResource Card}">
 
         <Grid>
-            <!-- LEFT gets more space; RIGHT still roomy -->
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="24"/>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
+            <!-- RIGHT side split into 2 rows (Details + Lines) -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- LEFT: Sales orders list -->
-            <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
-
-                <TextBlock Text="Sales Orders"
-                           FontSize="34"
-                           FontWeight="Bold"
-                           Margin="0,0,0,14"
-                           Foreground="{DynamicResource Brush.Text}" />
+            <!-- LEFT HALF: Sales orders list -->
+            <StackPanel x:Name="LeftPanel" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
+                <TextBlock Text="Salgshistorik"
+                           Style="{DynamicResource H1}"/>
 
                 <ListView x:Name="SalesListView"
                           ItemsSource="{Binding SalesOrders}"
@@ -40,32 +36,31 @@
                           SelectionMode="Single">
 
                     <ListView.View>
-                        <GridView AllowsColumnReorder="False"
-                                  ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeader.Locked}">
+                        <GridView AllowsColumnReorder="False">
 
-                            <GridViewColumn Header="Order #"
+                            <GridViewColumn Header="Ordre #"
                                             DisplayMemberBinding="{Binding SalesOrderNumber}"
-                                            Width="120"/>
+                                            Width="130"/>
 
                             <GridViewColumn Header="Status"
                                             DisplayMemberBinding="{Binding OrderStatus}"
-                                            Width="190"/>
+                                            Width="130"/>
+
+                            <GridViewColumn Header="Navn"
+                                            DisplayMemberBinding="{Binding CustomerName}"
+                                            Width="200"/>
 
                             <GridViewColumn Header="Total"
                                             DisplayMemberBinding="{Binding TotalPrice}"
-                                            Width="170"/>
-
-                            <GridViewColumn Header="Customer"
-                                            DisplayMemberBinding="{Binding CustomerName}"
-                                            Width="260"/>
+                                            Width="130"/>
 
                             <GridViewColumn Header="Salgsdato"
                                             DisplayMemberBinding="{Binding SalesDate}"
-                                            Width="160"/>
+                                            Width="130"/>
 
                             <GridViewColumn Header="Afsendt"
                                             DisplayMemberBinding="{Binding ShippedDate}"
-                                            Width="160"/>
+                                            Width="130"/>
 
                         </GridView>
                     </ListView.View>
@@ -73,153 +68,93 @@
                 </ListView>
             </StackPanel>
 
-            <!-- RIGHT: Selected order details -->
-            <StackPanel Grid.Row="0" Grid.Column="2">
-
-                <TextBlock Text="Selected Order Details"
-                           FontSize="34"
-                           FontWeight="Bold"
-                           Margin="0,0,0,14"
-                           Foreground="{DynamicResource Brush.Text}" />
+            <!-- TOP RIGHT: Selected Order Details (ListView #2, no DataTemplate) -->
+            <StackPanel x:Name="TopRightPanel" Grid.Row="0" Grid.Column="2">
+                <TextBlock Text="Valgte Ordre"
+                           Style="{DynamicResource H2}"/>
 
                 <!-- Card -->
-                <Border Background="{DynamicResource Brush.Panel}"
-                        CornerRadius="16"
-                        Padding="22"
-                        Margin="0,0,0,16">
+                <Border Background="{DynamicResource Brush.Panel}" BorderBrush="{DynamicResource Brush.Border}">
 
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                        <!-- LEFT: Titles -->
+                        <ListView Grid.Column="0"
+                  ItemsSource="{Binding SelectedOrderDetails}"
+                  Style="{StaticResource ListView.LeftTitles}"
+                  MaxHeight="800">
 
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                                   Text="Order Number:"
-                                   FontSize="26"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="0" Grid.Column="1"
-                                   Text="{Binding SelectedSalesOrder.SalesOrderNumber}"
-                                   FontSize="26"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Brush.Text}"
-                                   HorizontalAlignment="Right"/>
+                            <ListView.View>
+                                <GridView AllowsColumnReorder="False">
+                                    <GridViewColumn DisplayMemberBinding="{Binding Label}" Width="170"/>
+                                </GridView>
+                            </ListView.View>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0"
-                                   Text="E-Mail:"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="1" Grid.Column="1"
-                                   Text="{Binding SelectedSalesOrder.CustomerEmail}"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Brush.Text}"
-                                   HorizontalAlignment="Right"/>
+                        </ListView>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0"
-                                   Text="Order Date:"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="2" Grid.Column="1"
-                                   Text="{Binding SelectedSalesOrder.SalesDate}"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Brush.Text}"
-                                   HorizontalAlignment="Right"/>
+                        <!-- RIGHT: Values -->
+                        <ListView Grid.Column="1"
+                                  ItemsSource="{Binding SelectedOrderDetails}"
+                                  Style="{StaticResource ListView.RightOutput}"
+                                  MaxHeight="800">
 
-                        <TextBlock Grid.Row="3" Grid.Column="0"
-                                   Text="Shipped Date:"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="3" Grid.Column="1"
-                                   Text="{Binding SelectedSalesOrder.ShippedDate}"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Brush.Text}"
-                                   HorizontalAlignment="Right"/>
 
-                        <TextBlock Grid.Row="4" Grid.Column="0"
-                                   Text="Total Price:"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="4" Grid.Column="1"
-                                   Text="{Binding SelectedSalesOrder.TotalPrice}"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Brush.Text}"
-                                   HorizontalAlignment="Right"/>
-
-                        <TextBlock Grid.Row="5" Grid.Column="0"
-                                   Text="Customer Number:"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource Brush.Text}" />
-                        <TextBlock Grid.Row="5" Grid.Column="1"
-                                   Text="{Binding SelectedSalesOrder.CustomerNumber}"
-                                   Margin="0,14,0,0"
-                                   FontSize="22"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource Brush.Text}"
-                                   HorizontalAlignment="Right"/>
+                            <ListView.View>
+                                <GridView AllowsColumnReorder="False">
+                                    <GridViewColumn DisplayMemberBinding="{Binding Value}" Width="280"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                     </Grid>
-
                 </Border>
+
+
             </StackPanel>
 
-            <!-- RIGHT: Order lines -->
-            <Grid Grid.Row="1" Grid.Column="2">
+            <!-- BOTTOM RIGHT: Order Lines (ListView #3) -->
+            <Grid x:Name="BottomRightPanel" Grid.Row="1" Grid.Column="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="75"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
-                           Text="Order Lines"
-                           FontSize="28"
-                           FontWeight="Bold"
-                           Margin="0,0,0,12"
-                           Foreground="{DynamicResource Brush.Text}" />
+                           Text="Produkter på ordren"
+                           Style="{DynamicResource H2}"/>
 
-                <DataGrid Grid.Row="1"
+                <ListView Grid.Row="1"
                           ItemsSource="{Binding SelectedOrderLines}"
-                          AutoGenerateColumns="False"
-                          Style="{StaticResource DataGrid.SalesOrder}"
-                          IsReadOnly="True"
-                          CanUserReorderColumns="False"
-                          CanUserResizeColumns="False"
-                          MaxHeight="460">
+                          Style="{StaticResource ListView.Table}"
+                          MaxHeight="460"
+                          SelectionMode="Single">
 
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="*" />
-                        <DataGridTextColumn Header="Quantity"     Binding="{Binding Quantity}"    Width="120" />
-                        <DataGridTextColumn Header="Unit Price"   Binding="{Binding UnitPrice}"   Width="140" />
-                        <DataGridTextColumn Header="Line Total"   Binding="{Binding LineTotal}"   Width="160" />
-                    </DataGrid.Columns>
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="False">
 
-                </DataGrid>
+                            <GridViewColumn Header="Produkt"
+                                            DisplayMemberBinding="{Binding ProductName}"
+                                            Width="200"/>
+
+                            <GridViewColumn Header="Antal"
+                                            DisplayMemberBinding="{Binding Quantity}"
+                                            Width="120"/>
+
+                            <GridViewColumn Header="Stk Pris"
+                                            DisplayMemberBinding="{Binding UnitPrice}"
+                                            Width="140"/>
+
+                            <GridViewColumn Header="Total"
+                                            DisplayMemberBinding="{Binding LineTotal}"
+                                            Width="160"/>
+
+                        </GridView>
+                    </ListView.View>
+
+                </ListView>
             </Grid>
 
         </Grid>

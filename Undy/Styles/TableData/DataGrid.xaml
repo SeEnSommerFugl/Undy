@@ -202,7 +202,7 @@
     <Style x:Key="DataGrid.SalesOrder"
            TargetType="DataGrid"
            BasedOn="{StaticResource DataGrid.Table}">
-        <Setter Property="IsReadOnly" Value="False"/>
+        <Setter Property="IsReadOnly" Value="True"/>
         <Setter Property="MaxHeight" Value="1000"/>
     </Style>
 

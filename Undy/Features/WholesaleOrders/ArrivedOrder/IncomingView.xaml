@@ -3,8 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Background="White">
 
+
+
     <Border Style="{DynamicResource Card}">
-        <Grid>
+        
+        <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -13,7 +16,7 @@
             </Grid.RowDefinitions>
 
             <!-- Titel -->
-            <TextBlock Grid.Row="0"
+            <TextBlock Grid.Row="0" 
                        Text="Varemodtagelse"
                        Style="{DynamicResource H2}"
                        HorizontalAlignment="Center"/>

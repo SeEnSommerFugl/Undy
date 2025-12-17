@@ -1,67 +1,110 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- BRUSHES -->
-    <SolidColorBrush x:Key="Brush.TableRowAlt" Color="#0AFFFFFF" />
-    <SolidColorBrush x:Key="Brush.TableHover" Color="#12FFFFFF" />
-    <SolidColorBrush x:Key="Brush.TableSelected" Color="#22FFFFFF" />
-    <SolidColorBrush x:Key="Brush.TableHeader" Color="#11000000" />
-    <SolidColorBrush x:Key="Brush.TableHeaderBorder" Color="#33000000" />
-    <SolidColorBrush x:Key="Brush.Text" Color="White" />
+    <!-- TABLE THEME BRUSHES (local defaults) -->
+    <SolidColorBrush x:Key="Brush.TableRowAlt"        Color="#0AFFFFFF" />
+    <SolidColorBrush x:Key="Brush.TableHover"         Color="#263447" />
+    <SolidColorBrush x:Key="Brush.TableSelected"      Color="#22FFFFFF" />
+    <SolidColorBrush x:Key="Brush.TableHeader"        Color="#11000000" />
+    <SolidColorBrush x:Key="Brush.TableHeaderHover"   Color="#223A4A" />
+    <SolidColorBrush x:Key="Brush.TableHeaderBorder"  Color="#33000000" />
+
+    <!-- Fallbacks if app doesn't define them (keep your global ones if they exist) -->
+    <SolidColorBrush x:Key="Brush.Text"         Color="White" />
     <SolidColorBrush x:Key="Brush.TextSelected" Color="White" />
 
-    
-    <!-- LISTVIEW ITEM STYLE (no template!) -->
-    <Style x:Key="ListViewItem.Table" TargetType="ListViewItem">
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Background" Value="Transparent"/>
+    <!-- Base for ALL table cell text -->
+    <Style x:Key="TextBlock.TableCell" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="MinHeight" Value="40"/>
-        <Setter Property="Padding" Value="12,14"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="FontSize" Value="16"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <!-- No HorizontalAlignment per requirement -->
+    </Style>
+
+    <!-- GRIDVIEW COLUMN HEADER STYLE (template ensures Background actually shows) -->
+    <Style TargetType="GridViewColumnHeader">
+        <Setter Property="Background" Value="{StaticResource Brush.TableHeader}" />
+        <Setter Property="Foreground" Value="{StaticResource Brush.Text}" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Padding" Value="8,10" />
+        <Setter Property="BorderBrush" Value="{StaticResource Brush.TableHeaderBorder}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GridViewColumnHeader">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
         <Style.Triggers>
-            <!-- Hover -->
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background"
-                        Value="{StaticResource Brush.TableHover}" />
-            </Trigger>
-
-            <!-- Selected -->
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background"
-                        Value="{StaticResource Brush.TableSelected}" />
-                <Setter Property="Foreground"
-                        Value="{StaticResource Brush.TextSelected}" />
-            </Trigger>
-
-            <!-- Alternating row -->
-            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                <Setter Property="Background"
-                        Value="{StaticResource Brush.TableRowAlt}" />
+                <Setter Property="Background" Value="{StaticResource Brush.TableHeaderHover}" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!-- Kept for compatibility if referenced elsewhere -->
+    <Style x:Key="GridViewColumnHeader.Locked"
+           TargetType="GridViewColumnHeader"
+           BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+        <!-- intentionally empty -->
+    </Style>
 
-    <!-- LISTVIEW – TABLE STYLE -->
-    <Style x:Key="ListView.Table" TargetType="ListView">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
+    <!-- LISTVIEW ITEM (TABLE ROW) -->
+    <Style x:Key="ListViewItem.Table" TargetType="ListViewItem">
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Brush.TableHover}" />
+            </Trigger>
+
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource Brush.TableSelected}" />
+                <Setter Property="Foreground" Value="{StaticResource Brush.TextSelected}" />
+            </Trigger>
+
+            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                <Setter Property="Background" Value="{StaticResource Brush.TableRowAlt}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- LISTVIEW (TABLE ROOT) -->
+    <Style x:Key="ListView.Table" TargetType="ListView">
+        <Style.Resources>
+            <!-- Center all DisplayMemberBinding cell text -->
+            <Style TargetType="{x:Type TextBlock}"
+                   BasedOn="{StaticResource TextBlock.TableCell}">
+                <Setter Property="TextAlignment" Value="Center"/>
+            </Style>
+        </Style.Resources>
+
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
 
-        <!-- Alternating rows requires AlternationCount -->
         <Setter Property="AlternationCount" Value="2"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ListViewItem.Table}" />
 
-        <!-- Use our ListViewItem-style -->
-        <Setter Property="ItemContainerStyle"
-                Value="{StaticResource ListViewItem.Table}" />
+        <Setter Property="GridView.ColumnHeaderContainerStyle"
+                Value="{StaticResource GridViewColumnHeader.Locked}" />
+
+        <!-- Note: still set AllowsColumnReorder="False" on each GridView instance -->
+        <Setter Property="GridView.AllowsColumnReorder" Value="False"/>
 
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -72,35 +115,63 @@
         </Setter>
     </Style>
 
+    <!-- DETAILS LISTVIEW (inherits table; differs by behavior only) -->
+    <Style x:Key="ListView.Table.Details"
+           TargetType="ListView"
+           BasedOn="{StaticResource ListView.Table}">
+        <Setter Property="AlternationCount" Value="0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
 
-    <!-- GRIDVIEW COLUMN HEADER STYLE  -->
-    <Style TargetType="GridViewColumnHeader">
-        <Setter Property="Background" Value="{StaticResource Brush.TableHeader}" />
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}" />
-        <Setter Property="FontWeight" Value="Bold" />
-        <Setter Property="FontSize" Value="18" />
-        <Setter Property="Padding" Value="8,10" />
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.TableHeaderBorder}" />
-        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Style.Resources>
+            <!-- Default details text: left -->
+            <Style TargetType="{x:Type TextBlock}"
+                   BasedOn="{StaticResource TextBlock.TableCell}">
+                <Setter Property="TextAlignment" Value="Left"/>
+            </Style>
+        </Style.Resources>
     </Style>
 
-    <!-- Locked GridView headers (removes resize gripper) -->
-    <Style x:Key="GridViewColumnHeader.Locked"
-       TargetType="GridViewColumnHeader"
-       BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="GridViewColumnHeader">
-                    <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}">
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+    <!-- Base: Details + no headers -->
+    <Style x:Key="ListView.Details.NoHeaders"
+       TargetType="ListView"
+       BasedOn="{StaticResource ListView.Table.Details}">
+        <Style.Resources>
+            <Style TargetType="GridViewColumnHeader">
+                <Setter Property="Height" Value="0"/>
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </Style>
+        </Style.Resources>
     </Style>
+
+    <!-- Details variant: left-side titles (Label column) -->
+    <Style x:Key="ListView.LeftTitles"
+       TargetType="ListView"
+       BasedOn="{StaticResource ListView.Details.NoHeaders}">
+        <Style.Resources>
+            <Style TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource TextBlock.TableCell}">
+                <Setter Property="TextAlignment" Value="Right"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+    <!-- Details variant: right-side output (Value column) -->
+    <Style x:Key="ListView.RightOutput"
+       TargetType="ListView"
+       BasedOn="{StaticResource ListView.Details.NoHeaders}">
+        <Style.Resources>
+            <Style TargetType="{x:Type TextBlock}"
+               BasedOn="{StaticResource TextBlock.TableCell}">
+                <Setter Property="TextAlignment" Value="Left"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+        </Style.Resources>
+    </Style>
+
+
+
 </ResourceDictionary>

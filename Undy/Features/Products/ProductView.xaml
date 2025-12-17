@@ -6,51 +6,48 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="900">
 
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="12"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Border Style="{DynamicResource Card}">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <DockPanel Grid.Row="0" LastChildFill="False">
-            <Button Content="Tilføj produkt"
-                    Padding="16,8"
-                    DockPanel.Dock="Right"
-                    Command="{Binding OpenAddCommand}" />
-        </DockPanel>
+            <DockPanel Grid.Row="0" LastChildFill="False">
+                <Button Content="Tilføj produkt"
+                        Padding="16,8"
+                        DockPanel.Dock="Right"
+                        Command="{Binding OpenAddCommand}" />
+            </DockPanel>
 
-        <ListView Grid.Row="2"
-                  ItemsSource="{Binding ProductView}"
-                  BorderThickness="0"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Produktnr." Width="140"
-                                    DisplayMemberBinding="{Binding ProductNumber}" />
-                    <GridViewColumn Header="Navn" Width="260"
-                                    DisplayMemberBinding="{Binding ProductName}" />
-                    <GridViewColumn Header="Pris" Width="90"
-                                    DisplayMemberBinding="{Binding Price}" />
-                    <GridViewColumn Header="Str." Width="70"
-                                    DisplayMemberBinding="{Binding Size}" />
-                    <GridViewColumn Header="Farve" Width="120"
-                                    DisplayMemberBinding="{Binding Colour}" />
-                    <GridViewColumn Header="Lager" Width="80"
-                                    DisplayMemberBinding="{Binding NumberInStock}" />
+            <ListView x:Name="ProductsListView"
+                      Grid.Row="2"
+                      Style="{DynamicResource ListView.Table}"
+                      ItemsSource="{Binding ProductView}"
+                      SelectionMode="Single" MouseDoubleClick="ProductsListView_MouseDoubleClick">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Produktnr." Width="230"
+                                        DisplayMemberBinding="{Binding ProductNumber}" />
 
-                    <GridViewColumn Header="" Width="90">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="Edit"
-                                        Padding="14,6"
-                                        Command="{Binding DataContext.OpenEditCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                        CommandParameter="{Binding}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </Grid>
+                        <GridViewColumn Header="Navn" Width="260"
+                                        DisplayMemberBinding="{Binding ProductName}" />
+
+                        <GridViewColumn Header="Pris" Width="140"
+                                        DisplayMemberBinding="{Binding Price}" />
+
+                        <GridViewColumn Header="Str." Width="140"
+                                        DisplayMemberBinding="{Binding Size}" />
+
+                        <GridViewColumn Header="Farve" Width="120"
+                                        DisplayMemberBinding="{Binding Colour}" />
+
+                        <GridViewColumn Header="Lager" Width="140"
+                                        DisplayMemberBinding="{Binding NumberInStock}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Border>
 </UserControl>

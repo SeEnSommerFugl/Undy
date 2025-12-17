@@ -8,32 +8,28 @@
         mc:Ignorable="d"
         d:DesignWidth="1920" d:DesignHeight="1080"
         MaxWidth="1920" MaxHeight="1080"
+        MinWidth="1920" MinHeight="1080"
         UseLayoutRounding="True" SnapsToDevicePixels="True"
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize">
 
     <!-- Main Layout Grid -->
-    <Grid Margin="16">
+    <Grid Margin="20">
 
         <Grid.ColumnDefinitions>
-            <!-- Venstre rail -->
+            <!-- Sidebar -->
             <ColumnDefinition Width="180"/>
-            <!-- Venstre mellemrum -->
-            <ColumnDefinition Width="16"/>
-            <!-- Indhold -->
-            <ColumnDefinition Width="*"/>
-            <!-- Højre mellemrum (spejl) -->
-            <ColumnDefinition Width="16"/>
-            <!-- Højre gutter (spejl af venstre rail) -->
-            <ColumnDefinition Width="180"/>
+            <!-- Content -->
+            <ColumnDefinition Width="1700" />
         </Grid.ColumnDefinitions>
 
+        <!-- Sidebar -->
         <StackPanel Grid.Column="0">
             <Image Source="/Styles/Images/Undy_logo.png"
                        Height="300"  Width="300"
-                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                       Margin="0,-75,0,40"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
                        Stretch="Fill"/>
 
             <ListBox ItemsSource="{Binding Nav.Items}"
@@ -42,8 +38,8 @@
                      Margin="0,0,0,0"/>
         </StackPanel>
 
-        <!-- Indholdet binder direkte til Navigation -->
-        <ContentControl Grid.Column="2"
+        <!-- Content -->
+        <ContentControl Grid.Column="1" Margin="20"
                 Content="{Binding Nav.CurrentView}"/>
 
     </Grid>
