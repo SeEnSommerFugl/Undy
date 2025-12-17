@@ -1,4 +1,11 @@
-﻿using Undy.Features.Products.AddProduct;
+﻿using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
+using Undy.Data.Repository;
+using Undy.Features.Helpers;
+using Undy.Features.Products.AddProduct;
+using Undy.Models;
 
 namespace Undy.Features.ViewModel
 {
@@ -20,26 +27,19 @@ namespace Undy.Features.ViewModel
         {
         }
 
-        public ProductViewModel(
-            IBaseRepository<Product, Guid> productRepo,
-            IAddProductDialogService addProductDialogService)
+        public ProductViewModel(IBaseRepository<Product, Guid> productRepo, IAddProductDialogService addProductDialogService)
         {
             _productRepo = productRepo;
             _addProductDialogService = addProductDialogService;
 
             _productView = CollectionViewSource.GetDefaultView(Products);
-            _productView.SortDescriptions.Add(
-                new SortDescription(nameof(Product.ProductNumber), ListSortDirection.Ascending));
+            _productView.SortDescriptions.Add(new SortDescription(nameof(Product.ProductNumber), ListSortDirection.Ascending));
 
-            OpenAddProductDialogCommand = new RelayCommand(_ =>
-            {
-                _ = OpenAddProductDialogAsync();
-            });
-
+            OpenAddProductDialogCommand = new RelayCommand(_ => _ = OpenAddProductDialogAsync());
             OpenEditProductDialogCommand = new RelayCommand(p =>
             {
-                if (p is not Product prod) return;
-                _ = OpenEditProductDialogAsync(prod);
+                if (p is Product prod)
+                    _ = OpenEditProductDialogAsync(prod);
             });
         }
 
@@ -57,16 +57,16 @@ namespace Undy.Features.ViewModel
             {
                 await _productRepo.AddAsync(created);
             }
-            catch
+            catch (Exception ex)
             {
                 await _productRepo.InitializeAsync();
-                throw;
+                MessageBox.Show(ex.Message, "Insert failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private async Task OpenEditProductDialogAsync(Product product)
         {
-            var dialog = new Views.EditProductDialog(product)
+            var dialog = new EditProductDialog(product)
             {
                 Owner = Application.Current?.MainWindow
             };
@@ -79,12 +79,22 @@ namespace Undy.Features.ViewModel
 
             try
             {
-                await _productRepo.UpdateAsync(updated);
+                // update for SQL contract (lookup by old ProductNumber + optional NewProductNumber)
+                if (_productRepo is ProductDBRepository productRepo)
+                {
+                    await productRepo.UpdateByProductNumberAsync(dialog.OriginalProductNumber, updated);
+                }
+                else
+                {
+                    // fallback
+                    await _productRepo.UpdateAsync(updated);
+                    await _productRepo.InitializeAsync();
+                }
             }
-            catch
+            catch (Exception ex)
             {
                 await _productRepo.InitializeAsync();
-                throw;
+                MessageBox.Show(ex.Message, "Update failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

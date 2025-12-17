@@ -19,5 +19,8 @@ global using Undy.Data.Repository;
 global using Undy.Features.Helpers;
 global using Undy.Features.ViewModel;
 global using Undy.Models;
+global using Undy.Features.Products;
+global using Undy.Features.Products.AddProduct;
+
 // ===== WPF ===== //
 global using Undy.Views;

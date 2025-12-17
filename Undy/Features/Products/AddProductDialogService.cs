@@ -1,11 +1,14 @@
-﻿// Fil: Undy/Undy/Features/Products/AddProduct/AddProductDialogService.cs
+﻿
+using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Controls;
+using Undy.Models;
+
 namespace Undy.Features.Products.AddProduct
 {
     public interface IAddProductDialogService
     {
-        /// <summary>
-        /// Shows a low-fi dialog. Returns a Product if user confirmed and validation passed; otherwise null.
-        /// </summary>
         Product? ShowDialog(Window? owner = null);
     }
 
@@ -33,31 +36,19 @@ namespace Undy.Features.Products.AddProduct
 
             if (string.IsNullOrWhiteSpace(productNumber) || string.IsNullOrWhiteSpace(productName))
             {
-                MessageBox.Show(
-                    "Produktnummer og produktnavn skal udfyldes.",
-                    "Validation",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                MessageBox.Show("Produktnummer og produktnavn skal udfyldes.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return null;
             }
 
             if (!TryParseDecimal(tbPrice.Text, out var price) || price < 0)
             {
-                MessageBox.Show(
-                    "Pris skal være et gyldigt tal (>= 0).",
-                    "Validation",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                MessageBox.Show("Pris skal være et gyldigt tal (>= 0).", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return null;
             }
 
             if (!int.TryParse((tbStock.Text ?? string.Empty).Trim(), NumberStyles.Integer, CultureInfo.CurrentCulture, out var stock) || stock < 0)
             {
-                MessageBox.Show(
-                    "Antal på lager skal være et gyldigt heltal (>= 0).",
-                    "Validation",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
+                MessageBox.Show("Antal på lager skal være et gyldigt heltal (>= 0).", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return null;
             }
 
@@ -77,7 +68,6 @@ namespace Undy.Features.Products.AddProduct
         {
             var s = (input ?? string.Empty).Trim();
 
-            // CurrentCulture først (DK: 139,00) + fallback til invariant (139.00)
             if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.CurrentCulture, out value))
                 return true;
 
@@ -116,7 +106,6 @@ namespace Undy.Features.Products.AddProduct
 
                 Grid.SetRow(lbl, row);
                 Grid.SetColumn(lbl, 0);
-
                 Grid.SetRow(input, row);
                 Grid.SetColumn(input, 1);
 
