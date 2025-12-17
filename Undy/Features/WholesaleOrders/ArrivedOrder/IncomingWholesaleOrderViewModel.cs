@@ -1,8 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Undy.Data.Repository;
-using Undy.Models;
-
-namespace Undy.Features.ViewModel
+﻿namespace Undy.Features.ViewModel
 {
     public class IncomingWholesaleOrderViewModel : BaseViewModel
     {
@@ -39,7 +35,7 @@ namespace Undy.Features.ViewModel
             set
             {
                 if (SetProperty(ref _selectedWholesaleOrder, value))
-                _ = LoadSelectedOrderLinesAsync();
+                    _ = LoadSelectedOrderLinesAsync();
             }
         }
 

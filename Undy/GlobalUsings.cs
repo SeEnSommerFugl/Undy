@@ -10,22 +10,14 @@ global using System.Windows.Data;
 global using System.Windows.Input;
 global using System.Windows.Markup;
 global using Microsoft.Data.SqlClient;
-
-
 // ===== Infrastructure and External ===== //
 global using Microsoft.Extensions.Configuration;
-
-
-// ===== Domain and Data ===== //
-global using Undy.Data.Repository;
-
-
 // ===== SQL ===== //
 global using Undy.Data.Database;
+// ===== Domain and Data ===== //
+global using Undy.Data.Repository;
 global using Undy.Features.Helpers;
 global using Undy.Features.ViewModel;
 global using Undy.Models;
-
-
 // ===== WPF ===== //
 global using Undy.Views;

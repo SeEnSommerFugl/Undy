@@ -1,13 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using Undy.Data.Repository;
-using Undy.Features.Helpers;
-using Undy.Features.Products.AddProduct;
-using Undy.Models;
+﻿using Undy.Features.Products.AddProduct;
 
 namespace Undy.Features.ViewModel
 {

@@ -30,9 +30,11 @@
         }
 
         private bool _isSelectedForPayment;
-        public bool IsSelectedForPayment {
+        public bool IsSelectedForPayment
+        {
             get => _isSelectedForPayment;
-            set {
+            set
+            {
                 SetProperty(ref _isSelectedForPayment, value);
             }
         }
@@ -41,7 +43,8 @@
         public string StatusMessage
         {
             get => _statusMessage;
-            set {
+            set
+            {
                 SetProperty(ref _statusMessage, value);
             }
         }
@@ -70,14 +73,14 @@
             //    _ => SelectedOrder != null && SelectedOrder.IsSelectedForPayment
             //);
         }
-        
+
         // Refresh 
         private void RefreshPaymentView()
         {
             PaymentView.Refresh();
         }
 
-        
+
         // Vis info om valgt ordre
         private void LoadSelectedOrderInfo(CustomerSalesOrderDisplay order)
         {
@@ -99,7 +102,7 @@
             OnPropertyChanged(nameof(TotalAmount));
         }
 
-        
+
         // Registrér betaling
         private async Task ConfirmPaymentAsync()
         {
@@ -122,7 +125,7 @@
             dbOrder.PaymentStatus = "Betalt";
             await _salesOrderRepo.UpdateAsync(dbOrder);
 
-            
+
             SelectedOrder.PaymentStatus = "Betalt";
             SelectedOrder.IsSelectedForPayment = false;
 
@@ -133,10 +136,14 @@
 
         public bool IsSalesOrderSelected(Guid SalesOrderID) => _selectedSalesOrderIds.Contains(SalesOrderID);
 
-        public void SetSalesOrderSelection(Guid SalesOrderID, bool IsSelectedForPayment) {
-            if(IsSelectedForPayment) {
+        public void SetSalesOrderSelection(Guid SalesOrderID, bool IsSelectedForPayment)
+        {
+            if (IsSelectedForPayment)
+            {
                 _selectedSalesOrderIds.Add(SalesOrderID);
-            } else {
+            }
+            else
+            {
                 _selectedSalesOrderIds.Remove(SalesOrderID);
             }
         }

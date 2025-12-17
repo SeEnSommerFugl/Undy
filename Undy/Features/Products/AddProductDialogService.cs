@@ -1,11 +1,4 @@
 ﻿// Fil: Undy/Undy/Features/Products/AddProduct/AddProductDialogService.cs
-
-using System;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using Undy.Models;
-
 namespace Undy.Features.Products.AddProduct
 {
     public interface IAddProductDialogService

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Globalization;
-using Microsoft.Data.SqlClient;
-using Undy.Data.Database;
-
-namespace Undy.Data.Repository
+﻿namespace Undy.Data.Repository
 {
     /// <summary>
     /// Data access for StartPage KPI cards.

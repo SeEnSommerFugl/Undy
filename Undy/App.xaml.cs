@@ -1,12 +1,4 @@
-﻿using System.Globalization;
-using System.Threading;
-using System.Windows;
-using System.Windows.Markup;
-using Undy.Data.Repository;
-using Undy.Features.ViewModel;
-using Undy.Models;
-
-namespace Undy
+﻿namespace Undy
 {
     public partial class App : Application
     {

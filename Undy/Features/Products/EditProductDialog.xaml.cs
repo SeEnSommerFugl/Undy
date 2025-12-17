@@ -1,9 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using Undy.Models;
-
-namespace Undy.Views
+﻿namespace Undy.Views
 {
     public partial class EditProductDialog : Window
     {

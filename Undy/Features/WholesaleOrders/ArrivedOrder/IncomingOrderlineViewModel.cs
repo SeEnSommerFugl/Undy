@@ -32,7 +32,7 @@
             {
                 calculated = OrderedQuantity - ReceivedQuantity;
             }
-            else if (AlreadyReceived <  OrderedQuantity)
+            else if (AlreadyReceived < OrderedQuantity)
             {
                 calculated = OrderedQuantity - AlreadyReceived - ReceivedQuantity;
             }
