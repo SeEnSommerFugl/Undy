@@ -184,7 +184,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Grid.Column="0">
-                        <Image Source="pack://application:,,,/Styles/Images/icon_return_rate.png" Width="128" Height="128"/>
+                        <Image Source="/Styles/Images/Return_Rate.png" Width="240" Height="240"/>
                     </Grid>
 
                     <Grid Grid.Column="1">
@@ -235,7 +235,8 @@
                         <StackPanel VerticalAlignment="Center">
                             <TextBox Text="{Binding AverageOrderValue, StringFormat={}{0:C}, Mode=OneWay}"
                                      Style="{DynamicResource TextBoxNoEditNoBorder}"/>
-                            <TextBlock Text="Gns. ordreværdi (AOV)" Style="{DynamicResource H1Right}"/>
+                            <TextBlock Text="Gennmemsnitlig" Style="{DynamicResource H1Right}"/>
+                            <TextBlock Text="ordreværdi (AOV)" Style="{DynamicResource H1Right}"/>
                         </StackPanel>
                     </Grid>
                 </Grid>
