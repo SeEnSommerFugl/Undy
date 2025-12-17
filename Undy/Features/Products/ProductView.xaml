@@ -23,70 +23,49 @@
                     Command="{Binding OpenAddProductDialogCommand}"/>
         </DockPanel>
 
-        <!-- Products table -->
-        <DataGrid x:Name="ProductsGrid"
-                  Grid.Row="2"
-                  AutoGenerateColumns="False"
+        <!-- Products list (read-only) + Edit dialog per row -->
+        <ListView Grid.Row="2"
                   ItemsSource="{Binding ProductView}"
-                  HeadersVisibility="Column"
-                  Style="{StaticResource DataGrid.Table}"
+                  BorderThickness="0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  CanUserReorderColumns="False"
-                  CanUserResizeColumns="False"
-                  CanUserResizeRows="False"
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
 
-                  IsReadOnly="True"
-                  SelectionMode="Single"
-                  SelectionUnit="FullRow">
+                    <GridViewColumn Header="Produktnummer" Width="160"
+                                    DisplayMemberBinding="{Binding ProductNumber}" />
 
-            <DataGrid.Columns>
+                    <GridViewColumn Header="Produktnavn" Width="260"
+                                    DisplayMemberBinding="{Binding ProductName}" />
 
-                <DataGridTextColumn Header="Produktnummer"
-                                    Binding="{Binding ProductNumber}"
-                                    Width="*" />
+                    <GridViewColumn Header="Pris" Width="80"
+                                    DisplayMemberBinding="{Binding Price}" />
 
-                <DataGridTextColumn Header="Produktnavn"
-                                    Binding="{Binding ProductName}"
-                                    Width="*" />
+                    <GridViewColumn Header="Størrelse" Width="80"
+                                    DisplayMemberBinding="{Binding Size}" />
 
-                <DataGridTextColumn Header="Pris"
-                                    Binding="{Binding Price}"
-                                    Width="Auto" />
+                    <GridViewColumn Header="Farve" Width="110"
+                                    DisplayMemberBinding="{Binding Colour}" />
 
-                <DataGridTextColumn Header="Størrelse"
-                                    Binding="{Binding Size}"
-                                    Width="Auto" />
+                    <GridViewColumn Header="Antal på lager" Width="120"
+                                    DisplayMemberBinding="{Binding NumberInStock}" />
 
-                <DataGridTextColumn Header="Farve"
-                                    Binding="{Binding Colour}"
-                                    Width="Auto" />
+                    <GridViewColumn Header="" Width="90">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Edit"
+                                        Padding="14,6"
+                                        Background="#2E9E49"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Command="{Binding DataContext.OpenEditProductDialogCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
 
-                <!-- Quantity (read-only by default; Edit button will trigger edit in code-behind/VM) -->
-                <DataGridTextColumn x:Name="NumberInStockColumn"
-                                    Header="Antal på lager"
-                                    Binding="{Binding NumberInStock, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                    Width="Auto" />
-
-                <!-- Per-row Edit button -->
-                <DataGridTemplateColumn Header=""
-                                        Width="Auto"
-                                        MinWidth="70">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Edit"
-                                    Padding="14,6"
-                                    Background="#2E9E49"
-                                    Foreground="White"
-                                    BorderThickness="0"
-                                    Command="{Binding DataContext.BeginEditQuantityCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-            </DataGrid.Columns>
-        </DataGrid>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </UserControl>
