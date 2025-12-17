@@ -1,7 +1,4 @@
-﻿using System.Data;
-using Undy.Models;
-
-namespace Undy.Data.Repository
+﻿namespace Undy.Data.Repository
 {
     /// <summary>
     /// Read-only projection repository based on vw_CustomerSalesOrders.

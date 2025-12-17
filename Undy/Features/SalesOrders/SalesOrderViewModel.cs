@@ -1,8 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Undy.Data.Repository;
-using Undy.Models;
-
-namespace Undy.Features.ViewModel
+﻿namespace Undy.Features.ViewModel
 {
     /// <summary>
     /// ViewModel for displaying existing sales orders and their lines.
@@ -40,8 +36,12 @@ namespace Undy.Features.ViewModel
 
                 _selectedSalesOrder = value;
                 OnPropertyChanged();
+
+
             }
         }
+
+        
 
         /// <summary>
         /// Lines for the currently selected order.

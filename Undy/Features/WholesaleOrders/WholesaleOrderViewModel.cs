@@ -1,10 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Data;
-using Undy.Data.Repository;
-using Undy.Models;
-
-namespace Undy.Features.ViewModel
+﻿namespace Undy.Features.ViewModel
 {
     public class WholesaleOrderViewModel : BaseViewModel
     {

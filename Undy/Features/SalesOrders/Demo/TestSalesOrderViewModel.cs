@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using System.Windows.Input;
-using Undy.Data.Repository;
-using Undy.Models;
-
-namespace Undy.Features.ViewModel
+﻿namespace Undy.Features.ViewModel
 {
     public class TestSalesOrderViewModel : BaseViewModel
     {

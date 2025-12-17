@@ -1,10 +1,11 @@
-﻿using Undy.Models;
-
-namespace Undy.Data.Repository {
-    internal class WholesaleOrderDisplayDBRepository : BaseDBRepository<WholesaleOrderDisplay, Guid> {
+﻿namespace Undy.Data.Repository
+{
+    internal class WholesaleOrderDisplayDBRepository : BaseDBRepository<WholesaleOrderDisplay, Guid>
+    {
         protected override string SqlSelectAll => "SELECT * FROM vw_WholesaleOrders";
 
-        protected override WholesaleOrderDisplay Map(IDataRecord r) => new WholesaleOrderDisplay {
+        protected override WholesaleOrderDisplay Map(IDataRecord r) => new WholesaleOrderDisplay
+        {
             WholesaleOrderID = r.GetGuid(r.GetOrdinal("WholesaleOrderID")),
             WholesaleOrderNumber = r.GetInt32(r.GetOrdinal("WholesaleOrderNumber")),
             DisplayWholesaleOrderNumber = r.GetString(r.GetOrdinal("DisplayWholesaleOrderNumber")),

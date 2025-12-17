@@ -1,8 +1,4 @@
-﻿using System.Globalization;
-using Undy.Data.Repository;
-using Undy.Features.Helpers;
-
-namespace Undy.Features.ViewModel
+﻿namespace Undy.Features.ViewModel
 {
     /// <summary>
     /// ViewModel for StartPage KPI cards.

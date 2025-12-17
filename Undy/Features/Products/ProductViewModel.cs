@@ -1,85 +1,66 @@
-﻿// Fil: Undy/Undy/Features/Products/ProductViewModel.cs
-
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Undy.Data.Repository;
 using Undy.Features.Helpers;
+using Undy.Features.Products.AddProduct;
 using Undy.Models;
 
 namespace Undy.Features.ViewModel
 {
     public sealed class ProductViewModel : BaseViewModel
     {
-        private readonly IBaseRepository<Product, Guid> _productRepo;
+        private readonly IBaseRepository<Product, Guid> _repo;
 
-        // DataGrid binder typisk til dette via CollectionView (sort/filter-friendly)
         private readonly ICollectionView _productView;
         public ICollectionView ProductView => _productView;
 
-        // Underliggende collection (kommer fra dit BaseDBRepository-pattern)
-        public System.Collections.ObjectModel.ObservableCollection<Product> Products => _productRepo.Items;
+        public System.Collections.ObjectModel.ObservableCollection<Product> Products => _repo.Items;
 
-        private Product? _editingProduct;
-        public Product? EditingProduct
+        public ICommand OpenAddCommand { get; }
+        public ICommand OpenEditCommand { get; }
+
+        public ProductViewModel(IBaseRepository<Product, Guid> repo)
         {
-            get => _editingProduct;
-            private set => SetProperty(ref _editingProduct, value);
-        }
-
-        public ICommand BeginEditQuantityCommand { get; }
-        public ICommand CommitEditedQuantityCommand { get; }
-
-        public ProductViewModel(IBaseRepository<Product, Guid> productRepo)
-        {
-            _productRepo = productRepo;
+            _repo = repo;
 
             _productView = CollectionViewSource.GetDefaultView(Products);
-            _productView.SortDescriptions.Add(
-                new SortDescription(nameof(Product.ProductNumber), ListSortDirection.Ascending));
+            _productView.SortDescriptions.Add(new SortDescription(nameof(Product.ProductNumber), ListSortDirection.Ascending));
 
-            BeginEditQuantityCommand = new RelayCommand(p =>
+            OpenAddCommand = new RelayCommand(_ => _ = OpenProductDialogAsync(ProductDialogMode.Add, null));
+            OpenEditCommand = new RelayCommand(p =>
             {
                 if (p is Product prod)
-                    EditingProduct = prod;
-            });
-
-            CommitEditedQuantityCommand = new RelayCommand(_ =>
-            {
-                _ = CommitEditedQuantityAsync();
+                    _ = OpenProductDialogAsync(ProductDialogMode.Edit, prod);
             });
         }
 
-        // Kald denne når VM oprettes (fx fra App.xaml.cs composition)
         public async Task InitializeAsync()
         {
-            await _productRepo.InitializeAsync();
+            await _repo.InitializeAsync();
         }
 
-        private async Task CommitEditedQuantityAsync()
+        private async Task OpenProductDialogAsync(ProductDialogMode mode, Product? product)
         {
-            if (EditingProduct is null) return;
-
-            // Simple validation: negative stock not allowed
-            if (EditingProduct.NumberInStock < 0)
+            if (_repo is not ProductDBRepository productRepo)
             {
-                await _productRepo.InitializeAsync(); // revert to DB state
+                MessageBox.Show("Product repository er ikke ProductDBRepo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            try
+            var dlg = new ProductDialog(
+                mode,
+                product,
+                addAsync: async created => await productRepo.AddAsync(created),
+                editAsync: async updated => await productRepo.UpdateAsync(updated))
+
             {
-                // Opdaterer hele product-row via eksisterende usp_Update_Product / repo
-                await _productRepo.UpdateAsync(EditingProduct);
-            }
-            catch
-            {
-                // Hvis DB-update fejler, reload fra DB så UI ikke står med forkert tal
-                await _productRepo.InitializeAsync();
-                throw;
-            }
+                Owner = Application.Current?.MainWindow
+            };
+
+            dlg.ShowDialog();
+            await Task.CompletedTask;
         }
     }
 }

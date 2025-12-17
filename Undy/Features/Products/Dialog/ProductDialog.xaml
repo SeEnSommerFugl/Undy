@@ -1,0 +1,75 @@
+﻿<Window x:Class="Undy.Features.Products.Dialog.ProductDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Produkt"
+        Width="520"
+        Height="380"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="HeaderText"
+                   Grid.Row="0"
+                   FontSize="18"
+                   FontWeight="SemiBold"
+                   Text="Produkt" />
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="8"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Produktnummer:" VerticalAlignment="Center"/>
+            <TextBox x:Name="ProductNumberBox" Grid.Row="0" Grid.Column="1"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Produktnavn:" VerticalAlignment="Center"/>
+            <TextBox x:Name="ProductNameBox" Grid.Row="2" Grid.Column="1"/>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Pris:" VerticalAlignment="Center"/>
+            <TextBox x:Name="PriceBox" Grid.Row="4" Grid.Column="1"/>
+
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Størrelse:" VerticalAlignment="Center"/>
+            <TextBox x:Name="SizeBox" Grid.Row="6" Grid.Column="1"/>
+
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Farve:" VerticalAlignment="Center"/>
+            <TextBox x:Name="ColourBox" Grid.Row="8" Grid.Column="1"/>
+
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="Antal på lager:" VerticalAlignment="Center"/>
+            <TextBox x:Name="NumberInStockBox" Grid.Row="10" Grid.Column="1"/>
+        </Grid>
+
+        <TextBlock x:Name="ErrorText"
+                   Grid.Row="3"
+                   Foreground="Red"
+                   TextWrapping="Wrap"
+                   Margin="0,6,0,0" />
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Cancel" Width="90" Margin="0,0,10,0" IsCancel="True"/>
+            <Button x:Name="SaveButton" Content="Save" Width="90" IsDefault="True" Click="Save_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
