@@ -36,4 +36,132 @@
         <Setter Property="Margin"            Value="0,10,0,0"/>
     </Style>
 
+    <SolidColorBrush x:Key="Brush.Scroll.Track"        Color="#00000000"/>
+    <SolidColorBrush x:Key="Brush.Scroll.Thumb"        Color="#55FFFFFF"/>
+    <SolidColorBrush x:Key="Brush.Scroll.ThumbHover"   Color="#88FFFFFF"/>
+    <SolidColorBrush x:Key="Brush.Scroll.ThumbPressed" Color="#AAFFFFFF"/>
+
+
+    <!-- ========================================================= -->
+    <!-- Scrollbar: LEFT TITLES (Label column)                        -->
+    <!-- ========================================================= -->
+
+
+    <Style TargetType="{x:Type ScrollBar}">
+        <!-- Size -->
+        <Setter Property="Width" Value="10"/>
+        <Setter Property="Background" Value="{StaticResource Brush.Scroll.Track}"/>
+
+        <!-- Auto-hide: default invisible -->
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                    <Grid Background="Transparent">
+                        <Track x:Name="PART_Track" IsDirectionReversed="True">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Opacity="0" IsHitTestVisible="False"/>
+                            </Track.DecreaseRepeatButton>
+
+                            <Track.Thumb>
+                                <Thumb x:Name="Thumb"
+                                   Background="{StaticResource Brush.Scroll.Thumb}"/>
+                            </Track.Thumb>
+
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Opacity="0" IsHitTestVisible="False"/>
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Show scrollbar on hover -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="IsHitTestVisible" Value="True"/>
+                        </Trigger>
+
+                        <!-- Keep visible while dragging -->
+                        <Trigger SourceName="Thumb" Property="IsDragging" Value="True">
+                            <Setter Property="Opacity" Value="1"/>
+                            <Setter Property="IsHitTestVisible" Value="True"/>
+                            <Setter TargetName="Thumb" Property="Background" Value="{StaticResource Brush.Scroll.ThumbPressed}"/>
+                        </Trigger>
+
+                        <!-- Thumb hover/press visuals -->
+                        <Trigger SourceName="Thumb" Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Thumb" Property="Background" Value="{StaticResource Brush.Scroll.ThumbHover}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ScrollViewer}">
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="CanContentScroll" Value="True"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                    <Grid x:Name="Root" ClipToBounds="True">
+
+                        <!-- Content -->
+                        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                            Margin="{TemplateBinding Padding}"/>
+
+                        <!-- Overlay vertical scrollbar -->
+                        <ScrollBar x:Name="PART_VerticalScrollBar"
+                               Orientation="Vertical"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Stretch"
+                               Margin="0,0,0,0"
+                               Style="{StaticResource {x:Type ScrollBar}}"/>
+
+                        <!-- (Optional) overlay horizontal if you ever enable it -->
+                        <ScrollBar x:Name="PART_HorizontalScrollBar"
+                               Orientation="Horizontal"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Stretch"
+                               Visibility="Collapsed"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+
+                        <!-- Default: hidden -->
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="PART_VerticalScrollBar" Property="Opacity" Value="0"/>
+                            <Setter TargetName="PART_VerticalScrollBar" Property="IsHitTestVisible" Value="False"/>
+                        </Trigger>
+
+                        <!-- Show when scrolling is needed AND mouse is over ScrollViewer -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="ComputedVerticalScrollBarVisibility" Value="Visible"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_VerticalScrollBar" Property="Opacity" Value="1"/>
+                            <Setter TargetName="PART_VerticalScrollBar" Property="IsHitTestVisible" Value="True"/>
+                        </MultiTrigger>
+
+                        <!-- Keep visible while dragging/captured -->
+                        <Trigger SourceName="PART_VerticalScrollBar" Property="IsMouseCaptureWithin" Value="True">
+                            <Setter TargetName="PART_VerticalScrollBar" Property="Opacity" Value="1"/>
+                            <Setter TargetName="PART_VerticalScrollBar" Property="IsHitTestVisible" Value="True"/>
+                        </Trigger>
+
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
 </ResourceDictionary>
