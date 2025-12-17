@@ -15,14 +15,10 @@ global using System.Windows.Media;
 
 // ===== Infrastructure and External ===== //
 global using Microsoft.Extensions.Configuration;
-
-
-// ===== Domain and Data ===== //
-global using Undy.Data.Repository;
-
-
 // ===== SQL ===== //
 global using Undy.Data.Database;
+// ===== Domain and Data ===== //
+global using Undy.Data.Repository;
 global using Undy.Features.Helpers;
 global using Undy.Features.ViewModel;
 global using Undy.Models;

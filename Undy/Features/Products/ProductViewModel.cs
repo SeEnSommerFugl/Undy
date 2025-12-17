@@ -1,12 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Undy.Data.Repository;
 using Undy.Features.Helpers;
-using Undy.Features.Products.Dialog;
+using Undy.Features.Products.AddProduct;
 using Undy.Models;
 
 namespace Undy.Features.ViewModel

@@ -1,5 +1,7 @@
-﻿namespace Undy.Models {
-    public class WholesaleOrderDisplay {
+﻿namespace Undy.Models
+{
+    public class WholesaleOrderDisplay
+    {
         //Properties for WholesaleOrder
         public Guid WholesaleOrderID { get; set; }
         public int WholesaleOrderNumber { get; set; }

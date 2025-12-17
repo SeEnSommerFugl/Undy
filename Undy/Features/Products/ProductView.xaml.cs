@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace Undy.Views
+﻿namespace Undy.Views
 {
     public partial class ProductView : UserControl
     {

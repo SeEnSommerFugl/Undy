@@ -1,8 +1,4 @@
-﻿using System.Data;
-using Microsoft.Data.SqlClient;
-using Undy.Models;
-
-namespace Undy.Data.Repository
+﻿namespace Undy.Data.Repository
 {
     /// <summary>
     /// SalesOrderLine repository (composite key in DB: SalesOrderID + ProductID).
