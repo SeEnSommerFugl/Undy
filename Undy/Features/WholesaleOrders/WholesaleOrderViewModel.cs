@@ -123,7 +123,7 @@
                 new SortDescription(nameof(WholesaleOrderDisplay.WholesaleOrderDate), ListSortDirection.Descending));
             _wholesaleView.Filter = FilterWholesaleOrders;
 
-            ConfirmCommand = new RelayCommand(async _ => await CreateWholesaleOrderAsync());
+            ConfirmCommand = new RelayCommand(async _ => await ConfirmAsync());
             AddProductCommand = new RelayCommand(_ => AddProduct(), _ => CanAddProduct());
             RemoveWholesaleOrderLineCommand = new RelayCommand(line =>
                 RemoveWholesaleOrderLine(line as WholesaleOrderLineEntryViewModel));
@@ -139,6 +139,8 @@
 
             ExpectedDeliveryDate ??= DateTime.Today;
         }
+
+        public Task ConfirmAsync() => CreateWholesaleOrderAsync();
 
         private bool FilterWholesaleOrders(object obj)
         {

@@ -173,4 +173,82 @@ public sealed class WholesaleOrderViewModelTests
         Assert.IsTrue(vm.IsConfirmError);
         Assert.IsNotNull(vm.ConfirmFeedback);
     }
+
+    [TestMethod]
+    public async Task ConfirmAsync_WhenHasLines_CallsRepos_SetsSuccessFeedback_AndClearsForm()
+    {
+        // Arrange
+        var wholesaleRepo = new FakeBaseRepository<WholesaleOrder, Guid>(x => x.WholesaleOrderID);
+
+        // This collection is used to resolve createdOrderNumber. It can safely be empty.
+        var wholesaleDisplayRepo = new FakeBaseRepository<WholesaleOrderDisplay, Guid>(x => x.WholesaleOrderID);
+        var productRepo = new FakeBaseRepository<Product, Guid>(x => x.ProductID);
+
+        var lineRepo = new FakeWholesaleOrderLineWriteRepository();
+
+        var vm = new WholesaleOrderViewModel(wholesaleRepo, wholesaleDisplayRepo, productRepo, lineRepo)
+        {
+            ExpectedDeliveryDate = new DateTime(2030, 1, 2)
+        };
+
+        vm.WholesaleOrderLines.Add(new WholesaleOrderViewModel.WholesaleOrderLineEntryViewModel
+        {
+            ProductID = Guid.NewGuid(),
+            ProductName = "P",
+            Quantity = 3,
+            UnitPrice = 12.50m,
+            QuantityReceived = 0
+        });
+
+        vm.SelectedProduct = new Product { ProductID = Guid.NewGuid(), ProductName = "X", Price = 1m };
+        vm.Quantity = 99;
+
+        // Act
+        await vm.ConfirmAsync();
+
+        // Assert
+        Assert.IsFalse(vm.IsConfirmError);
+        Assert.IsNotNull(vm.ConfirmFeedback);
+
+        Assert.AreEqual(1, wholesaleRepo.Items.Count);
+        Assert.AreEqual(1, lineRepo.AddedLines.Count);
+        Assert.AreEqual(wholesaleRepo.Items[0].WholesaleOrderID, lineRepo.AddedLines[0].WholesaleOrderID);
+        Assert.AreEqual(3, lineRepo.AddedLines[0].Quantity);
+        Assert.AreEqual(12.50m, lineRepo.AddedLines[0].UnitPrice);
+
+        Assert.AreEqual(0, vm.WholesaleOrderLines.Count);
+        Assert.IsNull(vm.SelectedProduct);
+        Assert.AreEqual(0, vm.Quantity);
+        Assert.AreEqual(DateTime.Today, vm.ExpectedDeliveryDate);
+    }
+
+    [TestMethod]
+    public async Task ConfirmAsync_WhenWholesaleOrderRepoThrows_SetsErrorFeedback()
+    {
+        // Arrange
+        var ex = new InvalidOperationException("boom");
+        var wholesaleRepo = new ThrowingBaseRepository<WholesaleOrder, Guid>(ex);
+        var wholesaleDisplayRepo = new FakeBaseRepository<WholesaleOrderDisplay, Guid>(x => x.WholesaleOrderID);
+        var productRepo = new FakeBaseRepository<Product, Guid>(x => x.ProductID);
+        var lineRepo = new FakeWholesaleOrderLineWriteRepository();
+
+        var vm = new WholesaleOrderViewModel(wholesaleRepo, wholesaleDisplayRepo, productRepo, lineRepo);
+        vm.WholesaleOrderLines.Add(new WholesaleOrderViewModel.WholesaleOrderLineEntryViewModel
+        {
+            ProductID = Guid.NewGuid(),
+            Quantity = 1,
+            UnitPrice = 1m,
+            QuantityReceived = 0
+        });
+
+        // Act
+        await vm.ConfirmAsync();
+
+        // Assert
+        Assert.IsTrue(vm.IsConfirmError);
+        Assert.IsNotNull(vm.ConfirmFeedback);
+        StringAssert.Contains(vm.ConfirmFeedback, "boom");
+
+        Assert.AreEqual(0, lineRepo.AddedLines.Count);
+    }
 }
