@@ -9,7 +9,6 @@
         private readonly PaymentViewModel _paymentViewModel;
         private readonly TestReturnOrderViewModel _testReturnOrderViewModel;
         private readonly TestSalesOrderViewModel _testSalesOrderViewModel;
-        private readonly TestWholesaleOrderViewModel _testWholesaleOrderViewModel;
         private readonly StartPageViewModel _startPageViewModel;
         private readonly ProductViewModel _productViewModel;
 
@@ -18,7 +17,8 @@
             IncomingWholesaleOrderViewModel incomingWholesaleOrderViewModel,
             SalesOrderViewModel salesOrderViewModel, PaymentViewModel paymentViewModel,
             TestReturnOrderViewModel testReturnOrderViewModel, TestSalesOrderViewModel testSalesOrderViewModel,
-            TestWholesaleOrderViewModel testWholesaleOrderViewModel, ProductViewModel productViewModel)
+            ProductViewModel productViewModel)
+
         {
             _wholesaleOrderViewModel = wholesaleOrderViewModel;
             _incomingWholesaleOrderViewModel = incomingWholesaleOrderViewModel;
@@ -26,7 +26,6 @@
             _paymentViewModel = paymentViewModel;
             _testReturnOrderViewModel = testReturnOrderViewModel;
             _testSalesOrderViewModel = testSalesOrderViewModel;
-            _testWholesaleOrderViewModel = testWholesaleOrderViewModel;
             _startPageViewModel = startPageViewModel;
             _productViewModel = productViewModel;
 
@@ -38,7 +37,6 @@
                 ("SalesOrders", "Salgsordrer", _salesOrderViewModel),
                 ("Payments", "Betalinger", _paymentViewModel),
                 ("TestReturnOrders", "Test returneringer", _testReturnOrderViewModel),
-                ("TestWholesaleOrder", "Test indkøbsordrer", _testWholesaleOrderViewModel),
                 ("TestSalesOrders", "Test salgsordrer", _testSalesOrderViewModel)
             );
 

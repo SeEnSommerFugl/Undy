@@ -30,7 +30,7 @@
 
             <!-- Subtitle -->
             <TextBlock Grid.Row="1"
-                       Text="Indtast kundenavn, vælg produkt og angiv antal for det valgte produkt."
+                       Text="Dette View er for at simulere et salg via hjemmeside."
                        Style="{DynamicResource H3}"
                        HorizontalAlignment="Center"
                        Foreground="Red"/>

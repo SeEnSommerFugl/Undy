@@ -1,128 +1,179 @@
 ﻿<UserControl x:Class="Undy.Views.WholesaleOrderView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Undy.Views"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
+             MaxWidth="1920" MaxHeight="1080"
+             Background="White"
              d:DesignWidth="1652" d:DesignHeight="1048">
-    
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="12"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="12"/>
-        </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Style="{DynamicResource Card}">
-            <Grid 
-      HorizontalAlignment="Center">
+    <Border Style="{DynamicResource Card}">
+        <Grid Margin="20">
+
+            <Grid.RowDefinitions>
+                <!-- Title -->
+                <RowDefinition Height="Auto"/>
+                <!-- Subtitle -->
+                <RowDefinition Height="Auto"/>
+                <!-- Fields -->
+                <RowDefinition Height="Auto"/>
+                <!-- Lines -->
+                <RowDefinition Height="Auto"/>
+                <!-- Confirm -->
+                <RowDefinition Height="Auto"/>
+                <!-- Spacer -->
+                <RowDefinition Height="12"/>
+                <!-- Bottom list -->
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       Text="Opret Indkøbsordre"
+                       Style="{DynamicResource H2}"/>
+
+            <!-- Subtitle -->
+            <TextBlock Grid.Row="1"
+                       Text="Vælg forventet leveringsdato, vælg vare og angiv antal."
+                       Style="{DynamicResource H3}"
+                       HorizontalAlignment="Center"
+                       Foreground="Red"/>
+
+            <!-- Fields (TestWholesale functionality) -->
+            <Grid Grid.Row="2"
+                  Margin="0,30"
+                  HorizontalAlignment="Center">
                 <Grid.ColumnDefinitions>
-                    <!-- Labels -->
-                    <ColumnDefinition Width="Auto"/>
-                    <!-- Spacer -->
+                    <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="20"/>
-                    <!-- Inputs -->
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
-                    <!-- Vælg vare -->
+                    <RowDefinition Height="70"/>
                     <RowDefinition Height="50"/>
-                    <!-- Antal -->
                     <RowDefinition Height="50"/>
-                    <!-- Tilføj vare -->
-                    <RowDefinition Height="50"/>
-                    <!-- Leveringsdato label -->
-                    <RowDefinition Height="50"/>
-                    <!-- Leveringsdato input -->
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
 
-                <!-- Vælg vare -->
+                <!-- Expected Delivery Date -->
                 <TextBlock Grid.Row="0" Grid.Column="0"
-               Text="Vælg vare"
-               Style="{DynamicResource TitleLeft}"/>
+                           Text="Forventet leveringsdato"
+                           Style="{DynamicResource TitleLeft}"
+                           TextWrapping="Wrap"
+                           TextTrimming="None"/>
 
-                <ComboBox Grid.Row="0" Grid.Column="2"
-              Height="45"
-              ItemsSource="{Binding Products}"
-              SelectedItem="{Binding SelectedProduct}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*"/>
-                                    <!-- Varenavn -->
-                                    <ColumnDefinition Width="*"/>
-                                    <!-- Varenummer -->
-                                </Grid.ColumnDefinitions>
+                <DatePicker Grid.Row="0" Grid.Column="2"
+                            Width="450"
+                            HorizontalAlignment="Left"
+                            SelectedDate="{Binding ExpectedDeliveryDate, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                <TextBlock Grid.Column="0"
-                               Text="{Binding ProductName}"
-                               Margin="5,0"/>
-
-                                <TextBlock Grid.Column="1"
-                               Text="{Binding ProductNumber}"
-                               Margin="5,0"
-                               HorizontalAlignment="Right"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-                <!-- Antal -->
+                <!-- Product -->
                 <TextBlock Grid.Row="1" Grid.Column="0"
-               Text="Antal"
-               Style="{DynamicResource TitleLeft}"/>
+                           Text="Produkt"
+                           Style="{DynamicResource TitleLeft}"/>
 
-                <TextBox Grid.Row="1" Grid.Column="2"
-             Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
-             Style="{DynamicResource InputRight}"/>
+                <ComboBox Grid.Row="1" Grid.Column="2"
+                          Width="450"
+                          HorizontalAlignment="Left"
+                          ItemsSource="{Binding Products}"
+                          SelectedItem="{Binding SelectedProduct}"
+                          Style="{StaticResource ProductMultiColumnComboBoxStyle}" />
 
-                <!-- Leveringsdato label -->
+                <!-- Quantity -->
                 <TextBlock Grid.Row="2" Grid.Column="0"
-               Text="Leveringsdato på lager"
-               Style="{DynamicResource TitleLeft}"/>
+                           Text="Antal"
+                           Style="{DynamicResource TitleLeft}"/>
 
-                <!-- Leveringsdato input -->
                 <TextBox Grid.Row="2" Grid.Column="2"
-             Text="{Binding DeliveryDate, UpdateSourceTrigger=PropertyChanged}"
-             Style="{DynamicResource InputRight}"/>
+                         Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{DynamicResource InputRight}"
+                         HorizontalAlignment="Left"/>
 
-                <!-- Tilføj vare -->
-                <Button Grid.Row="4" Grid.ColumnSpan="3"
-            Content="Tilføj vare"
-            Style="{DynamicResource ButtonBase}"
-            Command="{Binding AddItemCommand}"
-            HorizontalAlignment="Center"/>
-                
+                <!-- Add Product -->
+                <Button Grid.Row="3" Grid.ColumnSpan="3"
+                        Content="Tilføj Produkt"
+                        Style="{DynamicResource ButtonBase}"
+                        Command="{Binding AddProductCommand}"
+                        HorizontalAlignment="Center"/>
             </Grid>
 
+            <!-- Lines (same table style as bottom list) -->
+            <Border Grid.Row="3"
+                    Style="{DynamicResource Card}"
+                    Width="500">
+                
+                <ListView ItemsSource="{Binding WholesaleOrderLines}"
+                          Style="{StaticResource ListView.Table}"
+                          HorizontalAlignment="Stretch"
+                          Height="300">
 
-        </Border>
-        <Border Grid.Row="2" Style="{DynamicResource Card}">
-            <DataGrid ItemsSource="{Binding WholesaleView}"
-                              Style="{DynamicResource DataGrid.Table}"
-                              MaxHeight="1000"
-                              Background="Transparent"
-                              BorderThickness="0"
-                              HorizontalAlignment="Stretch">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Ankomst på lager" Width="160"
-                                        Binding="{Binding WholesaleOrderDate, StringFormat={}{0:dd/MM/yyyy - HH:mm}}"/>
-                    <DataGridTextColumn Header="Varenummer" 
-                                        Binding="{Binding ProductNumber}" 
-                                        Width="160"/>
-                    <DataGridTextColumn Header="Vare navn" 
-                                        Binding="{Binding ProductName}" 
-                                        Width="160"/>
-                    <DataGridTextColumn Header="Antal" 
-                                        Binding="{Binding Quantity}" 
-                                        Width="160"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Border>
-    </Grid>
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="False">
+                            <GridViewColumn Header="Vare" Width="160"
+                                DisplayMemberBinding="{Binding ProductName}"/>
+
+                            <GridViewColumn Header="Antal" Width="120"
+                                DisplayMemberBinding="{Binding Quantity}"/>
+
+                            <GridViewColumn Header="Pris" Width="120"
+                                DisplayMemberBinding="{Binding UnitPrice}"/>
+
+                            <GridViewColumn Header="Slet" Width="60">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="X"
+                                    Command="{Binding DataContext.RemoveWholesaleOrderLineCommand,
+                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+
+
+            <StackPanel Grid.Row="4"
+            HorizontalAlignment="Center"
+            Margin="0,10,0,0">
+
+                <Button Content="Bekræft ordre"
+            Command="{Binding ConfirmCommand}"
+            Style="{DynamicResource ButtonBase}"
+            HorizontalAlignment="Center"/>
+
+                <TextBlock Text="{Binding ConfirmFeedback}"
+               HorizontalAlignment="Center"
+               Margin="0,8,0,0"
+               FontSize="18"
+               FontWeight="SemiBold">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="LimeGreen"/>
+                            <Setter Property="Visibility" Value="Visible"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsConfirmError}" Value="True">
+                                    <Setter Property="Foreground" Value="Red"/>
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding ConfirmFeedback}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ConfirmFeedback}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+
+
+        </Grid>
+    </Border>
 </UserControl>

@@ -27,7 +27,7 @@
                       ItemsSource="{Binding ProductView}"
                       SelectionMode="Single" MouseDoubleClick="ProductsListView_MouseDoubleClick">
                 <ListView.View>
-                    <GridView>
+                    <GridView AllowsColumnReorder="False">
                         <GridViewColumn Header="Produktnr." Width="230"
                                         DisplayMemberBinding="{Binding ProductNumber}" />
 

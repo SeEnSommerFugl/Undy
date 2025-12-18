@@ -861,7 +861,7 @@ BEGIN
 
     SELECT COUNT(*) AS WholesaleOnTheWay
     FROM dbo.WholesaleOrder
-    WHERE OrderStatus IN (N'Afventer', N'Pending', N'Klar til udpakning');
+    WHERE OrderStatus IN (N'Afventer', N'Modtaget', N'Klar til udpakning');
 END
 GO
 

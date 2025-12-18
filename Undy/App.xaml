@@ -32,9 +32,6 @@
             <DataTemplate DataType="{x:Type vm:TestReturnOrderViewModel}">
                 <views:TestReturnOrderView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:TestWholesaleOrderViewModel}">
-                <views:TestWholesaleOrderView/>
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:TestSalesOrderViewModel}">
                 <views:TestSalesOrderView/>
             </DataTemplate>

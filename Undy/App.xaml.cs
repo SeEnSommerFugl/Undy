@@ -44,8 +44,11 @@
 
 
             var wholesaleOrderVM = new WholesaleOrderViewModel(
+                wholesaleOrderRepo,
                 wholesaleOrderDisplayRepo,
-                productRepo);
+                productRepo,
+                wholesaleOrderLineRepo);
+
 
 
             var incomingWholesaleOrderVM = new IncomingWholesaleOrderViewModel(
@@ -74,11 +77,6 @@
                 salesOrderLineRepo,
                 customerRepo);
 
-            var testWholesaleOrderVM = new TestWholesaleOrderViewModel(
-                wholesaleOrderRepo,
-                productRepo,
-                wholesaleOrderLineRepo);
-
             var productVM = new ProductViewModel(productRepo);
 
             var mainVM = new MainViewModel(
@@ -89,7 +87,6 @@
                 paymentVM,
                 testReturnOrderVM,
                 testSalesOrderVM,
-                testWholesaleOrderVM,
                 productVM
             );
 
