@@ -1,9 +1,4 @@
 ﻿// Undy/Undy/Models/WholesaleOrderLine.cs
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
 namespace Undy.Models
 {
     public class WholesaleOrderLine : INotifyPropertyChanged
