@@ -252,7 +252,7 @@
                 await _wholesaleOrderLineRepo.AddRangeAsync(lines);
 
                 // Refresh display view so the new order appears in the bottom list
-                await _wholesaleOrderDisplayRepo.InitializeAsync();
+                _wholesaleView.Refresh();
 
                 // Try to resolve the created order number from the refreshed display list
                 int? createdOrderNumber = null;
