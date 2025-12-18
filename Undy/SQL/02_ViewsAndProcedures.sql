@@ -1,5 +1,5 @@
 /* =========================================================
-   AREA: SALES ORDER VIEWS
+   AREA: SALES HEAER VIEWS (Sorts based on SalesID)
    ========================================================= */
 
 CREATE OR ALTER VIEW dbo.vw_SalesOrderHeaders
@@ -36,6 +36,23 @@ SELECT
 FROM dbo.ProductSalesOrder pso
 JOIN dbo.SalesOrder so ON so.SalesOrderID = pso.SalesOrderID
 JOIN dbo.Product p ON p.ProductID = pso.ProductID;
+GO
+
+/* =========================================================
+   AREA: WHOLESALE – HEADER VIEWS (Sorts based on WholesaleID)
+   ========================================================= */
+
+CREATE OR ALTER VIEW dbo.vw_WholesaleOrdersHeader
+AS
+SELECT
+    wo.WholesaleOrderID,
+    wo.WholesaleOrderNumber,
+    CONCAT(N'KØB-', CAST(wo.WholesaleOrderNumber AS varchar(20))) AS DisplayWholesaleOrderNumber,
+    wo.WholesaleOrderDate,
+    wo.ExpectedDeliveryDate,
+    wo.DeliveryDate,
+    wo.OrderStatus
+FROM dbo.WholesaleOrder wo;
 GO
 
 
@@ -749,13 +766,13 @@ BEGIN
 
     IF @ReceiveQuantity <= 0
     BEGIN
-        RAISERROR('ReceiveQuantity must be > 0', 16, 1);
+        RAISERROR('Modtaget mængde skal være mere end 0', 16, 1);
         RETURN;
     END
 
     IF NOT EXISTS (SELECT 1 FROM dbo.WholesaleOrder WHERE WholesaleOrderID = @WholesaleOrderID)
     BEGIN
-        RAISERROR('Wholesale order does not exist', 16, 1);
+        RAISERROR('Indkøbsordren findes ikke.', 16, 1);
         RETURN;
     END
 
@@ -763,7 +780,7 @@ BEGIN
                    FROM dbo.ProductWholesaleOrder
                    WHERE WholesaleOrderID = @WholesaleOrderID AND ProductID = @ProductID)
     BEGIN
-        RAISERROR('Product is not part of this wholesale order', 16, 1);
+        RAISERROR('Produktet er ikke en del af denne indkøbsordre.', 16, 1);
         RETURN;
     END
 
@@ -778,7 +795,7 @@ BEGIN
 
     IF (@QtyReceived + @ReceiveQuantity) > @Qty
     BEGIN
-        RAISERROR('Cannot receive more than ordered quantity', 16, 1);
+        RAISERROR('Kan ikke modtage mere end bestilte mængde.', 16, 1);
         RETURN;
     END
 
@@ -792,8 +809,10 @@ BEGIN
     SET NumberInStock = NumberInStock + @ReceiveQuantity
     WHERE ProductID = @ProductID;
 
+
+
     /* -----------------------------
-       AREA: Update WholesaleOrder status
+       AREA: WholesaleOrder Update status
        - Fully received => Modtaget + DeliveryDate
        - Partially received => Delvist modtaget
        - None received => keep current status (e.g., Afventer)
