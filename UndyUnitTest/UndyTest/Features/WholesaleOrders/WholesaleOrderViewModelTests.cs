@@ -180,7 +180,6 @@ public sealed class WholesaleOrderViewModelTests
         // Arrange
         var wholesaleRepo = new FakeBaseRepository<WholesaleOrder, Guid>(x => x.WholesaleOrderID);
 
-        // This collection is used to resolve createdOrderNumber. It can safely be empty.
         var wholesaleDisplayRepo = new FakeBaseRepository<WholesaleOrderDisplay, Guid>(x => x.WholesaleOrderID);
         var productRepo = new FakeBaseRepository<Product, Guid>(x => x.ProductID);
 
