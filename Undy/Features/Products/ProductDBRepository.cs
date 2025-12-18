@@ -1,10 +1,4 @@
-﻿using System;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using Undy.Data.Repository;
-using Undy.Models;
-
-namespace Undy.Features.Products
+﻿namespace Undy.Features.Products
 {
     public sealed class ProductDBRepository : BaseDBRepository<Product, Guid>
     {
