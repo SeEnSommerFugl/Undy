@@ -55,7 +55,7 @@
                     <RowDefinition Height="70"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="70"/>
                 </Grid.RowDefinitions>
 
                 <!-- Expected Delivery Date -->
@@ -92,12 +92,19 @@
                          Style="{DynamicResource InputRight}"
                          HorizontalAlignment="Left"/>
 
+                        <!-- <Content="Tilføj Produkt til Indkøbsordre" -->
                 <!-- Add Product -->
                 <Button Grid.Row="3" Grid.ColumnSpan="3"
-                        Content="Tilføj Produkt"
                         Style="{DynamicResource ButtonBase}"
                         Command="{Binding AddProductCommand}"
-                        HorizontalAlignment="Center"/>
+                        HorizontalAlignment="Center"
+                        Height="70">
+                    <TextBlock>
+                        Tilføj Produkt
+                        <LineBreak />
+                        til Indkøbsordre
+                    </TextBlock>
+                </Button>
             </Grid>
 
             <!-- Lines (same table style as bottom list) -->
