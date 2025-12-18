@@ -92,7 +92,6 @@
                          Style="{DynamicResource InputRight}"
                          HorizontalAlignment="Left"/>
 
-                        <!-- <Content="Tilføj Produkt til Indkøbsordre" -->
                 <!-- Add Product -->
                 <Button Grid.Row="3" Grid.ColumnSpan="3"
                         Style="{DynamicResource ButtonBase}"
