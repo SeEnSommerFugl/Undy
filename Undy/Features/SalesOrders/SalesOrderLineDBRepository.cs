@@ -5,7 +5,7 @@ namespace Undy.Data.Repository
     /// SalesOrderLine repository (composite key in DB: SalesOrderID + ProductID).
     /// This is a query-repository (no BaseDBRepository<Guid> inheritance).
     /// </summary>
-    public class SalesOrderLineDBRepository : BaseDBRepository<SalesOrderLine, Guid> 
+    public class SalesOrderLineDBRepository : BaseDBRepository<SalesOrderLine, Guid>
     {
 
         protected override string SqlSelectAll => "SELECT * FROM vw_SalesOrderLines";

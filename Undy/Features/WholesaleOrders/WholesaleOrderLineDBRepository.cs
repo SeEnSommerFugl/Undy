@@ -56,7 +56,7 @@
         // Get composite key from entity (kept as-is: wholesale order id)
         protected override Guid GetKey(WholesaleOrderLine e) => e.WholesaleOrderID;
 
-        public async Task ProcessReceiptLinesAsync(IEnumerable<(Guid WholesaleOrderID, Guid ProductID, int ReceiveQuantity)> receipts)
+        public virtual async Task ProcessReceiptLinesAsync(IEnumerable<(Guid WholesaleOrderID, Guid ProductID, int ReceiveQuantity)> receipts)
         {
             var list = receipts.ToList();
             if (list.Count == 0) return;

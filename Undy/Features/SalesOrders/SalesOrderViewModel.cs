@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Undy.Features.SalesOrders;
+﻿using Undy.Features.SalesOrders;
 
 namespace Undy.Features.ViewModel
 {
@@ -37,7 +36,7 @@ namespace Undy.Features.ViewModel
             {
                 if (SetProperty(ref _selectedSalesOrder, value))
                     _ = LoadOrderDetailsAsync();
-                    LoadSelectedOrderDetails();
+                LoadSelectedOrderDetails();
             }
         }
 

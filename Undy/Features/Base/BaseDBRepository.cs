@@ -57,7 +57,7 @@
             using var rd = await cmd.ExecuteReaderAsync();
             return await rd.ReadAsync() ? Map(rd) : null;
         }
-        public async Task<List<T>> GetByIdsAsync(IEnumerable<TKey> ids)
+        public virtual async Task<List<T>> GetByIdsAsync(IEnumerable<TKey> ids)
         {
             var list = new List<T>();
             var idList = ids.ToList();
@@ -96,7 +96,7 @@
 
             await ReloadItemsAsync();
         }
-        public async Task AddRangeAsync(IEnumerable<T> entities)
+        public virtual async Task AddRangeAsync(IEnumerable<T> entities)
         {
             var entitiesList = entities.ToList();
             if (!entitiesList.Any()) return;

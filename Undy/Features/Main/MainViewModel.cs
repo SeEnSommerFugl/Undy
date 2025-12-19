@@ -32,7 +32,7 @@
             Nav.AddRange(
                 ("StartPage", "Startside", _startPageViewModel),
                 ("Products", "Produkter", _productViewModel),
-                ("WholesaleOrder", "Indkøb", _wholesaleOrderViewModel),
+                ("WholesaleOrder", "Opret Indkøb", _wholesaleOrderViewModel),
                 ("IncomingWholesaleOrder", "Varemodtagelse", _incomingWholesaleOrderViewModel),
                 ("SalesOrders", "Salgsordrer", _salesOrderViewModel),
                 ("Payments", "Betalinger", _paymentViewModel),
