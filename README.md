@@ -8,10 +8,7 @@ Link til GitHub: https://github.com/SeEnSommerFugl/Undy
 
 
 ## Opsætning af Database
-Der ligger en Appsettings fil der kan bruges til lokal database connection, samt SQL queries scripts i SQL mappen til opsætning af databasen, som hedder "All in one setup".
-
-- Lav en lokal database og navngiv den Undy
 - Indsæt connectionstring parametre i "appsettings.json"
-- Kør scriptet "All in one setup" uden for Visual Studio
-
-Nu er databasen sat op, alle tables er oprettet og udfyldt med relevant test data
+- Kør scriptet "All in one setup" uden for Visual Studio (Note: i skal IKKE oprette en database på forhånd, dette bliver gjort automatisk)
+Der ligger en Appsettings fil som kun skal have indsat connection_string til lokal/remote server.
+Når i kører All_In_One_Setup.SQL oprettes databases Undy automatisk, samt relevante tables, views, procs samt dummydata.
