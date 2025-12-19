@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Styles\Images\chart-histogramBlue.png" />
     <Resource Include="Styles\Images\checkBlue.png" />
