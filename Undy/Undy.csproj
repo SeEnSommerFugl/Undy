@@ -31,6 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Styles\Images\chart-histogramBlue.png" />
     <Resource Include="Styles\Images\checkBlue.png" />
     <Resource Include="Styles\Images\exclamationBlue.png" />
